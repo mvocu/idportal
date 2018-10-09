@@ -72,7 +72,7 @@ return [
             |
             */
 
-            'schema' => Adldap\Schemas\ActiveDirectory::class,
+            'schema' => App\Schemas\Schema389::class,
 
             /*
             |--------------------------------------------------------------------------
@@ -127,7 +127,7 @@ return [
                 |
                 */
 
-                'domain_controllers' => explode(' ', env('ADLDAP_CONTROLLERS', 'corp-dc1.corp.acme.org corp-dc2.corp.acme.org')),
+                'domain_controllers' => explode(' ', env('ADLDAP_CONTROLLERS', 'lolcahost')),
 
                 /*
                 |--------------------------------------------------------------------------
@@ -138,7 +138,7 @@ return [
                 |
                 */
 
-                'port' => env('ADLDAP_PORT', 389),
+                'port' => env('ADLDAP_PORT', 636),
 
                 /*
                 |--------------------------------------------------------------------------
@@ -198,8 +198,8 @@ return [
                 |
                 */
 
-                'admin_username' => env('ADLDAP_ADMIN_USERNAME', 'username'),
-                'admin_password' => env('ADLDAP_ADMIN_PASSWORD', 'password'),
+                'admin_username' => env('ADLDAP_ADMIN_USERNAME', null),
+                'admin_password' => env('ADLDAP_ADMIN_PASSWORD', null),
 
                 /*
                 |--------------------------------------------------------------------------
@@ -231,8 +231,8 @@ return [
                 |
                 */
 
-                'use_ssl' => env('ADLDAP_USE_SSL', false),
-                'use_tls' => env('ADLDAP_USE_TLS', false),
+                'use_ssl' => env('ADLDAP_USE_SSL', true),
+                'use_tls' => env('ADLDAP_USE_TLS', true),
 
             ],
 
