@@ -14,6 +14,8 @@ class LdapUserProvider extends NoDatabaseUserProvider
     public function retrieveByCredentials(array $credentials)
     {
         $ldapuser = parent::retrieveByCredentials($credentials);
+        if(is_null($ldapuser)) 
+            return null;
         $user = new User($ldapuser->getAttributes(), $ldapuser->getQuery());
         return $user;
     }
@@ -26,7 +28,9 @@ class LdapUserProvider extends NoDatabaseUserProvider
     {
         // this proxies to the Resolver::byId(), so this'd rather be the correct one
         $ldapuser = parent::retrieveById($identifier);
-        $user = new User($ldapuser->getAttributes(), $ldapuser->getQuery());
+        if(is_null($ldapuser))
+            return null;
+            $user = new User($ldapuser->getAttributes(), $ldapuser->getQuery());
         return $user;
     }
 
@@ -36,8 +40,9 @@ class LdapUserProvider extends NoDatabaseUserProvider
      */
     public function retrieveByToken($identifier, $token)
     {
-        // TODO Auto-generated method stub
         $ldapuser = parent::retrieveByToken($identifier, $token);
+        if(is_null($ldapuser))
+            return null;
         $user = new User($ldapuser->getAttributes(), $ldapuser->getQuery());
         return $user;
     }
