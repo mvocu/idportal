@@ -19,7 +19,15 @@ class PasswordAuthenticateSession extends AuthenticateSession
     public function handle($request, Closure $next)
     {
         if (! $request->user() || ! $request->session()) {
-            return $next($request);
+            $response = $next($request);
+
+            if (! $request->user() || ! $request->session()) {
+                return $response;
+            }
+                
+            $this->storePasswordHashInSession($request);
+            
+            return $response;
         }
         
         if ($this->auth->viaRemember()) {
@@ -33,9 +41,13 @@ class PasswordAuthenticateSession extends AuthenticateSession
         if (! $request->session()->has('password_hash')) {
             $this->storePasswordHashInSession($request);
         }
-        
-        if ($request->session()->get('password_hash') !== $request->user()->getAuthPassword()) {
-            $this->logout($request);
+
+        $password = $request->session()->get('password_hash');
+        if (empty($password) or 
+                !$this->auth->getProvider()->validateCredentials($request->user(), [ 'password' => $password ] )) {
+                $this->logout($request);
+        } else {
+            $request->user()->rememberPassword($password);
         }
         
         return tap($next($request), function () use ($request) {

@@ -3,6 +3,7 @@
 namespace App\Auth;
 
 use Adldap\Laravel\Auth\NoDatabaseUserProvider;
+use App\User;
 
 class LdapUserProvider extends NoDatabaseUserProvider
 {
@@ -12,8 +13,9 @@ class LdapUserProvider extends NoDatabaseUserProvider
      */
     public function retrieveByCredentials(array $credentials)
     {
-        // TODO Auto-generated method stub
-        return parent::retrieveByCredentials($credentials);
+        $ldapuser = parent::retrieveByCredentials($credentials);
+        $user = new User($ldapuser->getAttributes(), $ldapuser->getQuery());
+        return $user;
     }
 
     /**
@@ -23,7 +25,9 @@ class LdapUserProvider extends NoDatabaseUserProvider
     public function retrieveById($identifier)
     {
         // this proxies to the Resolver::byId(), so this'd rather be the correct one
-        return parent::retrieveById($identifier);        
+        $ldapuser = parent::retrieveById($identifier);
+        $user = new User($ldapuser->getAttributes(), $ldapuser->getQuery());
+        return $user;
     }
 
     /**
@@ -33,7 +37,9 @@ class LdapUserProvider extends NoDatabaseUserProvider
     public function retrieveByToken($identifier, $token)
     {
         // TODO Auto-generated method stub
-        return parent::retrieveByToken($identifier, $token);
+        $ldapuser = parent::retrieveByToken($identifier, $token);
+        $user = new User($ldapuser->getAttributes(), $ldapuser->getQuery());
+        return $user;
     }
 
     /**
@@ -52,8 +58,14 @@ class LdapUserProvider extends NoDatabaseUserProvider
      */
     public function validateCredentials(\Illuminate\Contracts\Auth\Authenticatable $user, array $credentials)
     {
-        // TODO Auto-generated method stub
-        return parent::validateCredentials($user, $credentials);
+        if(parent::validateCredentials($user, $credentials)) {
+            if(method_exists($user, "rememberPassword") && !empty($credentials['password'])) {
+                $user->rememberPassword($credentials['password']);
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 
     
