@@ -3,7 +3,7 @@
 namespace App\Schemas;
 
 use Adldap\Schemas\BaseSchema;
-use App\Models\LdapUser;
+use App\Models\Ldap\LdapUser;
 
 class Schema389 extends BaseSchema
 {

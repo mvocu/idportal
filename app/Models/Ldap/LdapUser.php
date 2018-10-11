@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Ldap;
 
 use Adldap\Models\User;
 
