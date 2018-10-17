@@ -9,7 +9,7 @@ class ExtSourceAttribute extends Model
     //
     protected $table = 'ext_sources_attributes';
     
-    protected $fillable = [ 'name' ];
+    protected $fillable = [ 'name', 'core_name' ];
     
     public function extSource() {
         return $this->belongsTo('App\Models\Database\ExtSource', 'ext_source_id');

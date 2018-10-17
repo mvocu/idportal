@@ -13,18 +13,22 @@ class User extends Model
         'birth_place_id', 'birth_code', 'gender', 'country', 'residency_id', 'address_id', 'address_tmp_id', 'trust_level'];
     
     public function birthPlace() {
-        return $this->hasOne('App\Models\Database\Contact', 'birth_place_id');
+        return $this->belongsTo('App\Models\Database\Contact', 'birth_place_id');
     }
     
     public function residency() {
-        return $this->hasOne('App\Models\Database\Contact', 'residency_id');
+        return $this->belongsTo('App\Models\Database\Contact', 'residency_id');
     }
     
     public function address() {
-        return $this->hasOne('App\Models\Database\Contact', 'address_id');
+        return $this->belongsTo('App\Models\Database\Contact', 'address_id');
     }
     
     public function addressTmp() {
-        return $this->hasOne('App\Models\Database\Contact', 'address_tmp_id');
+        return $this->belongsTo('App\Models\Database\Contact', 'address_tmp_id');
+    }
+    
+    public function contacts() {
+        return $this->hasMany('App\Models\Database\Contact', 'user_id');
     }
 }
