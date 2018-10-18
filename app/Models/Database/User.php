@@ -9,8 +9,8 @@ class User extends Model
     //
     protected $table = 'user';
     
-    protected $fillable = ['identifier', 'first_name', 'last_name', 'middle_name', 'title_before', 'title_after', 'birth_date',
-        'birth_place_id', 'birth_code', 'gender', 'country', 'residency_id', 'address_id', 'address_tmp_id', 'trust_level'];
+    protected $fillable = [ 'first_name', 'last_name', 'middle_name', 'title_before', 'title_after', 'birth_date',
+        'birth_code', 'gender', 'country' ];
     
     public function birthPlace() {
         return $this->belongsTo('App\Models\Database\Contact', 'birth_place_id');
