@@ -56,7 +56,7 @@ class UserManager implements UserManagerInterface
                 if(array_key_exists($name, $data) && is_array($data[$name])) {
                     foreach($data[$name] as $contact_data) {
                         $contact = new $class;
-                        $contact->fill($data[$name]);
+                        $contact->fill($contact_data);
                         $user->contacts()->save($contact);
                     }
                 }
