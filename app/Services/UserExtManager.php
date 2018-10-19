@@ -1,0 +1,42 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\Database\Contact;
+use App\Interfaces\UserExtManager as UserExtManagerInterface;
+
+class UserExtManager implements UserExtManagerInterface
+{
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\UserExtManager::extractUserWithAttributes()
+     */
+    public function extractUserWithAttributes(\App\Models\Database\UserExt $user_ext): array
+    {
+        $result = array();
+        
+        foreach($user_ext->attributes as $attr) {
+            $name = $attr->attrDesc->core_name;
+            $names = explode(".", $name);
+            
+            if(count($names) == 1) {
+                $result[$name] = $attr->value;
+            } else {
+                if(preg_match("/([a-zA-Z]*)\[(\d+)\]/", $names[0], $matches)) {
+                    $attr_name = $matches[1];
+                    $index = $matches[2];
+                    if(in_array($attr_name, Contact::$contactTypes)) {
+                        $result[$attr_name][$index][$names[1]] = $attr->value;
+                    }
+                } else {
+                    $result[$names[0]][$names[1]] = $attr->value;
+                }
+            }
+        }
+        
+        return $result;
+    }
+
+        
+}
+
