@@ -13,22 +13,46 @@ class User extends Model
         'birth_code', 'gender', 'country' ];
     
     public function birthPlace() {
-        return $this->belongsTo('App\Models\Database\Contact', 'birth_place_id');
+        return $this->belongsTo('App\Models\Database\Address', 'birth_place_id');
     }
     
     public function residency() {
-        return $this->belongsTo('App\Models\Database\Contact', 'residency_id');
+        return $this->belongsTo('App\Models\Database\Address', 'residency_id');
     }
     
     public function address() {
-        return $this->belongsTo('App\Models\Database\Contact', 'address_id');
+        return $this->belongsTo('App\Models\Database\Address', 'address_id');
     }
     
     public function addressTmp() {
-        return $this->belongsTo('App\Models\Database\Contact', 'address_tmp_id');
+        return $this->belongsTo('App\Models\Database\Address', 'address_tmp_id');
     }
     
     public function contacts() {
         return $this->hasMany('App\Models\Database\Contact', 'user_id');
+    }
+    
+    public function phones() {
+        return $this->hasMany('App\Models\Database\Phone', 'user_id')->where('type', Contact::TYPE_PHONE);
+    }
+
+    public function emails() {
+        return $this->hasMany('App\Models\Database\Email', 'user_id')->where('type', Contact::TYPE_EMAIL);
+    }
+
+    public function bankAccounts() {
+        return $this->hasMany('App\Models\Database\BankAccount', 'user_id')->where('type', Contact::TYPE_BANK);
+    }
+
+    public function dataBox() {
+        return $this->hasMany('App\Models\Database\DataBox', 'user_id')->where('type', Contact::TYPE_DATABOX);
+    }
+
+    public function uris() {
+        return $this->hasMany('App\Models\Database\Uri', 'user_id')->where('type', Contact::TYPE_URI);
+    }
+
+    public function addresses() {
+        return $this->hasMany('App\Models\Database\Address', 'user_id')->where('type', Contact::TYPE_ADDRESS);
     }
 }
