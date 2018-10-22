@@ -3,6 +3,8 @@
 namespace App\Models\Database;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
+use Exception;
 
 class Contact extends Model
 {
@@ -43,4 +45,34 @@ class Contact extends Model
         return $this->belongsTo('App\Models\Database\User', 'user_id');
     }
 
+    public function setPhoneAttribute($value) {
+        $length = strlen($value);
+        if($length == 9) {
+            $value = "+420" . $value;
+        } else {
+            if($value[0] != '+') 
+                $value = "+" . $value;
+        }
+        if(strlen($value) > 15) {
+            throw new Exception("Value " . $value . " is too long for phone.");
+        }
+        $this->attributes['phone'] = $value;
+    }
+
+    public function setStreetAttribute($value) {
+        $this->attributes['street'] = Str::title($value);
+    }
+
+    public function setCityAttribute($value) {
+        $this->attributes['city'] = Str::title($value);
+    }
+    
+    public function setOrgNumberAttribute($value) {
+        
+        if(preg_match("/(\d+)/", $value, $matches)) {
+            $this->attributes['org_number'] = $matches[1];
+        } else {
+            throw new Exception("Value " . $value . " does not contain a number for org_number");
+        }
+    }
 }
