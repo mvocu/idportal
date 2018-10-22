@@ -3,6 +3,7 @@
 namespace App\Models\Database;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class User extends Model
 {
@@ -11,6 +12,20 @@ class User extends Model
     
     protected $fillable = [ 'first_name', 'last_name', 'middle_name', 'title_before', 'title_after', 'birth_date',
         'birth_code', 'gender', 'country' ];
+    
+    protected $dates = ['birth_date'];
+    
+    public function setFirstNameAttribute($value) {
+        $this->attributes['first_name'] = Str::title($value);    
+    }
+    
+    public function setLastNameAttribute($value) {
+        $this->attributes['last_name'] = Str::title($value);    
+    }
+    
+    public function setMiddleNameAtribute($value) {
+        $this->attributes['middle_name'] = Str::title($value);
+    }
     
     public function birthPlace() {
         return $this->belongsTo('App\Models\Database\Address', 'birth_place_id');

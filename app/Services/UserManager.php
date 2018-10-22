@@ -5,9 +5,13 @@ namespace App\Services;
 use App\Models\Database\User;
 use App\Interfaces\UserManager as UserManagerInterface;
 use App\Models\Database\Contact;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\Uuid;
 use App\Models\Database\Address;
+use App\Models\Database\Databox;
+use App\Models\Database\Phone;
+use App\Models\Database\Email;
 
 class UserManager implements UserManagerInterface
 {
@@ -67,6 +71,49 @@ class UserManager implements UserManagerInterface
         }); // END transaction
 
         return $user;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\UserManager::findUser()
+     */
+    public function findUser(array $data): Collection
+    {
+        $results = array();
+        
+        if(array_key_exists('phones', $data) && is_array($data['phones'])) {
+            $query = Phone::with('user');
+            $this->_collectResults($query, $data['phones'], 'phone', $results);
+        }
+        
+        if(array_key_exists('emails', $data) && is_array($data['emails'])) {
+            $query = Email::with('user');
+            $this->_collectResults($query, $data['emails'], 'email', $results);
+        }
+
+        if(array_key_exists('dataBox', $data) && is_array($data['dataBox'])) {
+            $query = Databox::with('user');
+            $this->_collectResults($query, $data['dataBox'], 'databox', $results);
+        }
+        
+        if(array_key_exists('bankAccounts', $data) && is_array($data['emails'])) {
+            $query = Email::with('user');
+            $this->_collectResults($query, $data['emails'], 'email', $results);
+        }
+        
+        return new Collection($result);
+    }
+
+    protected function _collectResults($query, $data, $field, &$results) {
+        $first = array_shift($data);
+        $query = $query->where($field, '=', $first);
+        foreach($data as $value) {
+            $query = $query->orWhere($field, '=', $value);
+        }
+        $contacts = $query->get();
+        foreach($contacts as $contact) {
+            $results[$contact->user->id] = $contact->user;
+        }
     }
     
 }
