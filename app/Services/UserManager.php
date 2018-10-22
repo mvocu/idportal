@@ -77,10 +77,14 @@ class UserManager implements UserManagerInterface
      * {@inheritDoc}
      * @see \App\Interfaces\UserManager::findUser()
      */
-    public function findUser(array $data): Collection
+    public function findUsers(array $data): Collection
     {
         $results = array();
         
+        /*
+         * These properties are unique for the identity, even though the identity may posses more instances
+         * of them.
+         */
         if(array_key_exists('phones', $data) && is_array($data['phones'])) {
             $query = Phone::with('user');
             $this->_collectResults($query, $data['phones'], 'phone', $results);
@@ -101,10 +105,31 @@ class UserManager implements UserManagerInterface
             $this->_collectResults($query, $data['emails'], 'email', $results);
         }
         
+        switch(count($result)) {
+            case 0: // nothing found yet, try more searching
+                $query = User::with('contacts');
+                $run = 0;
+                foreach(array('first_name', 'last_name', 'birth_date', 'birth_code', 'gender', 'country') as $field) {
+                    if(array_key_exists($field, $data) && !empty($data[$field])) {
+                        $run = 1;
+                        $query = $query->where($field, $data[$field]);
+                    }
+                }
+                if($run) 
+                break;
+                
+            case 1: // one candidate - make sure it matches the rest of the criteria 
+                break;
+                
+            default: // more candidates - return
+                break;
+        }
         return new Collection($result);
     }
 
     protected function _collectResults($query, $data, $field, &$results) {
+        if(empty($data)) 
+            return; // nothing to do
         $first = array_shift($data);
         $query = $query->where($field, '=', $first);
         foreach($data as $value) {

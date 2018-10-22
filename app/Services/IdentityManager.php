@@ -7,6 +7,7 @@ use App\Interfaces\UserExtManager;
 use App\Interfaces\UserManager;
 use App\Interfaces\ExtSourceManager;
 use App\Models\Database\User;
+use Exception;
 
 class IdentityManager implements IdentityManagerInterface
 {
@@ -31,11 +32,18 @@ class IdentityManager implements IdentityManagerInterface
     public function buildIdentityForUser(\App\Models\Database\UserExt $user_ext): User
     {
         $user_ext_data = $this->user_ext_mgr->extractUserWithAttributes($user_ext);
+        $users = $this->user_mgr->findUsers($user_ext_data);
+        if($users->count() > 1) {
+            // more users were found for this single external record
+            throw new Exception("Too many users (" . $users->count() . ") found for candidate");
+        }
         
+        if($users->isEmpty()) {
+            // no known identity was found for this record, try to build one            
+        } else {
+            // we already know identity for this record
+        }
     }
-
-    
-    
 
 }
 

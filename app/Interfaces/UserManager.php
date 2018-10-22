@@ -9,6 +9,6 @@ interface UserManager
 {
     public function createUserWithContacts(array $data): User;
    
-    public function findUser(array $data): Collection;
+    public function findUsers(array $data): Collection;
 }
 
