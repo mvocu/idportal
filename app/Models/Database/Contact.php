@@ -72,7 +72,11 @@ class Contact extends Model
         if(preg_match("/(\d+)/", $value, $matches)) {
             $this->attributes['org_number'] = $matches[1];
         } else {
-            throw new Exception("Value " . $value . " does not contain a number for org_number");
+            unset($this->attributes['org_number']);
         }
+    }
+    
+    public function setPostNumberAttribute($value) {
+        $this->attributes['post_number'] = preg_replace('/\s+/', '', $value);
     }
 }

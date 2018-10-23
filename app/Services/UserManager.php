@@ -87,6 +87,7 @@ class UserManager implements UserManagerInterface
          */
         if(array_key_exists('phones', $data) && is_array($data['phones'])) {
             $query = Phone::with('user');
+            $this->_normalizePhones($data['phones']);
             $this->_collectResults($query, $data['phones'], 'phone', $results);
         }
         
@@ -100,44 +101,59 @@ class UserManager implements UserManagerInterface
             $this->_collectResults($query, $data['dataBox'], 'databox', $results);
         }
         
-        if(array_key_exists('bankAccounts', $data) && is_array($data['emails'])) {
+        if(array_key_exists('bankAccounts', $data) && is_array($data['bankAccounts'])) {
             $query = Email::with('user');
-            $this->_collectResults($query, $data['emails'], 'email', $results);
+            $this->_collectResults($query, $data['bankAccounts'], 'bank_account', $results);
         }
         
-        switch(count($result)) {
-            case 0: // nothing found yet, try more searching
-                $query = User::with('contacts');
-                $run = 0;
-                foreach(array('first_name', 'last_name', 'birth_date', 'birth_code', 'gender', 'country') as $field) {
-                    if(array_key_exists($field, $data) && !empty($data[$field])) {
-                        $run = 1;
-                        $query = $query->where($field, $data[$field]);
-                    }
+        if(array_key_exists('birth_code', $data) && !empty($data['birth_code']) && 
+            array_key_exists('birth_date', $data) && !empty($data['birth_date']) ) {
+            $query = User::where('birth_code', '=', $data['birth_code'])->andWhere('birth_date', '=', $data['birth_date']);
+            $users = $query->get();
+            foreach($users as $user) {
+                if(array_key_exists($user->id, $results)) {
+                    $results[$user->id]->confidence_level += 1;
+                } else { 
+                    $results[$user->id] = $user;
+                    $results[$user->id]->confidence_level = 1;
                 }
-                if($run) 
-                break;
-                
-            case 1: // one candidate - make sure it matches the rest of the criteria 
-                break;
-                
-            default: // more candidates - return
-                break;
+            }
         }
-        return new Collection($result);
+        
+
+        return new Collection($results);
     }
 
+    protected function _normalizePhones(&$data) {
+        foreach($data as &$phone) {
+            $value = $phone['phone'];
+            $length = strlen($value);
+            if($length == 9) {
+                $value = "+420" . $value;
+            } else {
+                if($value[0] != '+')
+                    $value = "+" . $value;
+            }
+            $phone['phone'] = $value;
+        }
+    }
+    
     protected function _collectResults($query, $data, $field, &$results) {
         if(empty($data)) 
             return; // nothing to do
         $first = array_shift($data);
-        $query = $query->where($field, '=', $first);
+        $query = $query->where($field, '=', $first[$field]);
         foreach($data as $value) {
-            $query = $query->orWhere($field, '=', $value);
+            $query = $query->orWhere($field, '=', $value[$field]);
         }
         $contacts = $query->get();
         foreach($contacts as $contact) {
-            $results[$contact->user->id] = $contact->user;
+            if(array_key_exists($contact->user->id, $results)) {
+                $results[$contact->user->id]->confidence_level += 1;   
+            } else {
+                $results[$contact->user->id] = $contact->user;
+                $results[$contact->user->id]->confidence_level = 1;
+            }
         }
     }
     

@@ -19,4 +19,9 @@ class UserExt extends Model
     public function extSource() {
         return $this->belongsTo('App\Models\Database\ExtSource', 'ext_source_id');
     }
+
+    public function user() {
+        return $this->belongsTo('App\Models\Database\User', 'user_id');
+    }
+    
 }
