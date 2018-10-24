@@ -9,8 +9,8 @@
         "adldap2/adldap2-laravel": "^4.0",
         "fideloper/proxy": "~3.3",
         "laravel/framework": "5.5.*",
-        "laravel/tinker": "~1.0"
-        "oefenweb/damerau-levenshtein": "^2.1",
+        "laravel/tinker": "~1.0",
+        "oefenweb/damerau-levenshtein": "^2.1"
     },
     "require-dev": {
         "filp/whoops": "~2.0",
