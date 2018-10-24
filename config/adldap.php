@@ -198,8 +198,8 @@ return [
                 |
                 */
 
-                'admin_username' => env('ADLDAP_ADMIN_USERNAME', null),
-                'admin_password' => env('ADLDAP_ADMIN_PASSWORD', null),
+                'admin_username' => env('ADLDAP_ACCESS_USERNAME', null),
+                'admin_password' => env('ADLDAP_ACCESS_PASSWORD', null),
 
                 /*
                 |--------------------------------------------------------------------------
@@ -238,6 +238,28 @@ return [
 
         ],
 
-    ],
+        'admin' => [
+            
+            'auto_connect' => env('ADLDAP_AUTO_CONNECT', true),
+            'connection' => Adldap\Connections\Ldap::class,
+            'schema' => App\Schemas\Schema389::class,
+            'connection_settings' => [
+                'account_prefix' => env('ADLDAP_ACCOUNT_PREFIX', ''),
+                'account_suffix' => env('ADLDAP_ACCOUNT_SUFFIX', ''),
+                'domain_controllers' => explode(' ', env('ADLDAP_CONTROLLERS', 'lolcahost')),
+                'port' => env('ADLDAP_PORT', 636),
+                'timeout' => env('ADLDAP_TIMEOUT', 5),
+                'base_dn' => env('ADLDAP_BASEDN', 'dc=corp,dc=acme,dc=org'),
+                'admin_account_prefix' => env('ADLDAP_ADMIN_ACCOUNT_PREFIX', ''),
+                'admin_account_suffix' => env('ADLDAP_ADMIN_ACCOUNT_SUFFIX', ''),
+                'admin_username' => env('ADLDAP_ADMIN_USERNAME', null),
+                'admin_password' => env('ADLDAP_ADMIN_PASSWORD', null),
+                'follow_referrals' => false,
+                'use_ssl' => env('ADLDAP_USE_SSL', true),
+                'use_tls' => env('ADLDAP_USE_TLS', true),
+                
+            ],
+                
+        ],
 
 ];
