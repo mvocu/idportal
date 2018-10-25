@@ -83,11 +83,26 @@ class Schema389 extends BaseSchema
     }
 
     /**
+     * {@inheritDoc}
+     * @see \Adldap\Schemas\BaseSchema::user()
+     */
+    public function user()
+    {
+        // brings in the uniqueIdentifier attribute
+        return 'idPerson';
+    }
+
+    public function userPassword() 
+    {
+        return 'userpassword';
+    }
+    
+    /**
      * {@inheritdoc}
      */
     public function objectClassPerson()
     {
-        return 'person';
+        return 'inetorgperson';
     }
     
     /**
@@ -106,5 +121,8 @@ class Schema389 extends BaseSchema
         return false;
     }
 
+    public function uniqueIdentifier() {
+        return 'uniqueidentifier';
+    }
 }
 

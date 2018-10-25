@@ -30,7 +30,7 @@ class LdapUserProvider extends NoDatabaseUserProvider
         $ldapuser = parent::retrieveById($identifier);
         if(is_null($ldapuser))
             return null;
-            $user = new User($ldapuser->getAttributes(), $ldapuser->getQuery());
+        $user = new User($ldapuser->getAttributes(), $ldapuser->getQuery());
         return $user;
     }
 

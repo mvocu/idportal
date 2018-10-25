@@ -79,4 +79,5 @@ class Contact extends Model
     public function setPostNumberAttribute($value) {
         $this->attributes['post_number'] = preg_replace('/\s+/', '', $value);
     }
+    
 }

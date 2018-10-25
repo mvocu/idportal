@@ -33,7 +33,20 @@ class LdapUser extends User
  
     }
 
-
+    public function setPassword($password)
+    {
+        $this->validateSecureConnection();
+        
+        $mod = $this->newBatchModification(
+            $this->schema->userPassword(),
+            LDAP_MODIFY_BATCH_REPLACE,
+            $password
+            );
+        
+        return $this->addModification($mod);
+    }
+    
+    
 
 }
 
