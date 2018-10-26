@@ -22,7 +22,7 @@ class UserExtManager implements UserExtManagerInterface
         foreach($user_ext->attributes as $attr) {
             $name = $attr->attrDesc->core_name;
             $names = explode(".", $name);
-            
+
             if(count($names) == 1) {
                 $result[$name] = $attr->value;
             } else {
