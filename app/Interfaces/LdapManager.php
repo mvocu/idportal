@@ -17,5 +17,7 @@ interface LdapManager
     public function deleteUser(User $user) : bool;
     
     public function buildDN(User $user);
+    
+    public function changePassword(LdapUser $user, $password);
 }
 

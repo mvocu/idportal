@@ -33,7 +33,7 @@ class AwegSmsChannel
         // authentication
         $url .= '?' . 'auth=' . $config['login'] . ':' . $config['password'];
         // recipient
-        $url .= '&' . 'receiver=' . $phone;
+        $url .= '&' . 'receiver=' . urlencode($phone);
         // text
         $url .= '&' . 'smstext=' . urlencode($message->content);
         
