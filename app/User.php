@@ -10,6 +10,8 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use App\Traits\RemembersPassword;
 use App\Models\Ldap\LdapUser;
+use Illuminate\Notifications\Notification;
+use App\Notifications\SmsPasswordReset;
 
 class User extends LdapUser implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
@@ -33,4 +35,32 @@ class User extends LdapUser implements AuthenticatableContract, AuthorizableCont
                 return parent::__get($key);
         }
     }
+    
+    /**
+     * 
+     * @param Notification $notification
+     * @return string
+     */
+    public function routeNotificationForSms(Notification $notification) {
+        return $this->getTelephoneNumber();
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \Illuminate\Contracts\Auth\CanResetPassword::getEmailForPasswordReset()
+     */
+    public function getEmailForPasswordReset()
+    {
+        // TODO Auto-generated method stub
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \Illuminate\Contracts\Auth\CanResetPassword::sendPasswordResetNotification()
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $user->notify(new SmsPasswordReset($token));
+    }
+    
 }
