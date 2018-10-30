@@ -6,6 +6,7 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvid
 use Adldap\AdldapInterface;
 use Adldap\Laravel\Resolvers\ResolverInterface;
 use App\Auth\LdapUserResolver;
+use App\Auth\Passwords\PasswordBrokerManager;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -33,5 +34,23 @@ class AuthServiceProvider extends ServiceProvider
             
             return new LdapUserResolver($ad);
         });
+            
+        // replace default PasswordBrokerManager with our version
+        $this->app->singleton('auth.password', function ($app) {
+            return new PasswordBrokerManager($app);
+        });
+        
+        // ... and the broker
+        $this->app->bind('auth.password.broker', function ($app) {
+            return $app->make('auth.password')
+                ->broker();
+        });
     }
+    
+
+    public function provides()
+    {
+        return ['auth.password', 'auth.password.broker'];
+    }
+    
 }

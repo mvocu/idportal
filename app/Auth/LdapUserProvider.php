@@ -16,7 +16,8 @@ class LdapUserProvider extends NoDatabaseUserProvider
         $ldapuser = parent::retrieveByCredentials($credentials);
         if(is_null($ldapuser)) 
             return null;
-        $user = new User($ldapuser->getAttributes(), $ldapuser->getQuery());
+        $user = new User([], $ldapuser->getQuery());
+        $user->setRawAttributes($ldapuser->getAttributes());
         return $user;
     }
 
@@ -30,7 +31,8 @@ class LdapUserProvider extends NoDatabaseUserProvider
         $ldapuser = parent::retrieveById($identifier);
         if(is_null($ldapuser))
             return null;
-            $user = new User($ldapuser->getAttributes(), $ldapuser->getQuery());
+        $user = new User([], $ldapuser->getQuery());
+        $user->setRawAttributes($ldapuser->getAttributes());
         return $user;
     }
 
@@ -43,7 +45,8 @@ class LdapUserProvider extends NoDatabaseUserProvider
         $ldapuser = parent::retrieveByToken($identifier, $token);
         if(is_null($ldapuser))
             return null;
-        $user = new User($ldapuser->getAttributes(), $ldapuser->getQuery());
+        $user = new User([], $ldapuser->getQuery());
+        $user->setRawAttributes($ldapuser->getAttributes());
         return $user;
     }
 

@@ -7,10 +7,12 @@ use App\Interfaces\UserManager as UserManagerInterface;
 use App\Interfaces\UserExtManager as UserExtManagerInterface;
 use App\Interfaces\ExtSourceManager as ExtSourceManagerInterface;
 use App\Interfaces\IdentityManager as IdentityManagerInterface;
+use App\Interfaces\LdapManager as LdapManagerInterface;
 use App\Services\UserExtManager;
 use App\Services\UserManager;
 use App\Services\ExtSourceManager;
 use App\Services\IdentityManager;
+use App\Services\LdapManager;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +21,7 @@ class AppServiceProvider extends ServiceProvider
         UserExtManagerInterface::class => UserExtManager::class,
         ExtSourceManagerInterface::class => ExtSourceManager::class,
         IdentityManagerInterface::class => IdentityManager::class,
+        LdapManagerInterface::class => LdapManager::class,
     ];
     
     /**
