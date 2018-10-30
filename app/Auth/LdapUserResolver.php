@@ -3,6 +3,7 @@ namespace App\Auth;
 
 use Adldap\Laravel\Resolvers\UserResolver;
 use App\Models\Database\Contact;
+use Exception;
 
 class LdapUserResolver extends UserResolver
 {
@@ -25,15 +26,24 @@ class LdapUserResolver extends UserResolver
             return $user;
         
         $username = $credentials[$this->getLdapDiscoveryAttribute()];
-        // normalize input through database model mutators
-        $contact = new Contact(['mail' => $username, 'phone' => $username]);
-        $mail = $contact->mail;
-        $phone = $contact->phone;
         $query = $this->query();
-        if(!empty($phone)) 
-            $query = $query->orWhereEquals('telephoneNumber', $phone);
-        if(!empty($mail)) 
-            $query = $query->orWhereEquals('mail', $mail);
+        // normalize input through database model mutators
+        $contact = new Contact();
+        try {
+            if (false === strpos($username, '@')) {
+                $contact->setAttribute('phone', $username);
+                $phone = $contact->phone;
+                if(!empty($phone))
+                    $query = $query->whereEquals('telephoneNumber', $phone);
+            } else {
+                $contact->setAttribute('mail', $username);
+                $mail = $contact->mail;
+                if(!empty($mail))
+                    $query = $query->whereEquals('mail', $mail);
+            }
+        } catch (Exception $e) {
+            return;
+        }
         if(!empty($phone) || !empty($mail)) 
             return $query->first();
         
