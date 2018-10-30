@@ -22,7 +22,7 @@ class LdapUserResolver extends UserResolver
             return;
         }
         
-        if(null != $user = parent::byCredentials()) 
+        if(null != $user = parent::byCredentials($credentials)) 
             return $user;
         
         $username = $credentials[$this->getLdapDiscoveryAttribute()];

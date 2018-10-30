@@ -18,7 +18,7 @@
                         @csrf
 
                         <div class="form-group row">
-                            <label for="uid" class="col-md-4 col-form-label text-md-right">{{ __('Login') }}</label>
+                            <label for="uid" class="col-md-4 col-form-label text-md-right">{{ __('Username') }}</label>
 
                             <div class="col-md-6">
                                 <input id="uid" type="text" class="form-control{{ $errors->has('uid') ? ' is-invalid' : '' }}" name="uid" value="{{ old('uid') }}" required>
