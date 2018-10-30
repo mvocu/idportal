@@ -127,6 +127,7 @@ class UserManager implements UserManagerInterface
     protected function _normalizePhones(&$data) {
         foreach($data as &$phone) {
             $value = $phone['phone'];
+            if(empty($value)) continue;
             $length = strlen($value);
             if($length == 9) {
                 $value = "+420" . $value;
@@ -141,11 +142,19 @@ class UserManager implements UserManagerInterface
     protected function _collectResults($query, $data, $field, &$results) {
         if(empty($data)) 
             return; // nothing to do
-        $first = array_shift($data);
-        $query = $query->where($field, '=', $first[$field]);
+        $run = false;
         foreach($data as $value) {
-            $query = $query->orWhere($field, '=', $value[$field]);
+            if(!empty($value[$field])) {
+                if($run) {
+                    $query = $query->orWhere($field, '=', $value[$field]);
+                } else {
+                    $query = $query->where($field, '=', $value[$field]);
+                }
+                $run = true;
+            }
         }
+        if(!$run) 
+            return;
         $contacts = $query->get();
         foreach($contacts as $contact) {
             if(array_key_exists($contact->user->id, $results)) {
