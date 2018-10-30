@@ -8,12 +8,12 @@ use Exception;
 
 class Contact extends Model
 {
-    public const TYPE_ADDRESS = 1;
-    public const TYPE_EMAIL   = 2;
-    public const TYPE_PHONE   = 3;
-    public const TYPE_URI     = 4;
-    public const TYPE_DATABOX = 5;
-    public const TYPE_BANK    = 6;
+    const TYPE_ADDRESS = 1;
+    const TYPE_EMAIL   = 2;
+    const TYPE_PHONE   = 3;
+    const TYPE_URI     = 4;
+    const TYPE_DATABOX = 5;
+    const TYPE_BANK    = 6;
     
     // maps contact type to relation accessor in User model
     public static $contactTypes = [ 
