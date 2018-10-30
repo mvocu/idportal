@@ -41,6 +41,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        // since 5.6 this is done automatically by the app
+        foreach($this->singletons as $interface => $implementation) {
+            $this->app->singleton($interface, $implementation );
+        }
     }
 }
