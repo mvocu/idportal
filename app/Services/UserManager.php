@@ -77,7 +77,7 @@ class UserManager implements UserManagerInterface
      * {@inheritDoc}
      * @see \App\Interfaces\UserManager::findUser()
      */
-    public function findUsers(array $data): Collection
+    public function findUser(array $data): Collection
     {
         $results = array();
         

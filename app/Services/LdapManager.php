@@ -66,6 +66,18 @@ class LdapManager implements LdapManagerInterface
         return 'uniqueIdentifier='.$user->identifier.',ou=People,'.$baseDN;
     }
     
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\LdapManager::changePassword()
+     */
+    public function changePassword(LdapUser $user, $password)
+    {
+       // use admin connection for the user
+       $user->getQuery()->setConnection($this->ldap->getProvider('admin')->getConnection());
+       $user->setPassword($password);
+       $user->save();
+    }
+
     protected function _mapUser(User $user) {
         $data = [
             'uniqueIdentifier' => $user->identifier,

@@ -8,24 +8,59 @@
                 <div class="card-header">{{ __('Reset Password') }}</div>
 
                 <div class="card-body">
+
+                    @if (session('status'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('status') }}
+                        </div>
+                    @endif
+
                     <form method="POST" action="{{ route('password.request') }}" aria-label="{{ __('Reset Password') }}">
                         @csrf
 
-                        <input type="hidden" name="token" value="{{ $token }}">
+						@if (empty($token)) 
 
                         <div class="form-group row">
-                            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
+                            <label for="token" class="col-md-4 col-form-label text-md-right">{{ __('Authorization token') }}</label>
 
                             <div class="col-md-6">
-                                <input id="email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ $email ?? old('email') }}" required autofocus>
+                                <input id="token" type="text" class="form-control{{ $errors->has('token') ? ' is-invalid' : '' }}" name="token" value="{{ $token ?? old('token') }}" required autofocus>
 
-                                @if ($errors->has('email'))
+                                @if ($errors->has('token'))
                                     <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('email') }}</strong>
+                                        <strong>{{ $errors->first('token') }}</strong>
                                     </span>
                                 @endif
                             </div>
                         </div>
+
+						@else
+						
+                        <input type="hidden" name="token" value="{{ $token }}">
+                        
+                        @endif
+
+						@if (empty($uid)) 
+						
+                        <div class="form-group row">
+                            <label for="uid" class="col-md-4 col-form-label text-md-right">{{ __('Login') }}</label>
+
+                            <div class="col-md-6">
+                                <input id="uid" type="text" class="form-control{{ $errors->has('uid') ? ' is-invalid' : '' }}" name="uid" value="{{ $uid ?? old('uid') }}" required autofocus>
+
+                                @if ($errors->has('uid'))
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->first('uid') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                        
+                        @else 
+                        
+                        <input type="hidden" name="uid" value="{{ $uid }}">
+                        
+                        @endif
 
                         <div class="form-group row">
                             <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>

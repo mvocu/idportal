@@ -41,7 +41,7 @@ class User extends LdapUser implements AuthenticatableContract, AuthorizableCont
      * @param Notification $notification
      * @return string
      */
-    public function routeNotificationForSms(Notification $notification) {
+    public function routeNotificationForSms(Notification $notification = null) {
         return $this->getTelephoneNumber();
     }
 
@@ -51,7 +51,7 @@ class User extends LdapUser implements AuthenticatableContract, AuthorizableCont
      */
     public function getEmailForPasswordReset()
     {
-        // TODO Auto-generated method stub
+        return $this->getUniqueIdentifier();
     }
 
     /**
@@ -60,7 +60,7 @@ class User extends LdapUser implements AuthenticatableContract, AuthorizableCont
      */
     public function sendPasswordResetNotification($token)
     {
-        $user->notify(new SmsPasswordReset($token));
+        $this->notify(new SmsPasswordReset($token));
     }
     
 }
