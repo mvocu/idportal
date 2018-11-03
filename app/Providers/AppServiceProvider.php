@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Validator;
 use App\Interfaces\UserManager as UserManagerInterface;
 use App\Interfaces\UserExtManager as UserExtManagerInterface;
 use App\Interfaces\ExtSourceManager as ExtSourceManagerInterface;
@@ -13,6 +15,7 @@ use App\Services\UserManager;
 use App\Services\ExtSourceManager;
 use App\Services\IdentityManager;
 use App\Services\LdapManager;
+use App\Utils\Names;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -31,7 +34,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Validator::extend('similar', function ($attribute, $value, $parameters, $validator) {
+            $other = Arr::get($validator->getData(), $parameters[0]);
+            $limit = count($parameters) > 1 ? $parameters[1] : 3;
+            return Names::damlev($value, $other) < $limit;
+        });
     }
 
     /**

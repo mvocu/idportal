@@ -7,7 +7,6 @@ use App\Interfaces\UserExtManager;
 use App\Interfaces\UserManager;
 use App\Interfaces\ExtSourceManager;
 use App\Models\Database\User;
-use App\Utils\Names;
 use Illuminate\Support\Facades\Validator;
 use Exception;
 
@@ -29,6 +28,15 @@ class IdentityManager implements IdentityManagerInterface
         'dataBox' => 'sometimes|required|unique:contact,databox',
         'bankAccounts' => 'sometimes|required|array',
         'bankAccounts.*.bank_account' => 'required|string',
+        'birth_code' => [ 'sometimes', 'required', 'regex:/\d{9,10}/', 'unique:user,birth_code' ],
+        'birth_date' => 'sometimes|required|date',
+    ];
+    
+    protected $sameIdentityRequirements = [
+        'candidate.first_name' => 'required|string|similar:user.first_name',
+        'candidate.last_name' => 'required|string|similar:user.last_name',
+        'candidate.birth_code' => [ 'sometimes', 'required', 'regex:/\d{9,10}/', 'same:user.birth_code' ],
+        'candidate.birth_date' => 'sometimes|required|date|same:user.birth_date',
     ];
     
     protected $user_mgr;
@@ -36,6 +44,8 @@ class IdentityManager implements IdentityManagerInterface
     protected $user_ext_mgr;
     
     protected $ext_source_mgr;
+    
+    private $validator;
     
     public function __construct(UserManager $user_mgr, 
                                 ExtSourceManager $ext_source_mgr, 
@@ -64,43 +74,45 @@ class IdentityManager implements IdentityManagerInterface
         }
         
         $user = null;
+        $this->validator = null;
         if($users->isEmpty()) {
             // no known identity was found for this record, try to build one 
-            if($this->hasIdentity($user_ext_data)) {
+            if($this->validateIdentity($user_ext_data)) {
                 $user = $this->user_mgr->createUserWithContacts($user_ext_data);
             }
         } else {
             // we already know identity for this record
             $user = $users->first();
-            $user = $this->checkIdentity($user, $user_ext_data);
+            if(!$this->validateEqualIdentity($user, $user_ext_data)) {
+                $user = null;
+            }
         }
         
         if($user != null) {
             $user_ext->user()->associate($user);
             $user_ext->save();
+        } else {
+            return $this->validator;
         }
         
         return $user;
     }
 
 
-    public function hasIdentity($user_ext_data) : bool {
-        $validator = Validator::make($user_ext_data, $this->identityRequirements);
-        return $validator->fails() == false;
+    public function validateIdentity($user_ext_data) : bool {
+        $this->validator = Validator::make($user_ext_data, $this->identityRequirements);
+        return $this->validator->passes();
     }
     
-    public function checkIdentity(User $user, $user_ext_data) {
+    public function validateEqualIdentity(User $user, $user_ext_data) {
         if($user->trust_level > 1)
             // two or more identifiers 
-            return $user;
+            return true;
         
-        // only one identifier - check name distance
-        $distance = Names::damlev($user->first_name, $user_ext_data['first_name']) +
-                    Names::damlev($user->last_name, $user_ext_data['last_name']);
-        if($distance < 5)
-            return $user;
+        $data = [ 'user' => $user->toArray(), 'candidate' => $user_ext_data ];
+        $this->validator = Validator::make($data, $this->sameIdentityRequirements);
+        return $this->validator->passes();
         
-         return null;
     }
 }
 
