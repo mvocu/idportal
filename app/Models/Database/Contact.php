@@ -46,6 +46,7 @@ class Contact extends Model
     }
 
     public function setPhoneAttribute($value) {
+        $value = preg_replace("/\s+/", "", $value);
         $length = strlen($value);
         if($length == 9) {
             $value = "+420" . $value;

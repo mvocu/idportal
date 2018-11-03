@@ -7,6 +7,7 @@ use App\Interfaces\UserExtManager;
 use App\Interfaces\UserManager;
 use App\Interfaces\ExtSourceManager;
 use App\Models\Database\User;
+use App\Utils\Names;
 use Illuminate\Support\Facades\Validator;
 use Exception;
 
@@ -16,9 +17,18 @@ class IdentityManager implements IdentityManagerInterface
         'first_name' => 'required|string',
         'last_name' => 'required|string',
         'phones' => 'required|array',
-        'emails' => 'required|array',
-        'phones.*.phone' => [ 'required', 'regex:/^[+]?\d+/' ],
-        'emails.*.email' => 'required|email',
+        'phones.*.phone' => [ 'required', 'regex:/^[+]?\d[\d\s]*\d$/', 'unique:contact,phone' ],
+        'emails' => 'required_without_all:addresses,dataBox,bankAccounts|array',
+        'emails.*.email' => 'required|email|unique:contact,email',
+        'addresses' => 'sometimes|required|array',
+        'addresses.*.street' => 'required|string',
+        'addresses.*.city' => 'required|string',
+        'addresses.*.state' => 'sometimes|required|string',
+        'addresses.*.org_number' => 'required_without:ev_number|integer',
+        'addresses.*.ev_number' => 'required_without:org_number|string',
+        'dataBox' => 'sometimes|required|unique:contact,databox',
+        'bankAccounts' => 'sometimes|required|array',
+        'bankAccounts.*.bank_account' => 'required|string',
     ];
     
     protected $user_mgr;
@@ -47,7 +57,7 @@ class IdentityManager implements IdentityManagerInterface
         }
         
         $user_ext_data = $this->user_ext_mgr->extractUserWithAttributes($user_ext);
-        $users = $this->user_mgr->findUsers($user_ext_data);
+        $users = $this->user_mgr->findUser($user_ext_data);
         if($users->count() > 1) {
             // more users were found for this single external record
             throw new Exception("Too many users (" . $users->count() . ") found for candidate");
@@ -62,6 +72,7 @@ class IdentityManager implements IdentityManagerInterface
         } else {
             // we already know identity for this record
             $user = $users->first();
+            $user = $this->checkIdentity($user, $user_ext_data);
         }
         
         if($user != null) {
@@ -76,6 +87,20 @@ class IdentityManager implements IdentityManagerInterface
     public function hasIdentity($user_ext_data) : bool {
         $validator = Validator::make($user_ext_data, $this->identityRequirements);
         return $validator->fails() == false;
+    }
+    
+    public function checkIdentity(User $user, $user_ext_data) {
+        if($user->trust_level > 1)
+            // two or more identifiers 
+            return $user;
+        
+        // only one identifier - check name distance
+        $distance = Names::damlev($user->first_name, $user_ext_data['first_name']) +
+                    Names::damlev($user->last_name, $user_ext_data['last_name']);
+        if($distance < 5)
+            return $user;
+        
+         return null;
     }
 }
 

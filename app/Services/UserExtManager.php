@@ -24,15 +24,20 @@ class UserExtManager implements UserExtManagerInterface
             $names = explode(".", $name);
 
             if(count($names) == 1) {
+                // single top-level attribute
                 $result[$name] = $attr->value;
             } else {
+                // attribute of some relation in the form: relation[index].name
                 if(preg_match("/([a-zA-Z]*)\[(\d+)\]/", $names[0], $matches)) {
+                    // hasMany relation: get relation name and index
                     $attr_name = $matches[1];
                     $index = $matches[2];
                     if(in_array($attr_name, Contact::$contactTypes)) {
+                        // if it is a known contact relation, store the value in sub-subarray  
                         $result[$attr_name][$index][$names[1]] = $attr->value;
                     }
                 } else {
+                    // hasOne relation: store the value in subarray
                     $result[$names[0]][$names[1]] = $attr->value;
                 }
             }
