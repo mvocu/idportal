@@ -12,16 +12,19 @@ use App\Models\Database\Address;
 use App\Models\Database\Databox;
 use App\Models\Database\Phone;
 use App\Models\Database\Email;
+use App\Models\Database\UserExt;
 
 class UserManager implements UserManagerInterface
 {
     
-    public function createUserWithContacts(array $data): User {
+    public function createUserWithContacts(UserExt $user_ext, array $data): User {
 
         $user = new User();
 
         $user->fill($data);
 
+        $user->createdBy()->associate($ext_source);
+        
         $user->identifier = Uuid::uuid4();
 
         DB::transaction(function() use ($user, $data) {
@@ -122,6 +125,17 @@ class UserManager implements UserManagerInterface
         
 
         return new Collection($results);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\UserManager::updateUserWithContacts()
+     */
+    public function updateUserWithContacts(User $user, UserExt $user_ext, array $data): User
+    {
+
+        $user->modifiedBy()->associate($user_ext);
+
     }
 
     protected function _normalizePhones(&$data) {

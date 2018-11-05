@@ -70,4 +70,12 @@ class User extends Model
     public function addresses() {
         return $this->hasMany('App\Models\Database\Address', 'user_id')->where('type', Contact::TYPE_ADDRESS);
     }
+    
+    public function createdBy() {
+        return $this->hasOne('App\Models\Database\UserExt', 'created_by');
+    }
+    
+    public function modifiedBy() {
+        return $this->hasOne('App\Models\Database\UserExt', 'modified_by');
+    }
 }

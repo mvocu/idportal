@@ -39,6 +39,24 @@ class IdentityManager implements IdentityManagerInterface
         'candidate.birth_date' => 'sometimes|required|date|same:user.birth_date',
     ];
     
+    protected $updateIdentityRequirements = [
+        'phones' => 'sometimes|required|array',
+        'phones.*.phone' => [ 'required', 'regex:/^[+]?\d[\d\s]*\d$/', 'unique:contact,phone' ],
+        'emails' => 'sometimes|required|array',
+        'emails.*.email' => 'required|email|unique:contact,email',
+        'addresses' => 'sometimes|required|array',
+        'addresses.*.street' => 'required|string',
+        'addresses.*.city' => 'required|string',
+        'addresses.*.state' => 'sometimes|required|string',
+        'addresses.*.org_number' => 'required_without:ev_number|integer',
+        'addresses.*.ev_number' => 'required_without:org_number|string',
+        'dataBox' => 'sometimes|required|unique:contact,databox',
+        'bankAccounts' => 'sometimes|required|array',
+        'bankAccounts.*.bank_account' => 'required|string',
+        'birth_code' => [ 'sometimes', 'required', 'regex:/\d{9,10}/', 'unique:user,birth_code' ],
+        'birth_date' => 'sometimes|required|date',
+    ];
+    
     protected $user_mgr;
     
     protected $user_ext_mgr;
@@ -78,12 +96,18 @@ class IdentityManager implements IdentityManagerInterface
         if($users->isEmpty()) {
             // no known identity was found for this record, try to build one 
             if($this->validateIdentity($user_ext_data)) {
-                $user = $this->user_mgr->createUserWithContacts($user_ext_data);
+                $user = $this->user_mgr->createUserWithContacts($user_ext, $user_ext_data);
             }
         } else {
             // we already know identity for this record
             $user = $users->first();
-            if(!$this->validateEqualIdentity($user, $user_ext_data)) {
+            if($this->validateEqualIdentity($user, $user_ext_data)) {
+                // possibly update user with new data
+                if($this->validateUpdate($user_ext_data)) {
+                    $update = $this->validator->valid();
+                    $this->user_mgr->updateUserWithContacts($user, $user_ext, $update);
+                }
+            } else {
                 $user = null;
             }
         }
@@ -113,6 +137,11 @@ class IdentityManager implements IdentityManagerInterface
         $this->validator = Validator::make($data, $this->sameIdentityRequirements);
         return $this->validator->passes();
         
+    }
+    
+    public function validateUpdate($user_ext_data) {
+        $this->validator = Validator::make($user_ext_data, $this->updateIdentityRequirements);
+        return $this->validator->passes();
     }
 }
 

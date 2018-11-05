@@ -45,6 +45,14 @@ class Contact extends Model
         return $this->belongsTo('App\Models\Database\User', 'user_id');
     }
 
+    public function createdBy() {
+        return $this->hasOne('App\Models\Database\UserExt', 'created_by');
+    }
+    
+    public function modifiedBy() {
+        return $this->hasOne('App\Models\Database\UserExt', 'modified_by');
+    }
+
     public function setPhoneAttribute($value) {
         $value = preg_replace("/\s+/", "", $value);
         $length = strlen($value);
