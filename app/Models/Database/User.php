@@ -4,6 +4,7 @@ namespace App\Models\Database;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class User extends Model
 {
@@ -25,6 +26,10 @@ class User extends Model
     
     public function setMiddleNameAtribute($value) {
         $this->attributes['middle_name'] = Str::title($value);
+    }
+    
+    public function setBirthDateAttribute($value) {
+        $this->attributes['birth_date'] = new Carbon($value);    
     }
     
     public function birthPlace() {
@@ -69,5 +74,17 @@ class User extends Model
 
     public function addresses() {
         return $this->hasMany('App\Models\Database\Address', 'user_id')->where('type', Contact::TYPE_ADDRESS);
+    }
+    
+    public function accounts() {
+        return $this->hasMany('App\Models\Database\UserExt', 'user_id');
+    }
+    
+    public function createdBy() {
+        return $this->belongsTo('App\Models\Database\UserExt', 'created_by');
+    }
+    
+    public function modifiedBy() {
+        return $this->belongsTo('App\Models\Database\UserExt', 'modified_by');
     }
 }

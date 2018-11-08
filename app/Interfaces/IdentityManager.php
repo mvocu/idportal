@@ -10,6 +10,11 @@ interface IdentityManager
     
         public function buildIdentityForUser(UserExt $user_ext);
 
-        public function hasIdentity(array $data): bool;
+        public function validateIdentity(array $data) : bool;
+        
+        public function validateEqualIdentity(User $user, $user_ext_data) : bool;
+        
+        public function validateUpdate($user_ext_data) : bool;            
+            
 }
 

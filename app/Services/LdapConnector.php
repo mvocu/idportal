@@ -7,9 +7,9 @@ use Adldap\AdldapInterface;
 use App\Models\Database\User;
 use App\Models\Ldap\LdapUser;
 use Illuminate\Support\Str;
-use App\Interfaces\LdapManager as LdapManagerInterface;
+use App\Interfaces\LdapConnector as LdapConnectorInterface;
 
-class LdapManager implements LdapManagerInterface
+class LdapConnector implements LdapConnectorInterface
 {
     protected $ldap;
     
@@ -19,7 +19,19 @@ class LdapManager implements LdapManagerInterface
     
     /**
      * {@inheritDoc}
-     * @see \App\Interfaces\LdapManager::createUser()
+     * @see \App\Interfaces\LdapConnector::findUser()
+     */
+    public function findUser(User $user)
+    {
+        $dn = $this->buildDN($user);
+        $result = $this->ldap->search()->findByDn($dn);
+        if($result != null && $result->exists) return $result;
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\LdapConnector::createUser()
      */
     public function createUser(User $user): LdapUser
     {
@@ -33,7 +45,7 @@ class LdapManager implements LdapManagerInterface
 
     /**
      * {@inheritDoc}
-     * @see \App\Interfaces\LdapManager::deleteUser()
+     * @see \App\Interfaces\LdapConnector::deleteUser()
      */
     public function deleteUser(User $user): bool
     {
@@ -43,7 +55,7 @@ class LdapManager implements LdapManagerInterface
 
     /**
      * {@inheritDoc}
-     * @see \App\Interfaces\LdapManager::renameUser()
+     * @see \App\Interfaces\LdapConnector::renameUser()
      */
     public function renameUser(User $user): LdapUser
     {
@@ -53,12 +65,32 @@ class LdapManager implements LdapManagerInterface
 
     /**
      * {@inheritDoc}
-     * @see \App\Interfaces\LdapManager::updateUser()
+     * @see \App\Interfaces\LdapConnector::updateUser()
      */
-    public function updateUser(User $user): LdapUser
+    public function updateUser(User $user)
     {
-        // TODO Auto-generated method stub
-        
+        $entry = $this->ldap->getProvider('admin')->search()->findByDn($this->buildDN($user));
+        if($entry == null) return null;
+        $data = $this->_mapUser($user);
+        $entry->fill($data);
+        $entry->save();
+        return $entry;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\LdapConnector::syncUsers()
+     */
+    public function syncUsers(\Illuminate\Support\Collection $users)
+    {
+        foreach($users as $user) {
+            $entry = $this->findUser($user);
+            if($entry == null) {
+                $this->createUser($user);
+            } else {
+                $this->updateUser($user, $entry);
+            }
+        }
     }
 
     public function buildDN(User $user) {
@@ -68,7 +100,7 @@ class LdapManager implements LdapManagerInterface
     
     /**
      * {@inheritDoc}
-     * @see \App\Interfaces\LdapManager::changePassword()
+     * @see \App\Interfaces\LdapConnector::changePassword()
      */
     public function changePassword(LdapUser $user, $password)
     {
@@ -108,6 +140,16 @@ class LdapManager implements LdapManagerInterface
         if($addresses->isNotEmpty()) {
             $data['postalAddress'] = $addresses->map(function($item, $key) { return $item->getFormattedAddress(); })
                                         ->all();
+        }
+        $accounts = $user->accounts;
+        if($accounts->isNotEmpty()) {
+            foreach($accounts as $account) {
+                $login = $account->login;
+                if(!empty($login)) {
+                    $name = Str::kebab(Str::ascii($account->extSource->name));
+                    $data['employeeNumber;x-'.$name] = $login;
+                }
+            }
         }
         return $data;
     }
