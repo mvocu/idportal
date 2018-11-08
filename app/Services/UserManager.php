@@ -4,8 +4,10 @@ namespace App\Services;
 
 use App\Models\Database\User;
 use App\Interfaces\UserManager as UserManagerInterface;
+use App\Interfaces\ContactManager as ContactManagerInterface;
 use App\Models\Database\Contact;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\Uuid;
 use App\Models\Database\Address;
@@ -16,6 +18,11 @@ use App\Models\Database\UserExt;
 
 class UserManager implements UserManagerInterface
 {
+    protected $contact_mgr;
+    
+    public function __construct(ContactManagerInterface $contact_mgr) {
+        $this->contact_mgr = $contact_mgr;
+    }
     
     public function createUserWithContacts(UserExt $user_ext, array $data): User {
 
@@ -23,48 +30,29 @@ class UserManager implements UserManagerInterface
 
         $user->fill($data);
 
-        $user->createdBy()->associate($ext_source);
+        $user->createdBy()->associate($user_ext);
         
         $user->identifier = Uuid::uuid4();
 
-        DB::transaction(function() use ($user, $data) {
+        DB::transaction(function() use ($user, $user_ext, $data) {
 
             $user->save();
             
-            if (array_key_exists('birth_place', $data) && is_array($data['birth_place'])) {
-                $birthplace = new Address();
-                $birthplace->fill($data['birth_place']);
-                $user->contacts()->save($birthplace);
-                $user->birthPlace()->associate($birthplace);
+            // save contacts for explicit relations
+            foreach(['birth_place', 'residency', 'address', 'address_tmp'] as $name) {
+                if(array_key_exists($name, $data) && is_array($data[$name])) {
+                    $relationName = Str::camelCase($name);
+                    // XXX - should fetch the model from relation, but...
+                    $contact = $this->contact_mgr->createContact($user, $user_ext, $data[$name], Address::class);
+                    call_user_func([$user, $relationName])->associate($contact);
+                }
             }
             
-            if (array_key_exists('residency', $data) && is_array($data['residency'])) {
-                $residency = new Address();
-                $residency->fill($data['residency']);
-                $user->contacts()->save($residency);
-                $user->residency()->associate($residency);
-            }
-
-            if (array_key_exists('address', $data) && is_array($data['address'])) {
-                $address = new Address();
-                $address->fill($data['address']);
-                $user->contacts()->save($address);
-                $user->address()->associate($address);
-            }
-
-            if (array_key_exists('address_tmp', $data) && is_array($data['address_tmp'])) {
-                $address_tmp = new Address();
-                $address_tmp->fill($data['address_tmp']);
-                $user->contacts()->save($address_tmp);
-                $user->addressTmp()->associate($address_tmp);
-            }
-
+            // save contacts for contact types
             foreach(Contact::$contactModels as $name => $class) {
                 if(array_key_exists($name, $data) && is_array($data[$name])) {
                     foreach($data[$name] as $contact_data) {
-                        $contact = new $class;
-                        $contact->fill($contact_data);
-                        $user->contacts()->save($contact);
+                        $contact = $this->contact_mgr->createContact($user, $user_ext, $contact_data, $class);
                     }
                 }
             }
@@ -76,6 +64,50 @@ class UserManager implements UserManagerInterface
         return $user;
     }
 
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\UserManager::updateUserWithContacts()
+     */
+    public function updateUserWithContacts(User $user, UserExt $user_ext, array $data): User
+    {
+        
+        $user->modifiedBy()->associate($user_ext);
+        $user->fill($data);
+        
+        // update contacts for explicit relations
+        foreach(['birth_place', 'residency', 'address', 'address_tmp'] as $name) {
+            if(array_key_exists($name, $data) && is_array($data[$name])) {
+                $relationName = Str::camelCase($name);
+                $contact = call_user_func([$user,$relationName])->first();
+                if(empty($contact)) {
+                    // no value yet
+                    // XXX - should fetch the model from relation, but...
+                    $contact = $this->contact_mgr->createContact($user, $user_ext, $data[$name], Address::class);
+                    call_user_func([$user, $relationName])->associate($contact);
+                } else {
+                    // update current value
+                    $this->contact_mgr->updateContact($contact, $user_ext, $data[$name]);
+                }
+            }
+        }
+        
+        // update contacts for contact types
+        foreach(Contact::$contactModels as $name => $class) {
+            if(array_key_exists($name, $data) && is_array($data[$name])) {
+                foreach($data[$name] as $contact_data) {
+                    $contact = $contact_mgr->findContact($user, $contact_data, $name);
+                    if(empty($contact)) {
+                        $contact = $this->contact_mgr->createContact($user, $user_ext, $contact_data, $class);
+                    } else {
+                        // this is not neccessary - unless contact manager performs more intelligent search
+                        $contact = $this->contact_mgr->updateContact($contact, $user_ext, $contact_data);
+                    }
+                }
+            }
+        }
+        
+    }
+    
     /**
      * {@inheritDoc}
      * @see \App\Interfaces\UserManager::findUser()
@@ -109,9 +141,8 @@ class UserManager implements UserManagerInterface
             $this->_collectResults($query, $data['bankAccounts'], 'bank_account', $results);
         }
         
-        if(array_key_exists('birth_code', $data) && !empty($data['birth_code']) && 
-            array_key_exists('birth_date', $data) && !empty($data['birth_date']) ) {
-            $query = User::where('birth_code', '=', $data['birth_code'])->andWhere('birth_date', '=', $data['birth_date']);
+        if(array_key_exists('birth_code', $data) && !empty($data['birth_code'])) {
+            $query = User::where('birth_code', '=', $data['birth_code']);
             $users = $query->get();
             foreach($users as $user) {
                 if(array_key_exists($user->id, $results)) {
@@ -125,17 +156,6 @@ class UserManager implements UserManagerInterface
         
 
         return new Collection($results);
-    }
-
-    /**
-     * {@inheritDoc}
-     * @see \App\Interfaces\UserManager::updateUserWithContacts()
-     */
-    public function updateUserWithContacts(User $user, UserExt $user_ext, array $data): User
-    {
-
-        $user->modifiedBy()->associate($user_ext);
-
     }
 
     protected function _normalizePhones(&$data) {

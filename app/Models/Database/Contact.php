@@ -46,11 +46,11 @@ class Contact extends Model
     }
 
     public function createdBy() {
-        return $this->hasOne('App\Models\Database\UserExt', 'created_by');
+        return $this->belongsTo('App\Models\Database\UserExt', 'created_by');
     }
     
     public function modifiedBy() {
-        return $this->hasOne('App\Models\Database\UserExt', 'modified_by');
+        return $this->belongsTo('App\Models\Database\UserExt', 'modified_by');
     }
 
     public function setPhoneAttribute($value) {

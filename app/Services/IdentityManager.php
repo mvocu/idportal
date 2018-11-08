@@ -23,8 +23,8 @@ class IdentityManager implements IdentityManagerInterface
         'addresses.*.street' => 'required|string',
         'addresses.*.city' => 'required|string',
         'addresses.*.state' => 'sometimes|required|string',
-        'addresses.*.org_number' => 'required_without:ev_number|integer',
-        'addresses.*.ev_number' => 'required_without:org_number|string',
+        'addresses.*.org_number' => 'required_without:addresses.*.ev_number|integer',
+        'addresses.*.ev_number' => 'required_without:addresses.*.org_number|string',
         'dataBox' => 'sometimes|required|unique:contact,databox',
         'bankAccounts' => 'sometimes|required|array',
         'bankAccounts.*.bank_account' => 'required|string',
@@ -35,8 +35,9 @@ class IdentityManager implements IdentityManagerInterface
     protected $sameIdentityRequirements = [
         'candidate.first_name' => 'required|string|similar:user.first_name',
         'candidate.last_name' => 'required|string|similar:user.last_name',
-        'candidate.birth_code' => [ 'sometimes', 'required', 'regex:/\d{9,10}/', 'same:user.birth_code' ],
-        'candidate.birth_date' => 'sometimes|required|date|same:user.birth_date',
+        'candidate.birth_code' => [ 'sometimes', 'required', 'regex:/\d{9,10}/', 'same_if_exists:user.birth_code' ],
+        'candidate.birth_date' => 'sometimes|required|date|same_if_exists:user.birth_date',
+        'candidate.dataBox' => 'sometimes|required|string|same_if_exists:user.dataBox',
     ];
     
     protected $updateIdentityRequirements = [
@@ -128,7 +129,7 @@ class IdentityManager implements IdentityManagerInterface
         return $this->validator->passes();
     }
     
-    public function validateEqualIdentity(User $user, $user_ext_data) {
+    public function validateEqualIdentity(User $user, $user_ext_data) : bool  {
         if($user->trust_level > 1)
             // two or more identifiers 
             return true;
@@ -139,7 +140,7 @@ class IdentityManager implements IdentityManagerInterface
         
     }
     
-    public function validateUpdate($user_ext_data) {
+    public function validateUpdate($user_ext_data) : bool {
         $this->validator = Validator::make($user_ext_data, $this->updateIdentityRequirements);
         return $this->validator->passes();
     }

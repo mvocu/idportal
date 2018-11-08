@@ -15,17 +15,20 @@ class UserExtManager implements UserExtManagerInterface
      * {@inheritDoc}
      * @see \App\Interfaces\UserExtManager::extractUserWithAttributes()
      */
-    public function extractUserWithAttributes(\App\Models\Database\UserExt $user_ext): array
+    public function extractUserWithAttributes(UserExt $user_ext): array
     {
         $result = array();
         
         foreach($user_ext->attributes as $attr) {
             $name = $attr->attrDesc->core_name;
+            $value = trim($attr->value);
+            if(empty($name) || empty($value))
+                continue;
             $names = explode(".", $name);
 
             if(count($names) == 1) {
                 // single top-level attribute
-                $result[$name] = $attr->value;
+                $result[$name] = $value;
             } else {
                 // attribute of some relation in the form: relation[index].name
                 if(preg_match("/([a-zA-Z]*)\[(\d+)\]/", $names[0], $matches)) {
@@ -34,11 +37,11 @@ class UserExtManager implements UserExtManagerInterface
                     $index = $matches[2];
                     if(in_array($attr_name, Contact::$contactTypes)) {
                         // if it is a known contact relation, store the value in sub-subarray  
-                        $result[$attr_name][$index][$names[1]] = $attr->value;
+                        $result[$attr_name][$index][$names[1]] = $value;
                     }
                 } else {
                     // hasOne relation: store the value in subarray
-                    $result[$names[0]][$names[1]] = $attr->value;
+                    $result[$names[0]][$names[1]] = $value;
                 }
             }
         }
@@ -67,6 +70,8 @@ class UserExtManager implements UserExtManagerInterface
             
             if(array_key_exists('attributes', $data) && is_array($data['attributes'])) {
                 foreach($data['attributes'] as $name => $value) {
+                    $value = trim($value);
+                    if(empty($value)) continue;
                     if(array_key_exists($name, $attrDefs)) {
                         $attrDef = $attrDefs[$name];    
                         $attr = new UserExtAttribute(['value' => $value]);
