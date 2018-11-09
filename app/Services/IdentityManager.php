@@ -23,20 +23,20 @@ class IdentityManager implements IdentityManagerInterface
         'residency.street' => 'required_with:residency|string',
         'residency.city' => 'required_with:residency|string',
         'residency.state' => 'sometimes|required|string',
-        'residency.org_number' => 'required_with:residency|required_without:residency.ev_number|integer',
-        'residency.ev_number' => 'required_with:residency|required_without:residency.org_number|string',
+        // 'residency.org_number' => 'required_with:residency|required_without:residency.ev_number|integer',
+        //'residency.ev_number' => 'required_with:residency|required_without:residency.org_number|string',
         'address' => 'sometimes|required|array',
         'address.street' => 'required_with:address|string',
         'address.city' => 'required_with:address|string',
         'address.state' => 'sometimes|required|string',
-        'address.org_number' => 'required_with:address|required_without:address.ev_number|integer',
-        'address.ev_number' => 'required_with:address|required_without:address.org_number|string',
+        //'address.org_number' => 'required_with:address|required_without:address.ev_number|integer',
+        //'address.ev_number' => 'required_with:address|required_without:address.org_number|string',
         'addressTmp' => 'sometimes|required|array',
         'addressTmp.street' => 'required_with:addressTmp|string',
         'addressTmp.city' => 'required_with:addressTmp|string',
         'addressTmp.state' => 'sometimes|required|string',
-        'addressTmp.org_number' => 'required_with:addressTmp|required_without:address.ev_number|integer',
-        'addressTmp.ev_number' => 'required_with:addressTmp|required_without:address.org_number|string',
+        //'addressTmp.org_number' => 'required_with:addressTmp|required_without:address.ev_number|integer',
+        //'addressTmp.ev_number' => 'required_with:addressTmp|required_without:address.org_number|string',
         'addresses' => 'sometimes|required|array',
         'addresses.*.street' => 'required|string',
         'addresses.*.city' => 'required|string',
@@ -67,19 +67,19 @@ class IdentityManager implements IdentityManagerInterface
         'residency.street' => 'required_with:residency|string',
         'residency.city' => 'required_with:residency|string',
         'residency.state' => 'sometimes|required|string',
-        'residency.org_number' => 'required_with:residency|required_without:residency.ev_number|integer',
-        'residency.ev_number' => 'required_with:residency|required_without:residency.org_number|string',
+        //'residency.org_number' => 'required_with:residency|required_without:residency.ev_number|integer',
+        //'residency.ev_number' => 'required_with:residency|required_without:residency.org_number|string',
         'address' => 'sometimes|required|array',
         'address.street' => 'required_with:address|string',
         'address.city' => 'required_with:address|string',
         'address.state' => 'sometimes|required|string',
-        'address.org_number' => 'required_with:address|required_without:address.ev_number|integer',
-        'address.ev_number' => 'required_with:address|required_without:address.org_number|string',
+        //'address.org_number' => 'required_with:address|required_without:address.ev_number|integer',
+        //'address.ev_number' => 'required_with:address|required_without:address.org_number|string',
         'addressTmp' => 'sometimes|required|array',
         'addressTmp.street' => 'required_with:addressTmp|string',
         'addressTmp.city' => 'required_with:addressTmp|string',
-        'addressTmp.state' => 'sometimes|required|string',
-        'addressTmp.org_number' => 'required_with:addressTmp|required_without:address.ev_number|integer',
+        //'addressTmp.state' => 'sometimes|required|string',
+        //'addressTmp.org_number' => 'required_with:addressTmp|required_without:address.ev_number|integer',
         'addressTmp.ev_number' => 'required_with:addressTmp|required_without:address.org_number|string',
         'addresses' => 'sometimes|required|array',
         'addresses.*.street' => 'required|string',
@@ -168,6 +168,24 @@ class IdentityManager implements IdentityManagerInterface
 
     public function validateIdentity($user_ext_data) : bool {
         $this->validator = Validator::make($user_ext_data, $this->identityRequirements);
+        $this->validator->sometimes('residency.org_number', 'required_without:residency.ev_number|integer',
+            function($input) { return !empty($input->residency); }
+            );
+        $this->validator->sometimes('residency.ev_number', 'required_without:residency.org_number|string',
+            function($input) { return !empty($input->residency); }
+            );
+        $this->validator->sometimes('address.org_number', 'required_without:address.ev_number|integer',
+            function($input) { return !empty($input->address); }
+            );
+        $this->validator->sometimes('address.ev_number', 'required_without:address.org_number|string',
+            function($input) { return !empty($input->address); }
+            );
+        $this->validator->sometimes('addressTmp.org_number', 'required_without:addressTmp.ev_number|integer',
+            function($input) { return !empty($input->addressTmp); }
+            );
+        $this->validator->sometimes('addressTmp.ev_number', 'required_without:addressTmp.org_number|string',
+            function($input) { return !empty($input->addressTmp); }
+            );
         return $this->validator->passes();
     }
     
@@ -184,6 +202,24 @@ class IdentityManager implements IdentityManagerInterface
     
     public function validateUpdate($user_ext_data) : bool {
         $this->validator = Validator::make($user_ext_data, $this->updateIdentityRequirements);
+        $this->validator->sometimes('residency.org_number', 'required_without:residency.ev_number|integer',
+            function($input) { return !empty($input->residency); }
+            );
+        $this->validator->sometimes('residency.ev_number', 'required_without:residency.org_number|string',
+            function($input) { return !empty($input->residency); }
+            );
+        $this->validator->sometimes('address.org_number', 'required_without:address.ev_number|integer',
+            function($input) { return !empty($input->address); }
+            );
+        $this->validator->sometimes('address.ev_number', 'required_without:address.org_number|string',
+            function($input) { return !empty($input->address); }
+            );
+        $this->validator->sometimes('addressTmp.org_number', 'required_without:addressTmp.ev_number|integer',
+            function($input) { return !empty($input->addressTmp); }
+            );
+        $this->validator->sometimes('addressTmp.ev_number', 'required_without:addressTmp.org_number|string',
+            function($input) { return !empty($input->addressTmp); }
+            );
         return $this->validator->passes();
     }
 }
