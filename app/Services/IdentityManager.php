@@ -16,7 +16,7 @@ class IdentityManager implements IdentityManagerInterface
         'first_name' => 'required|string',
         'last_name' => 'required|string',
         'phones' => 'required|array',
-        'phones.*.phone' => [ 'required', 'regex:/^[+]?\d[\d\s]*\d$/', 'unique:contact,phone' ],
+        'phones.*.phone' => 'required|phone|unique:contact,phone',
         'emails' => 'required_without_all:residency,address,addressTmp,addresses,dataBox,bankAccounts|array',
         'emails.*.email' => 'required|email|unique:contact,email',
         'residency' => 'sometimes|required|array',
@@ -60,7 +60,7 @@ class IdentityManager implements IdentityManagerInterface
     
     protected $updateIdentityRequirements = [
         'phones' => 'sometimes|required|array',
-        'phones.*.phone' => [ 'required', 'regex:/^[+]?\d[\d\s]*\d$/', 'unique:contact,phone' ],
+        'phones.*.phone' => 'required|phone|unique:contact,phone',
         'emails' => 'sometimes|required|array',
         'emails.*.email' => 'required|email|unique:contact,email',
         'residency' => 'sometimes|required|array',
@@ -125,7 +125,7 @@ class IdentityManager implements IdentityManagerInterface
         $users = $this->user_mgr->findUser($user_ext_data);
         if($users->count() > 1) {
             // more users were found for this single external record
-            throw new Exception("Too many users (" . $users->count() . ") found for candidate");
+            return $users->pluck('id')->toArray();
         }
         
         $user = null;
