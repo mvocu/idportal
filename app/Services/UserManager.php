@@ -41,7 +41,7 @@ class UserManager implements UserManagerInterface
             // save contacts for explicit relations
             foreach(['birth_place', 'residency', 'address', 'address_tmp'] as $name) {
                 if(array_key_exists($name, $data) && is_array($data[$name])) {
-                    $relationName = Str::camelCase($name);
+                    $relationName = Str::camel($name);
                     // XXX - should fetch the model from relation, but...
                     $contact = $this->contact_mgr->createContact($user, $user_ext, $data[$name], Address::class);
                     call_user_func([$user, $relationName])->associate($contact);
@@ -77,7 +77,7 @@ class UserManager implements UserManagerInterface
         // update contacts for explicit relations
         foreach(['birth_place', 'residency', 'address', 'address_tmp'] as $name) {
             if(array_key_exists($name, $data) && is_array($data[$name])) {
-                $relationName = Str::camelCase($name);
+                $relationName = Str::camel($name);
                 $contact = call_user_func([$user,$relationName])->first();
                 if(empty($contact)) {
                     // no value yet

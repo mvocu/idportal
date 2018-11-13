@@ -132,9 +132,9 @@ class LdapConnector implements LdapConnectorInterface
         if(!empty($address)) {
             $data['street'] = $address->street;
             $data['l'] = $address->city;
-            $data['st'] = $address->state;
-            $data['postalCode'] = $address->post_number;
-            $data['houseIdentifier'] = $addres->getHouseNumber();
+            if(!empty($address->state)) $data['st'] = $address->state;
+            if(!empty($address->post_number)) $data['postalCode'] = $address->post_number;
+            $data['houseIdentifier'] = $address->getHouseNumber();
         }
         $addresses = $user->addresses;
         if($addresses->isNotEmpty()) {
@@ -146,7 +146,7 @@ class LdapConnector implements LdapConnectorInterface
             foreach($accounts as $account) {
                 $login = $account->login;
                 if(!empty($login)) {
-                    $name = Str::kebab(Str::ascii($account->extSource->name));
+                    $name = Str::kebab(Str::lower(Str::ascii($account->extSource->name)));
                     $data['employeeNumber;x-'.$name] = $login;
                 }
             }

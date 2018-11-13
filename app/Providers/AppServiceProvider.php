@@ -46,6 +46,10 @@ class AppServiceProvider extends ServiceProvider
             $other = Arr::get($validator->getData(), $parameters[0]);
             return empty($other) || $value == $other;
         });
+        Validator::extend('phone', function ($attribute, $value, $parameters, $validator) {
+            $value = preg_replace("/\s+/", "", $value);
+            return preg_match("/^[+]?\d{9,12}$/", $value);            
+        });
     }
 
     /**
