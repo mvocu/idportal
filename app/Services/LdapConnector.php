@@ -141,6 +141,7 @@ class LdapConnector implements LdapConnectorInterface
             $data['postalAddress'] = $addresses->map(function($item, $key) { return $item->getFormattedAddress(); })
                                         ->all();
         }
+
         $accounts = $user->accounts;
         if($accounts->isNotEmpty()) {
             foreach($accounts as $account) {
