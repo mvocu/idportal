@@ -12,7 +12,8 @@
         "laravel/framework": "5.7.*",
         "laravel/tinker": "^1.0",
         "oefenweb/damerau-levenshtein": "^2.1",
-        "ramsey/uuid": "^3.8"
+        "ramsey/uuid": "^3.8",
+        "wsdltophp/wssecurity": "^1.1"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",

@@ -11,6 +11,7 @@ use App\Interfaces\ExtSourceManager as ExtSourceManagerInterface;
 use App\Interfaces\IdentityManager as IdentityManagerInterface;
 use App\Interfaces\LdapConnector as LdapConnectorInterface;
 use App\Interfaces\ContactManager as ContactManagerInterface;
+use App\Interfaces\ConsentManager as ConsentManagerInterface;
 use App\Services\ContactManager;
 use App\Services\UserExtManager;
 use App\Services\UserManager;
@@ -18,6 +19,7 @@ use App\Services\ExtSourceManager;
 use App\Services\IdentityManager;
 use App\Services\LdapConnector;
 use App\Utils\Names;
+use App\Services\ConsentManager;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,6 +30,7 @@ class AppServiceProvider extends ServiceProvider
         IdentityManagerInterface::class => IdentityManager::class,
         ContactManagerInterface::class => ContactManager::class,
         LdapConnectorInterface::class => LdapConnector::class,
+        ConsentManagerInterface::class => ConsentManager::class,
     ];
     
     /**
