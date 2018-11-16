@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
 use Illuminate\Auth\Events\PasswordReset;
-use App\Interfaces\LdapManager;
+use App\Interfaces\LdapConnector;
 
 class ResetPasswordController extends Controller
 {
@@ -37,7 +37,7 @@ class ResetPasswordController extends Controller
      *
      * @return void
      */
-    public function __construct(LdapManager $ldap_mgr)
+    public function __construct(LdapConnector $ldap_mgr)
     {
         $this->ldap_mgr = $ldap_mgr;
         

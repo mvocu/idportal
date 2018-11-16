@@ -11,6 +11,8 @@ use App\Models\Database\UserExtAttribute;
 
 class UserExtManager implements UserExtManagerInterface
 {
+    protected $attrDefs;
+    
     /**
      * {@inheritDoc}
      * @see \App\Interfaces\UserExtManager::extractUserWithAttributes()
@@ -58,11 +60,8 @@ class UserExtManager implements UserExtManagerInterface
         $user = new UserExt();
         $user->fill($data);
         $user->extSource()->associate($source);
-        $attrDefs = array();
-        
-        foreach($source->attributes as $attrDef) {
-            $attrDefs[$attrDef->name] = $attrDef;    
-        }
+
+        $attrDefs = $this->getAttrDefs($source);
         
         DB::transaction(function() use ($source, $data, $user, $attrDefs) {
             
@@ -85,7 +84,18 @@ class UserExtManager implements UserExtManagerInterface
         return $user; 
     }
 
-
+    protected function getAttrDefs(ExtSource $source) {
+        if(!is_array($this->attrDefs)) {
+            $this->attrDefs = array();
+        }
+        if(!array_key_exists($source->id, $this->attrDefs)) {
+            $this->attrDefs[$source->id] = array();
+            foreach($source->attributes as $attrDef) {
+                $this->attrDefs[$source->id][$attrDef->name] = $attrDef;
+            }
+        }
+        return $this->attrDefs[$source->id];
+    }
             
 }
 

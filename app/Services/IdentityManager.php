@@ -8,7 +8,6 @@ use App\Interfaces\UserManager;
 use App\Interfaces\ExtSourceManager;
 use App\Models\Database\User;
 use Illuminate\Support\Facades\Validator;
-use Exception;
 
 class IdentityManager implements IdentityManagerInterface
 {
