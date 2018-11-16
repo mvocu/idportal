@@ -10,7 +10,7 @@ class ExtSource extends Model
     
     protected $table = "ext_sources";
     
-    protected $fillable = ['name', 'type', 'trust_level'];
+    protected $fillable = ['name', 'type', 'configuration', 'trust_level', 'consent_required'];
     
     public function users() {
         return $this->hasMany('App\Models\Database\UserExt', 'ext_source_id');

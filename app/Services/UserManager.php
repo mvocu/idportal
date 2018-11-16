@@ -71,7 +71,7 @@ class UserManager implements UserManagerInterface
     public function updateUserWithContacts(User $user, UserExt $user_ext, array $data): User
     {
         
-        $user->modifiedBy()->associate($user_ext);
+        $user->updatedBy()->associate($user_ext);
         $user->fill($data);
         
         // update contacts for explicit relations
