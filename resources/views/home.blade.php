@@ -14,7 +14,24 @@
                         </div>
                     @endif
 
-                    You are logged in!
+                    @if ( $user )
+                    	<div class="row">
+                    		<div class="col-xs-12">{{ $user->name }}</div>
+                    	</div>
+                    	<div class="row">
+                    		<div class="col-xs-4"></div>
+                    		<div class="col-xs-8">{{ $user->uid }}</div>
+                    	</div>
+                    	<div class="row">
+                    		<div class="col-xs-4"></div>
+                    		<div class="col-xs-8">{{ $user->mail }}</div>
+                    	</div>
+                    	<div class="row">
+                    		<div class="col-xs-4"></div>
+                    		<div class="col-xs-8">{{ $user->telephonenumber }}</div>
+                    	</div>
+                    
+                    @endif
                 </div>
             </div>
         </div>
