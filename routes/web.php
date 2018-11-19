@@ -17,7 +17,7 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::post('/password/sms', 'Auth\ForgotPasswordController@sendResetCodeSms')->name('password.sms');
+Route::post('/password/send', 'Auth\ForgotPasswordController@sendResetCode')->name('password.send');
 // ...redirects to...
 Route::get('/password/token', 'Auth\ResetPasswordController@showResetForm')->name('password.token');
 

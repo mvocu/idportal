@@ -6,6 +6,7 @@ use App\Models\Database\Address;
 use App\Models\Database\Contact;
 use App\Models\Database\User;
 use App\Models\Database\UserExt;
+use Illuminate\Database\Eloquent\Collection;
 use App\Interfaces\ContactManager as ContactManagerInterface;
 
 class ContactManager implements ContactManagerInterface
@@ -35,6 +36,16 @@ class ContactManager implements ContactManagerInterface
         return $contacts;
     }
     
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\ContactManager::findTrustedContacts()
+     */
+    public function findTrustedContacts(\App\Models\Database\User $user, $type): Collection
+    {
+        $trust_level = $user->accounts()->with('extSource')->max('ext_source.trust_level')->value();
+        return $user->contacts()->where('type', '=', $type)->where('trust_level', '>=', $trust_level)->get();
+    }
+
     /**
      * {@inheritDoc}
      * @see \App\Interfaces\ContactManager::createContact()
