@@ -14,9 +14,9 @@ class IdentityManager implements IdentityManagerInterface
     protected $identityRequirements = [
         'first_name' => 'required|string',
         'last_name' => 'required|string',
-        'phones' => 'required|array',
+        'phones' => 'required_without:emails|array',
         'phones.*.phone' => 'required|phone|unique:contact,phone',
-        'emails' => 'required_without_all:residency,address,addressTmp,addresses,dataBox,bankAccounts|array',
+        'emails' => 'required_without:phones|array',
         'emails.*.email' => 'required|email|unique:contact,email',
         'residency' => 'sometimes|required|array',
         'residency.street' => 'required_with:residency|string',
