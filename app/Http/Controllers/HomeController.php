@@ -25,7 +25,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $user = Adldap::search()->where('cn', '=', Auth::user()->name)->get();
-        return view('home');
+        $user = Adldap::search()->where('cn', '=', Auth::user()->name)->first();
+        return view('home', ['user' => $user]);
     }
 }

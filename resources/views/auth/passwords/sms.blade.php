@@ -18,7 +18,7 @@
                         {{ csrf_field() }}
 
                         <div class="form-group{{ $errors->has('uid') ? ' has-error' : '' }}">
-                            <label for="uid" class="col-md-4 control-label">Username</label>
+                            <label for="uid" class="col-md-4 control-label">Phone or email</label>
 
                             <div class="col-md-6">
                                 <input id="uid" type="text" class="form-control" name="uid" value="{{ old('uid') }}" required>

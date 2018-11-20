@@ -14,21 +14,21 @@
                         </div>
                     @endif
 
-                    @if ( $user )
+                    @if ( isset($user) )
                     	<div class="row">
                     		<div class="col-xs-12">{{ $user->name }}</div>
                     	</div>
                     	<div class="row">
-                    		<div class="col-xs-4"></div>
-                    		<div class="col-xs-8">{{ $user->uid }}</div>
+                    		<div class="col-xs-4">{{ __('Login') }}</div>
+                    		<div class="col-xs-8">{{ implode(",", $user->uid) }}</div>
                     	</div>
                     	<div class="row">
-                    		<div class="col-xs-4"></div>
-                    		<div class="col-xs-8">{{ $user->mail }}</div>
+                    		<div class="col-xs-4">{{ __('E-mail') }}</div>
+                    		<div class="col-xs-8">{{ implode(",", $user->mail) }}</div>
                     	</div>
                     	<div class="row">
-                    		<div class="col-xs-4"></div>
-                    		<div class="col-xs-8">{{ $user->telephonenumber }}</div>
+                    		<div class="col-xs-4">{{ __('Phone') }}</div>
+                    		<div class="col-xs-8">{{ implode(",", $user->telephonenumber) }}</div>
                     	</div>
                     
                     @endif
