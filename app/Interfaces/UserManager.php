@@ -13,5 +13,7 @@ interface UserManager
     public function findUser(array $data): Collection;
     
     public function updateUserWithContacts(User $user, UserExt $user_ext, array $data): User;
+    
+    public function mergeUserWithContacts(User $source, User $dest);
 }
 

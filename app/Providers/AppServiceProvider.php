@@ -43,7 +43,7 @@ class AppServiceProvider extends ServiceProvider
         Validator::extend('similar', function ($attribute, $value, $parameters, $validator) {
             $other = Arr::get($validator->getData(), $parameters[0]);
             $limit = count($parameters) > 1 ? $parameters[1] : 3;
-            return Names::damlev($value, $other) < $limit;
+            return empty($other) || Names::damlev($value, $other) < $limit;
         });
         Validator::extend('sameIfExists', function ($attribute, $value, $parameters, $validator) {
             $other = Arr::get($validator->getData(), $parameters[0]);

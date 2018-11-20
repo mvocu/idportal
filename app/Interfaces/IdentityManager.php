@@ -14,7 +14,9 @@ interface IdentityManager
         
         public function validateEqualIdentity(User $user, $user_ext_data) : bool;
         
-        public function validateUpdate($user_ext_data) : bool;            
+        public function validateUpdate($user_ext_data) : bool;
+        
+        public function mergeUser(User $source, User $dest);
             
 }
 

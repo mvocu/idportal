@@ -26,10 +26,12 @@ class ContactManager implements ContactManagerInterface
             return null;    
         $type = $this->contactTypeMap[$name];
         $class = Contact::$contactModels[$name];
+        $obj = new Contact($data);
         
         $query = $user->contacts()->where('type', '=', $type);
-        foreach($data as $name => $value) {
-            $query = $query->where($name, '=', $value);
+        foreach($data as $key => $value) {
+            // account for mutators
+            $query = $query->where($key, '=', $obj->$key);
         }
         $contacts = $query->get()->map(function($contact) use ($class) { return new $class($contact->toArray()); });
         return $contacts;
@@ -44,6 +46,7 @@ class ContactManager implements ContactManagerInterface
         $contact = new $class;
         $contact->fill($data);
         $contact->createdBy()->associate($ext_user);
+        $contact->trust_level = $ext_user->extSource->trust_level;
         $user->contacts()->save($contact);
         return $contact;
     }
@@ -56,6 +59,9 @@ class ContactManager implements ContactManagerInterface
     {
         $contact->fill($data);
         $contact->updatedBy()->associate($user_ext);
+        if($contact->trust_level < $user_ext->extSource->trust_level) {
+            $contact->trust_level = $user_ext->extSource->trust_level;
+        }
         $contact->save();
         return $contact;
     }
