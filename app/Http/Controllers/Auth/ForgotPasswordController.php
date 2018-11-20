@@ -39,7 +39,7 @@ class ForgotPasswordController extends Controller
      */
     public function showLinkRequestForm()
     {
-        return view('auth.passwords.sms');
+        return view('auth.passwords.send');
     }
 
     public function sendResetCodeSms(Request $request) {
