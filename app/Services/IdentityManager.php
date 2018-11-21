@@ -12,11 +12,11 @@ use Illuminate\Support\Facades\Validator;
 class IdentityManager implements IdentityManagerInterface
 {
     protected $identityRequirements = [
-        'first_name' => 'required|string',
-        'last_name' => 'required|string',
-        'phones' => 'required|array',
+        'first_name' => 'sometimes|required|string',
+        'last_name' => 'sometimes|required|string',
+        'phones' => 'required_without:emails|array',
         'phones.*.phone' => 'required|phone|unique:contact,phone',
-        'emails' => 'required_without_all:residency,address,addressTmp,addresses,dataBox,bankAccounts|array',
+        'emails' => 'required_without:phones|array',
         'emails.*.email' => 'required|email|unique:contact,email',
         'residency' => 'sometimes|required|array',
         'residency.street' => 'required_with:residency|string',
@@ -50,8 +50,8 @@ class IdentityManager implements IdentityManagerInterface
     ];
     
     protected $sameIdentityRequirements = [
-        'candidate.first_name' => 'required|string|similar:user.first_name',
-        'candidate.last_name' => 'required|string|similar:user.last_name',
+        'candidate.first_name' => 'sometimes|required|string|similar:user.first_name',
+        'candidate.last_name' => 'sometimes|required|string|similar:user.last_name',
         'candidate.birth_code' => [ 'sometimes', 'required', 'regex:/\d{9,10}/', 'same_if_exists:user.birth_code' ],
         'candidate.birth_date' => 'sometimes|required|date|same_if_exists:user.birth_date',
         'candidate.dataBox' => 'sometimes|required|string|same_if_exists:user.dataBox',
@@ -189,10 +189,6 @@ class IdentityManager implements IdentityManagerInterface
     }
     
     public function validateEqualIdentity(User $user, $user_ext_data) : bool  {
-        if($user->trust_level > 1)
-            // two or more identifiers 
-            return true;
-        
         $data = [ 'user' => $user->toArray(), 'candidate' => $user_ext_data ];
         $this->validator = Validator::make($data, $this->sameIdentityRequirements);
         return $this->validator->passes();
@@ -221,5 +217,21 @@ class IdentityManager implements IdentityManagerInterface
             );
         return $this->validator->passes();
     }
+
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\IdentityManager::mergeUser()
+     */
+    public function mergeUser(User $source, User $dest)
+    {
+        // reassign accounts (external users)
+        foreach($source->accounts as $user_ext) {
+            $user_ext->user()->assign($dest);
+            $user_ext->save();
+        }
+        // merge user records and contacts
+        $this->user_mgr->mergeUserWithContacts($source, $dest);
+    }
+
 }
 

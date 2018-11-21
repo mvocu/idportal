@@ -14,7 +14,7 @@
                         </div>
                     @endif
 
-                    <form class="form-horizontal" method="POST" action="{{ route('password.sms') }}">
+                    <form class="form-horizontal" method="POST" action="{{ route('password.send') }}">
                         {{ csrf_field() }}
 
                         <div class="form-group{{ $errors->has('uid') ? ' has-error' : '' }}">
