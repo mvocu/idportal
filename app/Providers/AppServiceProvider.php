@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use App\Interfaces\UserManager as UserManagerInterface;
 use App\Interfaces\UserExtManager as UserExtManagerInterface;
@@ -53,6 +54,7 @@ class AppServiceProvider extends ServiceProvider
             $value = preg_replace("/\s+/", "", $value);
             return preg_match("/^[+]?\d{9,12}$/", $value);            
         });
+        
     }
 
     /**

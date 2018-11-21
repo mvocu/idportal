@@ -42,7 +42,7 @@ class ForgotPasswordController extends Controller
         return view('auth.passwords.send');
     }
 
-    public function sendResetCodeSms(Request $request) {
+    public function sendResetCode(Request $request) {
         
         // We will send the password reset link to this user. Once we have attempted
         // to send the link, we will examine the response then see the message we
@@ -51,7 +51,7 @@ class ForgotPasswordController extends Controller
             $request->only('uid')
             );
         
-        return $response == Password::RESET_LINK_SENT
+        return starts_with($response, Password::RESET_LINK_SENT) 
         ? $this->sendResetLinkResponse($request, $response)
         : $this->sendResetLinkFailedResponse($request, $response);
     }

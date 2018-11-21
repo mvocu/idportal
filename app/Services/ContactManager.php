@@ -42,9 +42,11 @@ class ContactManager implements ContactManagerInterface
      * {@inheritDoc}
      * @see \App\Interfaces\ContactManager::findTrustedContacts()
      */
-    public function findTrustedContacts(\App\Models\Database\User $user, $type): Collection
+    public function findTrustedContacts(User $user, $type): Collection
     {
-        $trust_level = $user->accounts()->with('extSource')->max('ext_source.trust_level')->value();
+        $trust_level = $user->accounts()
+            ->join('ext_sources', 'ext_sources.id', '=', 'user_ext.ext_source_id')
+            ->max('ext_sources.trust_level');
         return $user->contacts()->where('type', '=', $type)->where('trust_level', '>=', $trust_level)->get();
     }
 

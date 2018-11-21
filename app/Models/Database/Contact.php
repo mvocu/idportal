@@ -54,6 +54,10 @@ class Contact extends Model
     }
 
     public function setPhoneAttribute($value) {
+        if($value == null) {
+            unset($this->attributes['phone']);
+            return;
+        }
         $value = preg_replace("/\s+/", "", $value);
         $length = strlen($value);
         if($length == 9) {

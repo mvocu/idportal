@@ -13,20 +13,15 @@ use App\Models\Database\Contact;
 use App\Models\Ldap\LdapUser;
 use Illuminate\Notifications\Notification;
 use App\Notifications\SmsPasswordReset;
-use App\Interfaces\UserManager;
-use App\Interfaces\ContactManager;
+use Illuminate\Auth\Notifications\ResetPassword;
+use App\Models\Database\User as DbUser;
 
 class User extends LdapUser implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
-    use  Authorizable, CanResetPassword, Notifiable,  RemembersPassword;
+    use Authorizable, Notifiable, RemembersPassword;
+    use CanResetPassword { sendPasswordResetNotification as sendPasswordResetNotificationMail; }
 
-    protected $contact_mgr;
-    protected $user_mgr;
-    
-    public function __construct(UserManager $user_mgr, ContactManager $contact_mgr) {
-        $this->user_mgr = $user_mgr;
-        $this->contact_mgr = $contact_mgr;
-    }
+    protected $db_user;
     
     /**
      * {@inheritDoc}
@@ -60,14 +55,22 @@ class User extends LdapUser implements AuthenticatableContract, AuthorizableCont
         return $this->getTelephoneNumber();
     }
 
+    public function routeNotificationForMail(Notification $notification = null) {
+        if($notification instanceof ResetPassword) {
+            $contact = $this->getTrustedContact(Contact::TYPE_EMAIL);
+            return $contact->email;
+        }
+        return $this->getEmail();
+    }
+    
     /**
      * {@inheritDoc}
      * @see \Illuminate\Contracts\Auth\CanResetPassword::getEmailForPasswordReset()
      */
     public function getEmailForPasswordReset()
     {
-        $contact = $this->getTrustedContact(Contact::TYPE_EMAIL);
-        return $contact->email;
+        // this is not the address to send the notification to - it serves just as key to the token table
+        return $this->getUniqueIdentifier();
     }
 
     /**
@@ -76,12 +79,52 @@ class User extends LdapUser implements AuthenticatableContract, AuthorizableCont
      */
     public function sendPasswordResetNotification($token)
     {
-        $this->notify(new SmsPasswordReset($token));
+        if($this->getPasswordResetContactType($this) == Contact::TYPE_PHONE) {
+            $this->notify(new SmsPasswordReset($token));
+            return "sms";
+        } else {
+            $this->sendPasswordResetNotificationMail($token);
+            return "mail";
+        }
     }
     
-    protected function getTrustedContact($type) {
-        $user = $this->user_mgr->findUser(['identifier' => $this->getUniqueIdentifier()])->first();
-        $contact = $this->contact_mgr->findTrustedContacts($user, $type)->first();
+    public function getDatabaseUser() {
+        if(empty($this->db_user)) {
+            $this->db_user = DbUser::where('identifier', '=', $this->getUniqueIdentifier())->first();
+        }
+        return $this->db_user;
+    }
+    
+    public function getTrustedContact($type) {
+        $contact_mgr = resolve('App\Interfaces\ContactManager');
+        $user = $this->getDatabaseUser();
+        if(empty($user)) {
+            if($type == Contact::TYPE_PHONE) {
+                $phone = $this->getTelephoneNumber();
+                if(empty($phone)) {
+                    return null;
+                }
+                $contact = new Contact(['type' => $type, 'phone' => $phone]);
+            } elseif($type == Contact::TYPE_EMAIL) {
+                $email = $this->getEmail();
+                if(empty($email)) {
+                    return null;
+                }
+                $contact = new Contact(['type' => $type, 'email' => $email]);
+            }
+        } else {
+            $contact = $contact_mgr->findTrustedContacts($this->getDatabaseUser(), $type)->first();
+        }
         return $contact;
     }
+    
+    public function getPasswordResetContactType(User $user) {
+        $contact = $user->getTrustedContact(Contact::TYPE_PHONE);
+        if(!empty($contact)) {
+            return Contact::TYPE_PHONE;
+        } else {
+            return Contact::TYPE_EMAIL;
+        }
+    }
+    
 }

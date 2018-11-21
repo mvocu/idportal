@@ -40,7 +40,7 @@
                         
                         @endif
 
-						@if (empty($uid)) 
+						@if (empty($uid) && empty(old('uid'))) 
 						
                         <div class="form-group row">
                             <label for="uid" class="col-md-4 col-form-label text-md-right">{{ __('Login') }}</label>
@@ -58,7 +58,7 @@
                         
                         @else 
                         
-                        <input type="hidden" name="uid" value="{{ $uid }}">
+                        <input type="hidden" name="uid" value="{{ $uid ?? old('uid') }}">
                         
                         @endif
 
