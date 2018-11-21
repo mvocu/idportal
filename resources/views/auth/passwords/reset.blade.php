@@ -60,7 +60,7 @@
                         
                         @else 
                         
-                        <input type="hidden" name="uid" value="{{ $uid }}">
+                        <input type="hidden" name="uid" value="{{ $uid ?? old('uid') }}">
                         
                         @endif
 

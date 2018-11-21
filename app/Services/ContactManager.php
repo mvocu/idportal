@@ -6,6 +6,7 @@ use App\Models\Database\Address;
 use App\Models\Database\Contact;
 use App\Models\Database\User;
 use App\Models\Database\UserExt;
+use Illuminate\Database\Eloquent\Collection;
 use App\Interfaces\ContactManager as ContactManagerInterface;
 
 class ContactManager implements ContactManagerInterface
@@ -26,15 +27,29 @@ class ContactManager implements ContactManagerInterface
             return null;    
         $type = $this->contactTypeMap[$name];
         $class = Contact::$contactModels[$name];
+        $obj = new Contact($data);
         
         $query = $user->contacts()->where('type', '=', $type);
-        foreach($data as $name => $value) {
-            $query = $query->where($name, '=', $value);
+        foreach($data as $key => $value) {
+            // account for mutators
+            $query = $query->where($key, '=', $obj->$key);
         }
         $contacts = $query->get()->map(function($contact) use ($class) { return new $class($contact->toArray()); });
         return $contacts;
     }
     
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\ContactManager::findTrustedContacts()
+     */
+    public function findTrustedContacts(User $user, $type): Collection
+    {
+        $trust_level = $user->accounts()
+            ->join('ext_sources', 'ext_sources.id', '=', 'user_ext.ext_source_id')
+            ->max('ext_sources.trust_level');
+        return $user->contacts()->where('type', '=', $type)->where('trust_level', '>=', $trust_level)->get();
+    }
+
     /**
      * {@inheritDoc}
      * @see \App\Interfaces\ContactManager::createContact()
@@ -44,6 +59,7 @@ class ContactManager implements ContactManagerInterface
         $contact = new $class;
         $contact->fill($data);
         $contact->createdBy()->associate($ext_user);
+        $contact->trust_level = $ext_user->extSource->trust_level;
         $user->contacts()->save($contact);
         return $contact;
     }
@@ -56,6 +72,9 @@ class ContactManager implements ContactManagerInterface
     {
         $contact->fill($data);
         $contact->updatedBy()->associate($user_ext);
+        if($contact->trust_level < $user_ext->extSource->trust_level) {
+            $contact->trust_level = $user_ext->extSource->trust_level;
+        }
         $contact->save();
         return $contact;
     }

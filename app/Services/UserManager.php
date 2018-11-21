@@ -110,6 +110,18 @@ class UserManager implements UserManagerInterface
     
     /**
      * {@inheritDoc}
+     * @see \App\Interfaces\UserManager::mergeUserWithContacts()
+     */
+    public function mergeUserWithContacts(User $source, User $dest)
+    {
+        foreach($source->contacts as $contact) {
+            $contact->user()->assign($dest);
+            $contact->save();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
      * @see \App\Interfaces\UserManager::findUser()
      */
     public function findUser(array $data): Collection
