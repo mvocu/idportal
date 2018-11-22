@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use App\Interfaces\UserManager as UserManagerInterface;
 use App\Interfaces\UserExtManager as UserExtManagerInterface;
@@ -21,6 +20,8 @@ use App\Services\IdentityManager;
 use App\Services\LdapConnector;
 use App\Utils\Names;
 use App\Services\ConsentManager;
+use App\Services\GinisConnector;
+use App\Services\TritiusConnector;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,6 +33,12 @@ class AppServiceProvider extends ServiceProvider
         ContactManagerInterface::class => ContactManager::class,
         LdapConnectorInterface::class => LdapConnector::class,
         ConsentManagerInterface::class => ConsentManager::class,
+    ];
+    
+    public $bindings = [
+        // connectors - keys here must correspond to the type column in ext_sources table
+        'Ginis' => GinisConnector::class,
+        'Tritius' => TritiusConnector::class,
     ];
     
     /**
@@ -64,6 +71,5 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
     }
 }

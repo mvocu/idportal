@@ -143,12 +143,14 @@ class IdentityManager implements IdentityManagerInterface
         } else {
             // we already know identity for this record
             $user = $users->first();
-            if($this->validateEqualIdentity($user, $user_ext_data)) {
-                // possibly update user with new data
-                if($this->validateUpdate($user_ext_data)) {
-                    $update = $this->validator->valid();
-                    $this->user_mgr->updateUserWithContacts($user, $user_ext, $update);
-                }
+            if($this->validateUpdate($user_ext_data)) {
+                $data = $user_ext_data;
+            } else {
+                $data = $this->validator->valid();
+            }
+            if($this->validateEqualIdentity($user, $data)) {
+                // update user with new data
+                $this->user_mgr->updateUserWithContacts($user, $user_ext, $data);
             } else {
                 $user = null;
             }
