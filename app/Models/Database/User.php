@@ -5,9 +5,12 @@ namespace App\Models\Database;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Model
 {
+    use SoftDeletes;
+    
     //
     protected $table = 'user';
     
@@ -84,7 +87,7 @@ class User extends Model
         return $this->belongsTo('App\Models\Database\UserExt', 'created_by');
     }
     
-    public function modifiedBy() {
-        return $this->belongsTo('App\Models\Database\UserExt', 'modified_by');
+    public function updatedBy() {
+        return $this->belongsTo('App\Models\Database\UserExt', 'updated_by');
     }
 }

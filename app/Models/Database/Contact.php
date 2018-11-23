@@ -49,11 +49,15 @@ class Contact extends Model
         return $this->belongsTo('App\Models\Database\UserExt', 'created_by');
     }
     
-    public function modifiedBy() {
-        return $this->belongsTo('App\Models\Database\UserExt', 'modified_by');
+    public function updatedBy() {
+        return $this->belongsTo('App\Models\Database\UserExt', 'updated_by');
     }
 
     public function setPhoneAttribute($value) {
+        if($value == null) {
+            unset($this->attributes['phone']);
+            return;
+        }
         $value = preg_replace("/\s+/", "", $value);
         $length = strlen($value);
         if($length == 9) {

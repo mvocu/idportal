@@ -8,13 +8,17 @@ use App\Models\Database\User;
 use App\Models\Ldap\LdapUser;
 use Illuminate\Support\Str;
 use App\Interfaces\LdapConnector as LdapConnectorInterface;
+use App\Interfaces\ConsentManager;
 
 class LdapConnector implements LdapConnectorInterface
 {
     protected $ldap;
     
-    public function __construct(AdldapInterface $ldap) {
+    protected $consent_mgr;
+    
+    public function __construct(AdldapInterface $ldap, ConsentManager $cmgr) {
         $this->ldap = $ldap;
+        $this->consent_mgr = $cmgr;
     }
     
     /**
@@ -120,6 +124,7 @@ class LdapConnector implements LdapConnectorInterface
         if(!empty($user->country)) {
             $data['c'] = $user->country;
         }
+        
         $phones = $user->phones;
         if($phones->isNotEmpty()) {
             $data['telephoneNumber'] = $phones->pluck('phone')->all();

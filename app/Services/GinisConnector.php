@@ -4,25 +4,26 @@ namespace App\Services;
 
 use App\Interfaces\ExtSourceConnector;
 use App\Models\Database\ExtSource;
-use Illuminate\Support\Facades\Config;
 use WsdlToPhp\WsSecurity\WsSecurity;
 
 class GinisConnector implements ExtSourceConnector
 {
     protected $config;
+    protected $soapClient;
     
-    public function __construct() 
+    public function __construct($config) 
     {
-        $this->config = Config::get('ginis');
+        $this->config = $config;
+        $wsdl = resource_path() . "/wsdl/" . $this->config['endpoints']['gin'];
+        $this->soapClient = new \SoapClient($wsdl);
+        $securityHeader = WsSecurity::createWsSecuritySoapHeader($this->config['username'], $this->config['password'], false);
+        $this->soapClient->__setSoapHeaders([ $securityHeader ]);
     }
     
     public function listUsers(ExtSource $source)
     {
-        $soapClient = new \SoapClient($this->config['endpoints']['gin']);
-        $securityHeader = WsSecurity::createWsSecuritySoapHeader($this->config['username'], $this->config['password'], false);
-        $soapClient->__setSoapHeaders([ $securityHeader ]);
         try {
-            $result = $soapClient->NajdiEsu(
+            $result = $this->soapClient->NajdiEsu(
                 [ "requestXml" => [ 
                     "Xrg" => [ 
                         "Rizeni-prehledu" => [ 

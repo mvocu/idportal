@@ -71,7 +71,7 @@ class UserManager implements UserManagerInterface
     public function updateUserWithContacts(User $user, UserExt $user_ext, array $data): User
     {
         
-        $user->modifiedBy()->associate($user_ext);
+        $user->updatedBy()->associate($user_ext);
         $user->fill($data);
         
         // update contacts for explicit relations
@@ -108,6 +108,18 @@ class UserManager implements UserManagerInterface
         
     }
     
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\UserManager::mergeUserWithContacts()
+     */
+    public function mergeUserWithContacts(User $source, User $dest)
+    {
+        foreach($source->contacts as $contact) {
+            $contact->user()->assign($dest);
+            $contact->save();
+        }
+    }
+
     /**
      * {@inheritDoc}
      * @see \App\Interfaces\UserManager::findUser()
