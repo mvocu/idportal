@@ -105,7 +105,7 @@ class UserManager implements UserManagerInterface
                 }
             }
         }
-        
+        return $user;
     }
     
     /**
@@ -115,7 +115,7 @@ class UserManager implements UserManagerInterface
     public function mergeUserWithContacts(User $source, User $dest)
     {
         foreach($source->contacts as $contact) {
-            $contact->user()->assign($dest);
+            $contact->user()->associate($dest);
             $contact->save();
         }
     }
@@ -168,6 +168,18 @@ class UserManager implements UserManagerInterface
         
 
         return new Collection($results);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\UserManager::getRequiredTrustLevel()
+     */
+    public function getRequiredTrustLevel(User $user)
+    {
+        $trust_level = $user->accounts()
+        ->join('ext_sources', 'ext_sources.id', '=', 'user_ext.ext_source_id')
+        ->max('ext_sources.trust_level');
+        return $trust_level;
     }
 
     protected function _normalizePhones(&$data) {
