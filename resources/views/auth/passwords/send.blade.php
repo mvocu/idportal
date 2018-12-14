@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
-                <div class="panel-heading">Reset Password</div>
+                <div class="panel-heading">{{ __('Reset Password') }}</div>
 
                 <div class="panel-body">
                     @if (session('status'))
@@ -18,7 +18,7 @@
                         {{ csrf_field() }}
 
                         <div class="form-group{{ $errors->has('uid') ? ' has-error' : '' }}">
-                            <label for="uid" class="col-md-4 control-label">Phone or email</label>
+                            <label for="uid" class="col-md-4 control-label">{{ __('Phone or email') }}</label>
 
                             <div class="col-md-6">
                                 <input id="uid" type="text" class="form-control" name="uid" value="{{ old('uid') }}" required>
@@ -34,7 +34,7 @@
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
                                 <button type="submit" class="btn btn-primary">
-                                    Send Password Reset SMS
+                                    {{ __('Send Password Reset Code') }} 
                                 </button>
                             </div>
                         </div>

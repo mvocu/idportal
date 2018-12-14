@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
-                <div class="panel-heading">Reset Password</div>
+                <div class="panel-heading">{{ __('Reset Password') }}</div>
 
                 <div class="panel-body">
 
@@ -23,7 +23,7 @@
 						@if (empty($token)) 
 
                         <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                            <label for="token" class="col-md-4 control-label">{{ __('Authorization token') }}</label>
+                            <label for="token" class="col-md-4 control-label">{{ __('Authorization Token') }}</label>
 
                             <div class="col-md-6">
                                 <input id="token" type="text" class="form-control" name="token" value="{{ $token ?? old('token') }}" required autofocus>
@@ -42,10 +42,10 @@
                         
                         @endif
 
-						@if (empty($uid)) 
+						@if (empty($uid) && empty(old('uid'))) 
 
                         <div class="form-group{{ $errors->has('uid') ? ' has-error' : '' }}">
-                            <label for="uid" class="col-md-4 control-label">Username</label>
+                            <label for="uid" class="col-md-4 control-label">{{ __('Username') }}</label>
 
                             <div class="col-md-6">
                                 <input id="uid" type="text" class="form-control" name="uid" value="{{ $uid or old('uid') }}" required autofocus>
@@ -65,7 +65,7 @@
                         @endif
 
                         <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                            <label for="password" class="col-md-4 control-label">Password</label>
+                            <label for="password" class="col-md-4 control-label">{{ __('Password') }}</label>
 
                             <div class="col-md-6">
                                 <input id="password" type="password" class="form-control" name="password" required>
@@ -79,7 +79,7 @@
                         </div>
 
                         <div class="form-group{{ $errors->has('password_confirmation') ? ' has-error' : '' }}">
-                            <label for="password-confirm" class="col-md-4 control-label">Confirm Password</label>
+                            <label for="password-confirm" class="col-md-4 control-label">{{ __('Confirm Password') }}</label>
                             <div class="col-md-6">
                                 <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
 
@@ -94,7 +94,7 @@
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
                                 <button type="submit" class="btn btn-primary">
-                                    Reset Password
+                                    {{ __('Reset Password') }}
                                 </button>
                             </div>
                         </div>
