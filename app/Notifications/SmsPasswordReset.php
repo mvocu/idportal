@@ -37,7 +37,7 @@ class SmsPasswordReset extends Notification
 
 
     public function toSms($notifiable) {
-        return new SmsMessage('Enter following code to obtain new password: ' . $this->token);
+        return new SmsMessage(__('sms-reset-code', [ 'token' => $this->token ]));
     }
     
     /**

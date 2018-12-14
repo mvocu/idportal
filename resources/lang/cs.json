@@ -1,0 +1,28 @@
+{ 
+  "Login" : "Přihlašovací jméno",
+  "Sign-in" : "Přihlásit",
+  "Get password" : "Nastavit heslo",
+  "Register" : "Zaregistrovat se",
+  "Logout" : "Odhlásit",
+  "Logon" : "Přihlášení",
+  "Login, email or phone number" : "Přihlašovací jméno (login, email nebo telefon)",
+  "Password" : "Heslo",
+  "Remember Me" : "Pamatuj si mě",
+  "Forgot Your Password?" : "Zapomenuté heslo",
+  "Reset Password" : "Nové heslo",
+  "Phone or email" : "Telefonní číslo nebo email",
+  "Send Password Reset Code" : "Odeslat kód pro nastavení hesla",
+  "Authorization Token" : "Autorizační kód",
+  "Username" : "Přihlašovací jméno (nebo email, telefon)",
+  "Confirm Password" : "Heslo (potvrzení)",
+  "Whoops!" : "Jejda!",
+  "Hello!" : "Dobrý den!",
+  "Regards," : "S pozdravem",
+  "click-trouble" : "Máte-li problém s kliknutím na tlačítko :button, zkopírujte odkaz níže do adresního řádku vašeho prohlížeče:",
+  "sms-reset-code" : "Pro nastavení nového hesla použijte tento autorizační kód: :token",
+  "Reset Password Notification" : "Požadavek na nastavení hesla",
+  "You are receiving this email because we received a password reset request for your account." : "Tento e-mail jste obdrželi, protože jsme dostali žádost o nastavení nového hesla pro váš účet.",
+  "Reset password" : "Nastavit nové heslo",
+  "If you did not request a password reset, no further action is required." : "Pokud jste o nastavení nového hesla nežádali, tento mail prosím ignorujte."
+}
+
