@@ -23,6 +23,10 @@
   "Reset Password Notification" : "Požadavek na nastavení hesla",
   "You are receiving this email because we received a password reset request for your account." : "Tento e-mail jste obdrželi, protože jsme dostali žádost o nastavení nového hesla pro váš účet.",
   "Reset password" : "Nastavit nové heslo",
-  "If you did not request a password reset, no further action is required." : "Pokud jste o nastavení nového hesla nežádali, tento mail prosím ignorujte."
+  "If you did not request a password reset, no further action is required." : "Pokud jste o nastavení nového hesla nežádali, tento mail prosím ignorujte.",
+  "Helios Energo" : "Vodné a stočné",
+  "Ginis" : "Poplatky za odpad a psa",
+  "Clavius" : "Knihovní systém",
+  "AD Uvaly" : "Databáze městského úřadu"
 }
 
