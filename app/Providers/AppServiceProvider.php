@@ -22,6 +22,7 @@ use App\Utils\Names;
 use App\Services\ConsentManager;
 use App\Services\GinisConnector;
 use App\Services\TritiusConnector;
+use App\Services\ADConnector;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -39,6 +40,7 @@ class AppServiceProvider extends ServiceProvider
         // connectors - keys here must correspond to the type column in ext_sources table
         'Ginis' => GinisConnector::class,
         'Tritius' => TritiusConnector::class,
+        'AD' => ADConnector::class,
     ];
     
     /**
