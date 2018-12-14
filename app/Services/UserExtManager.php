@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
-use App\Models\Database\Contact;
 use App\Models\Database\ExtSource;
 use App\Models\Database\UserExt;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\UserExtManager as UserExtManagerInterface;
 use App\Models\Database\UserExtAttribute;
+use App\Http\Resources\UserResource;
 
 class UserExtManager implements UserExtManagerInterface
 {
@@ -17,38 +17,9 @@ class UserExtManager implements UserExtManagerInterface
      * {@inheritDoc}
      * @see \App\Interfaces\UserExtManager::extractUserWithAttributes()
      */
-    public function extractUserWithAttributes(UserExt $user_ext): array
+    public function getUserResource(UserExt $user_ext): array
     {
-        $result = array();
-        
-        foreach($user_ext->attributes as $attr) {
-            $name = $attr->attrDesc->core_name;
-            $value = trim($attr->value);
-            if(empty($name) || empty($value))
-                continue;
-            $names = explode(".", $name);
-
-            if(count($names) == 1) {
-                // single top-level attribute
-                $result[$name] = $value;
-            } else {
-                // attribute of some relation in the form: relation[index].name
-                if(preg_match("/([a-zA-Z]*)\[(\d+)\]/", $names[0], $matches)) {
-                    // hasMany relation: get relation name and index
-                    $attr_name = $matches[1];
-                    $index = $matches[2];
-                    if(in_array($attr_name, Contact::$contactTypes)) {
-                        // if it is a known contact relation, store the value in sub-subarray  
-                        $result[$attr_name][$index][$names[1]] = $value;
-                    }
-                } else {
-                    // hasOne relation: store the value in subarray
-                    $result[$names[0]][$names[1]] = $value;
-                }
-            }
-        }
-        
-        return $result;
+        return new UserResource($user_ext);
     }
 
     /**

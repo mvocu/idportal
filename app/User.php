@@ -96,7 +96,6 @@ class User extends LdapUser implements AuthenticatableContract, AuthorizableCont
     }
     
     public function getTrustedContact($type) {
-        $contact_mgr = resolve('App\Interfaces\ContactManager');
         $user = $this->getDatabaseUser();
         if(empty($user)) {
             if($type == Contact::TYPE_PHONE) {
@@ -113,7 +112,10 @@ class User extends LdapUser implements AuthenticatableContract, AuthorizableCont
                 $contact = new Contact(['type' => $type, 'email' => $email]);
             }
         } else {
-            $contact = $contact_mgr->findTrustedContacts($this->getDatabaseUser(), $type)->first();
+            $user_mgr = resolve('App\Interfaces\UserManager');
+            $contact_mgr = resolve('App\Interfaces\ContactManager');
+            $required_trust = $user_mgr->getRequiredTrustLevel($user);
+            $contact = $contact_mgr->findTrustedContacts($this->getDatabaseUser(), $type, $required_trust)->first();
         }
         return $contact;
     }
