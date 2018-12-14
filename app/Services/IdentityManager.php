@@ -7,7 +7,10 @@ use App\Interfaces\UserExtManager;
 use App\Interfaces\UserManager;
 use App\Interfaces\ExtSourceManager;
 use App\Models\Database\User;
+use App\Models\Database\UserExt;
 use Illuminate\Support\Facades\Validator;
+use App\Interfaces\ContactManager;
+use App\Models\Database\Contact;
 
 class IdentityManager implements IdentityManagerInterface
 {
@@ -94,33 +97,34 @@ class IdentityManager implements IdentityManagerInterface
     ];
     
     protected $user_mgr;
-    
     protected $user_ext_mgr;
-    
     protected $ext_source_mgr;
+    protected $contact_mgr;
     
     private $validator;
     
     public function __construct(UserManager $user_mgr, 
                                 ExtSourceManager $ext_source_mgr, 
-                                UserExtManager $user_ext_mgr) {
+                                UserExtManager $user_ext_mgr,
+                                ContactManager $contact_mgr) {
         $this->user_mgr = $user_mgr;
         $this->user_ext_mgr = $user_ext_mgr;
         $this->ext_source_mgr = $ext_source_mgr;
+        $this->contact_mgr = $contact_mgr;
     }
 
     /**
      * {@inheritDoc}
      * @see \App\Interfaces\IdentityManager::buildIdentityForUser()
      */
-    public function buildIdentityForUser(\App\Models\Database\UserExt $user_ext)
+    public function buildIdentityForUser(UserExt $user_ext)
     {
         $user = $user_ext->user;
         if(!empty($user)) {
             return $user;
         }
         
-        $user_ext_data = $this->user_ext_mgr->extractUserWithAttributes($user_ext);
+        $user_ext_data = $this->user_ext_mgr->getUserResource($user_ext)->toArray(null);
         $users = $this->user_mgr->findUser($user_ext_data);
         if($users->count() > 1) {
             // more users were found for this single external record
@@ -143,12 +147,42 @@ class IdentityManager implements IdentityManagerInterface
         } else {
             // we already know identity for this record
             $user = $users->first();
-            if($this->validateEqualIdentity($user, $user_ext_data)) {
-                // possibly update user with new data
-                if($this->validateUpdate($user_ext_data)) {
-                    $update = $this->validator->valid();
-                    $this->user_mgr->updateUserWithContacts($user, $user_ext, $update);
+            if($this->validateUpdate($user_ext_data)) {
+                $data = $user_ext_data;
+            } else {
+                $data = $this->validator->valid();
+            }
+            if($this->validateEqualIdentity($user, $data)) {
+                // check the required trust level
+                $user_trust = $this->user_mgr->getRequiredTrustLevel($user);
+                $candidate_trust = $user_ext->extSource->trust_level;
+                // if adding the candidate to the user identity would lead to identity with higher trust requirements,
+                // we should rather build separate identity and possibly merge later 
+                if($candidate_trust > $user_trust ||
+                    $candidate_trust == $user_trust && 
+                    !empty($data->phones) && 
+                    $this->contact_mgr->findTrustedContacts($user, Contact::TYPE_PHONE, $user_trust)->isEmpty()) 
+                {
+                    // the currently found identity is less trusted, create a new one 
+                    if($this->validateIdentity($user_ext_data)) {
+                        // this should never happen - we have found identity using this data, so the uniqueness requirement
+                        // should not be fulfilled
+                        $user = $this->user_mgr->createUserWithContacts($user_ext, $user_ext_data);
+                    } else {
+                        // try to build identity of data that remained after validation
+                        $data = $this->validator->valid();
+                        if($this->validateIdentity($data)) {
+                            $user = $this->user_mgr->createUserWithContacts($user_ext, $data);
+                        } else {
+                            $user = null;
+                        }
+                    }
+                } else {
+                    // we are adding to the more trustworthy identity:
+                    // update user with new data
+                    $this->user_mgr->updateUserWithContacts($user, $user_ext, $data);
                 }
+                
             } else {
                 $user = null;
             }
@@ -226,7 +260,7 @@ class IdentityManager implements IdentityManagerInterface
     {
         // reassign accounts (external users)
         foreach($source->accounts as $user_ext) {
-            $user_ext->user()->assign($dest);
+            $user_ext->user()->associate($dest);
             $user_ext->save();
         }
         // merge user records and contacts

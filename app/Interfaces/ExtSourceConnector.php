@@ -6,7 +6,8 @@ use App\Models\Database\ExtSource;
 
 interface ExtSourceConnector
 {
-    public function listUsers(ExtSource $source);
+    public function findUser(ExtSource $source, $user);
     
+    public function getUser(ExtSource $source, $id);
 }
 

@@ -41,7 +41,9 @@ class LdapConnector implements LdapConnectorInterface
     {
         $data = $this->_mapUser($user);
         $data['dn'] = $this->buildDN($user);
-        $data['uid'] = $this->_generateLogin($user);
+        if(empty($data['uid'])) {
+            $data['uid'] = $this->_generateLogin($user);
+        }
         $ldapuser = $this->ldap->getProvider('admin')->make()->user($data);
         $ldapuser->save();
         return $ldapuser;
@@ -115,23 +117,34 @@ class LdapConnector implements LdapConnectorInterface
     }
 
     protected function _mapUser(User $user) {
-        $data = [
-            'uniqueIdentifier' => $user->identifier,
-            'givenName' => $user->first_name,
-            'sn' => $user->last_name,
-            'cn' => $user->first_name . ( empty($user->middle_name) ? '' : ' ' . $user->middle_name ) . ' ' . $user->last_name,
-        ];
+        if(empty($user->last_name)) {
+            $data = [
+                'uniqueIdentifier' => $user->identifier,
+                'sn' => $user->identifier,
+                'cn' => $user->identifier,
+                'uid' => $user->identifier,
+            ];
+        } else {
+            $data = [
+                'uniqueIdentifier' => $user->identifier,
+                'sn' => $user->last_name,
+                'cn' => $user->first_name . ( empty($user->middle_name) ? '' : ' ' . $user->middle_name ) . ' ' . $user->last_name,
+            ];
+        }
+        if(!empty($user->first_name)) {
+            $data['givenName'] = $user->first_name;
+        }
         if(!empty($user->country)) {
             $data['c'] = $user->country;
         }
         
         $phones = $user->phones;
         if($phones->isNotEmpty()) {
-            $data['telephoneNumber'] = $phones->pluck('phone')->all();
+            $data['telephoneNumber'] = $phones->pluck('phone')->unique()->all();
         }
         $emails = $user->emails;
         if($emails->isNotEmpty()) {
-            $data['mail'] = $emails->pluck('email')->all();
+            $data['mail'] = $emails->pluck('email')->unique()->all();
         }
         $address = $user->residency;
         if(!empty($address)) {
@@ -144,7 +157,7 @@ class LdapConnector implements LdapConnectorInterface
         $addresses = $user->addresses;
         if($addresses->isNotEmpty()) {
             $data['postalAddress'] = $addresses->map(function($item, $key) { return $item->getFormattedAddress(); })
-                                        ->all();
+                                        ->unique()->all();
         }
 
         $accounts = $user->accounts;

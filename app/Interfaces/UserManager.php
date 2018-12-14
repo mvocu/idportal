@@ -15,5 +15,7 @@ interface UserManager
     public function updateUserWithContacts(User $user, UserExt $user_ext, array $data): User;
     
     public function mergeUserWithContacts(User $source, User $dest);
+    
+    public function getRequiredTrustLevel(User $user);
 }
 

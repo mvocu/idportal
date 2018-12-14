@@ -16,6 +16,6 @@ interface ContactManager
     
     public function updateContact(Contact $contact, UserExt $ext_user, array $data) : Contact;
     
-    public function findTrustedContacts(User $user, $type) : Collection; 
+    public function findTrustedContacts(User $user, $type, $trust_level) : Collection; 
 }
 
