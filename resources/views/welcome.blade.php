@@ -49,6 +49,13 @@
                 font-size: 84px;
             }
 
+            .title img {
+                max-height: 82px;
+                max-width: 100%;
+                display: block;
+                margin: 0 auto 46px;
+            }
+            
             .links > a {
                 color: #636b6f;
                 padding: 0 25px;
@@ -81,7 +88,8 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    IdPortal Úvaly
+                    <img alt="{{ config('app.name', 'Laravel') }}" src="/images/uvaly_logo.svg" />
+                    IdPortal
                 </div>
 
                 <div class="links">
