@@ -24,11 +24,11 @@
                     	</div>
                     	<div class="row">
                     		<div class="col-xs-4 text-right">{{ __('E-mail') }}</div>
-                    		<div class="col-xs-8">{{ empty($user->getEmail()) ? "" : implode(",", $user->mail) }}</div>
+                    		<div class="col-xs-8">{{ empty($user->getEmail()) ? "" : implode(";", $user->mail) }}</div>
                     	</div>
                     	<div class="row">
                     		<div class="col-xs-4 text-right">{{ __('Phone') }}</div>
-                    		<div class="col-xs-8">{{ empty($user->getTelephoneNumber()) ? "" : implode(",", $user->telephonenumber) }}</div>
+                    		<div class="col-xs-8">{{ empty($user->getTelephoneNumber()) ? "" : implode("; ", $user->telephonenumber) }}</div>
                     	</div>
                         <div class="row">
                                 <div class="col-xs-4 text-right">{{ __('SMS info') }}</div>
