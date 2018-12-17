@@ -1,9 +1,20 @@
 
 // Fonts
-@import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
+//@import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
+@import url(https://fonts.googleapis.com/css?family=Poppins:300,400,400i,600,700&subset=latin-ext);
 
 // Variables
 @import "variables";
 
 // Bootstrap
 @import "~bootstrap-sass/assets/stylesheets/bootstrap";
+
+.navbar-brand {
+	padding: 6px 15px;
+	height: 84px;
+
+	img {
+		max-width: 100%;
+		max-height: 72px;
+	}
+}

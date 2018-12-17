@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
-                <div class="panel-heading">Dashboard</div>
+                <div class="panel-heading"> {{ __('Dashboard') }}</div>
 
                 <div class="panel-body">
                     @if (session('status'))
@@ -32,7 +32,7 @@
                     	</div>
                         <div class="row">
                                 <div class="col-xs-4 text-right">{{ __('SMS info') }}</div>
-                                <div class="col-xs-8">{{ empty($value = $user->getFirstAttribute('employeenumber;x-sms-info')) ? "ne" : "ano" }}</div>
+                                <div class="col-xs-8">{{ empty($value = $user->getFirstAttribute('employeenumber;x-sms-contacts')) ? "ne" : "ano" }}</div>
                         </div>
                         <div class="row">
                                 <div class="col-xs-4 text-right">{{ __('Newsletter') }}</div>

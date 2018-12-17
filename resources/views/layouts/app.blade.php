@@ -29,7 +29,7 @@
 
                     <!-- Branding Image -->
                     <a class="navbar-brand" href="{{ url('/') }}">
-                        {{ config('app.name', 'Laravel') }}
+                        <img alt="{{ config('app.name', 'Laravel') }}" src="/images/uvaly_logo.svg" />
                     </a>
                 </div>
 
