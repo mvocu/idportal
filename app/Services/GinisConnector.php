@@ -6,7 +6,6 @@ use App\Interfaces\ExtSourceConnector;
 use App\Models\Database\ExtSource;
 use WsdlToPhp\WsSecurity\WsSecurity;
 use App\Http\Resources\UserResource;
-use App\Services\AbstractExtSourceConnector;
 use Illuminate\Database\Eloquent\Collection;
 
 class GinisConnector extends AbstractExtSourceConnector implements ExtSourceConnector 
@@ -26,7 +25,7 @@ class GinisConnector extends AbstractExtSourceConnector implements ExtSourceConn
     public function findUser(ExtSource $source, $user)
     {
         if($user instanceof UserResource) {
-            $data = $this->getExtResource($source, $user);
+            $data = $this->getExtUserResource($source, $user)->toArray(null);
         } elseif (is_array($user)) {
             $data = $user;
         } else {

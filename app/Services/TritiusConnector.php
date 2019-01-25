@@ -7,7 +7,7 @@ use App\Models\Database\ExtSource;
 use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Collection;
 
-class TritiusConnector implements ExtSourceConnector
+class TritiusConnector extends AbstractExtSourceConnector implements ExtSourceConnector
 {
     protected $config;
     protected $client;
