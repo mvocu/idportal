@@ -38,6 +38,7 @@ class UserExtManager implements UserExtManagerInterface
             
             $user->save();
             
+            // TODO: handle multi-valued attributes
             if(array_key_exists('attributes', $data) && is_array($data['attributes'])) {
                 foreach($data['attributes'] as $name => $value) {
                     $value = trim($value);
