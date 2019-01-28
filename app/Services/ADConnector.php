@@ -38,6 +38,36 @@ class ADConnector implements ExtSourceConnector
         return $this->mapResult($entry->getAttributes());
     }
     
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\ExtSourceConnector::listUsers()
+     */
+    public function listUsers(\App\Models\Database\ExtSource $source)
+    {
+        try {
+            $results = $this->ad->search()->select('*')
+                ->where([
+                    ['objectclass', '=', 'person'  ],
+                    ['objectclass', '!', 'computer']
+                ])
+                ->get();
+        } catch (AdldapException $e) {
+            $this->lastStatus = $e->getMessage();
+            return null;
+        }
+        $this->lastStatus = null;
+        return $results->map(function($item, $key) { return $this->mapResult($item->getAttributes()); });
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\ExtSourceConnector::supportsUserListing()
+     */
+    public function supportsUserListing(\App\Models\Database\ExtSource $source)
+    {
+        return true;
+    }
+
     protected function mapResult($entry) {
         $result = [];
         foreach($this->attribute_names as $name) {
@@ -51,7 +81,8 @@ class ADConnector implements ExtSourceConnector
         if(!empty($entry['proxyaddresses'])) {
             foreach($entry['proxyaddresses'] as $addr) {
                 $parts = explode(':', $addr);
-                if($parts[0] != 'smtp') continue; 
+                if($parts[0] != 'smtp' || $parts[0] != 'SMTP') continue; 
+                if(ends_with($parts[1], array(".local"))) continue;
                 if(!array_key_exists('mail', $result)) {
                     $result['mail'] = [];
                 }

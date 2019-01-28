@@ -48,6 +48,15 @@ class TritiusConnector extends AbstractExtSourceConnector implements ExtSourceCo
         return $this->parseResponse($this->client->get('users/' . $id));     
     }
 
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\ExtSourceConnector::supportsUserListing()
+     */
+    public function supportsUserListing(\App\Models\Database\ExtSource $source)
+    {
+        return true;        
+    }
+
     protected function parseResponse($response) {
         if($response->getStatusCode() != 200) {
             $this->lastStatus = $response->getStatusCode() . " " .$response->getReasonPhrase();

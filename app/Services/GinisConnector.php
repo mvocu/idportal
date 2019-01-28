@@ -73,6 +73,24 @@ class GinisConnector extends AbstractExtSourceConnector implements ExtSourceConn
         return $this->mapResult($result->{'Detail-esuResult'}->Xrg->{'Detail-esu'});
     }
     
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\ExtSourceConnector::listUsers()
+     */
+    public function listUsers(\App\Models\Database\ExtSource $source)
+    {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\ExtSourceConnector::supportsUserListing()
+     */
+    public function supportsUserListing(\App\Models\Database\ExtSource $source)
+    {
+        return false;        
+    }
+
     protected function mapResult($data) {
         $result = [];
         foreach($data as $key => $value) {
