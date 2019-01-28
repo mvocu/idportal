@@ -44,6 +44,18 @@ class UserResource extends JsonResource
                             // if it is a known contact relation, store the value in sub-subarray
                             $result[$attr_name][$index][$names[1]] = $value;
                         }
+                    // attribute of some relation in the form: relation[].name
+                    } elseif (preg_match("/([a-zA-Z]*)\[\]/", $names[0], $matches)) {
+                        // hasMany relation with one multivalued attribute
+                        $attr_name = $matches[1];
+                        if(in_array($attr_name, Contact::$contactTypes)) {
+                            // known contact relation, add the value into sub-subarray
+                            if(empty($result[$attr_name])) {
+                                $result[$attr_name] = array();
+                            }
+                            $result[$attr_name][] = [ $names[1] => $value ];
+                            
+                        }
                     } else {
                         // hasOne relation: store the value in subarray
                         $result[$names[0]][$names[1]] = $value;

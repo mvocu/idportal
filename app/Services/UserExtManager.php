@@ -15,9 +15,9 @@ class UserExtManager implements UserExtManagerInterface
     
     /**
      * {@inheritDoc}
-     * @see \App\Interfaces\UserExtManager::extractUserWithAttributes()
+     * @see \App\Interfaces\UserExtManager::getUserResource()
      */
-    public function getUserResource(UserExt $user_ext): array
+    public function getUserResource(UserExt $user_ext): UserResource
     {
         return new UserResource($user_ext);
     }
@@ -38,6 +38,7 @@ class UserExtManager implements UserExtManagerInterface
             
             $user->save();
             
+            // TODO: handle multi-valued attributes
             if(array_key_exists('attributes', $data) && is_array($data['attributes'])) {
                 foreach($data['attributes'] as $name => $value) {
                     $value = trim($value);
