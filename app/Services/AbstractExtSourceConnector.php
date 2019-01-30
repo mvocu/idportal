@@ -48,5 +48,11 @@ abstract class AbstractExtSourceConnector implements ExtSourceConnector
     public function getLastStatus() {
         return $this->lastStatus;
     }
+    
+    protected function makeResource($data, $key) {
+        $id = $data[$key];
+        unset($data[$key]);
+        return new ExtUserResource([ 'id' => $id, 'attributes' => $data ]);
+    }
 }
 
