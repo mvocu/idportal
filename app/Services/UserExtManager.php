@@ -7,6 +7,7 @@ use App\Models\Database\UserExt;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\UserExtManager as UserExtManagerInterface;
 use App\Models\Database\UserExtAttribute;
+use App\Http\Resources\ExtUserResource;
 use App\Http\Resources\UserResource;
 
 class UserExtManager implements UserExtManagerInterface
@@ -15,9 +16,9 @@ class UserExtManager implements UserExtManagerInterface
     
     /**
      * {@inheritDoc}
-     * @see \App\Interfaces\UserExtManager::extractUserWithAttributes()
+     * @see \App\Interfaces\UserExtManager::getUserResource()
      */
-    public function getUserResource(UserExt $user_ext): array
+    public function getUserResource(UserExt $user_ext): UserResource
     {
         return new UserResource($user_ext);
     }
@@ -26,10 +27,10 @@ class UserExtManager implements UserExtManagerInterface
      * {@inheritDoc}
      * @see \App\Interfaces\UserExtManager::createUserWithAttributes()
      */
-    public function createUserWithAttributes(ExtSource $source, array $data): UserExt
+    public function createUserWithAttributes(ExtSource $source, ExtUserResource $data): UserExt
     {
         $user = new UserExt();
-        $user->fill($data);
+        $user->fill([ 'login' => $data->getId() ]);
         $user->extSource()->associate($source);
 
         $attrDefs = $this->getAttrDefs($source);
@@ -37,22 +38,103 @@ class UserExtManager implements UserExtManagerInterface
         DB::transaction(function() use ($source, $data, $user, $attrDefs) {
             
             $user->save();
-            
-            if(array_key_exists('attributes', $data) && is_array($data['attributes'])) {
-                foreach($data['attributes'] as $name => $value) {
+                
+            foreach($data->toArray(null) as $name => $values) {
+                if (! array_key_exists($name, $attrDefs))
+                    continue;
+                $attrDef = $attrDefs[$name];
+                if (! is_array($values)) {
+                    $values = [
+                        $values
+                    ];
+                }
+                foreach ($values as $value) {
                     $value = trim($value);
-                    if(empty($value)) continue;
-                    if(array_key_exists($name, $attrDefs)) {
-                        $attrDef = $attrDefs[$name];    
-                        $attr = new UserExtAttribute(['value' => $value]);
-                        $attr->attrDesc()->associate($attrDef);
-                        $user->attributes()->save($attr);
-                    }
+                    if (empty($value))
+                        continue;
+                    $attr = new UserExtAttribute([
+                        'value' => $value
+                    ]);
+                    $attr->attrDesc()->associate($attrDef);
+                    $user->attributes()->save($attr);
                 }
             }
                 
         });
         return $user; 
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\UserExtManager::updateUserWithAttributes()
+     */
+    public function updateUserWithAttributes(\App\Models\Database\ExtSource $source, UserExt $user, ExtUserResource $data): UserExt
+    {
+        $attrDefs = $this->getAttrDefs($source);
+        $modified = false;
+                
+        DB::transaction(function() use ($source, $user, $data, $attrDefs, $modified) {
+                
+            // remove all current attributes that are not in new data
+            $present_attr_ids = array_values(array_map(function ($val) {
+                                    return $val->id;
+                                }, array_intersect_key($attrDefs, $data->toArray(null))));
+            $deleted = $user->attributes()
+                ->whereNotIn('ext_source_attribute_id', $present_attr_ids)
+                ->delete();
+            $modified |= $deleted > 0;
+                
+            // go through the new data, possibly add/modify attributes
+            foreach($data->toArray(null) as $name => $values) {
+                if (! array_key_exists($name, $attrDefs))
+                    continue;
+                $attrDef = $attrDefs[$name];
+                if (!is_array($values)) {
+                    $values = [
+                        $values
+                    ];
+                }
+                $values = array_map(function($val) { return trim($val); }, $values);
+                // remove values not present anymore
+                $deleted = $user->attributes()
+                    ->where('ext_source_attribute_id', $attrDef->id)
+                    ->whereNotIn('value', $values)
+                    ->delete();
+                $modified |= $deleted > 0;
+                
+                // add values not present yet
+                foreach(collect($values)->diff($user->attributes()
+                                                ->where('ext_source_attribute_id', $attrDef->id)
+                                                ->get()->pluck('value')) as $value) {
+                    $attr = new UserExtAttribute([
+                        'value' => $value
+                    ]);
+                    $attr->attrDesc()->associate($attrDef);
+                    $user->attributes()->save($attr);
+                    $modified = true;
+                }
+            }
+        });
+        
+        return $user;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\UserExtManager::syncUsers()
+     */
+    public function syncUsers(ExtSource $source, \Illuminate\Support\Collection $users)
+    {
+        $result = array();
+        foreach($users as $user_resource) {
+            $user = UserExt::where('login', $user_resource->getId())->first();
+            if($user == null) {
+                $result[] = $this->createUserWithAttributes($source, $user_resource);
+            } else {
+                $result[] = $this->updateUserWithAttributes($source, $user, $user_resource);
+            }
+        }
+        return collect($result);
     }
 
     protected function getAttrDefs(ExtSource $source) {

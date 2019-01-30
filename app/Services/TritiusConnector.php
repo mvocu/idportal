@@ -7,7 +7,7 @@ use App\Models\Database\ExtSource;
 use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Collection;
 
-class TritiusConnector implements ExtSourceConnector
+class TritiusConnector extends AbstractExtSourceConnector implements ExtSourceConnector
 {
     protected $config;
     protected $client;
@@ -46,6 +46,15 @@ class TritiusConnector implements ExtSourceConnector
     public function getUser(\App\Models\Database\ExtSource $source, $id)
     {
         return $this->parseResponse($this->client->get('users/' . $id));     
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\ExtSourceConnector::supportsUserListing()
+     */
+    public function supportsUserListing(\App\Models\Database\ExtSource $source)
+    {
+        return true;        
     }
 
     protected function parseResponse($response) {
