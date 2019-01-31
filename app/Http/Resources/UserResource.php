@@ -35,6 +35,8 @@ class UserResource extends JsonResource
                     // single top-level attribute
                     $result[$name] = $value;
                 } else {
+                    if($names[1] == 'phone')
+                        $value = $this->_normalizePhone($value);
                     // attribute of some relation in the form: relation[index].name
                     if (preg_match("/([a-zA-Z]*)\[(\d+)\]/", $names[0], $matches)) {
                         // hasMany relation: get relation name and index
@@ -54,7 +56,6 @@ class UserResource extends JsonResource
                                 $result[$attr_name] = array();
                             }
                             $result[$attr_name][] = [ $names[1] => $value ];
-                            
                         }
                     } else {
                         // hasOne relation: store the value in subarray
@@ -70,5 +71,12 @@ class UserResource extends JsonResource
         } else {
             return parent::toArray($request);
         }
+    }
+    
+    protected function _normalizePhone($value) 
+    {
+        $contact = new Contact();
+        $contact->setAttribute('phone', $value);
+        return $contact->phone;
     }
 }

@@ -12,7 +12,7 @@ use App\Interfaces\IdentityManager as IdentityManagerInterface;
 use App\Interfaces\LdapConnector as LdapConnectorInterface;
 use App\Interfaces\ContactManager as ContactManagerInterface;
 use App\Interfaces\ConsentManager as ConsentManagerInterface;
-use App\Services\SynchronizationManager as SynchronizationManagerInterface;
+use App\Interfaces\SynchronizationManager as SynchronizationManagerInterface;
 use App\Services\ContactManager;
 use App\Services\UserExtManager;
 use App\Services\UserManager;

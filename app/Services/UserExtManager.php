@@ -9,6 +9,8 @@ use App\Interfaces\UserExtManager as UserExtManagerInterface;
 use App\Models\Database\UserExtAttribute;
 use App\Http\Resources\ExtUserResource;
 use App\Http\Resources\UserResource;
+use App\Events\UserExtUpdatedEvent;
+use App\Events\UserExtCreatedEvent;
 
 class UserExtManager implements UserExtManagerInterface
 {
@@ -61,6 +63,9 @@ class UserExtManager implements UserExtManagerInterface
             }
                 
         });
+        
+        event(new UserExtCreatedEvent($user));
+        
         return $user; 
     }
 
@@ -73,7 +78,7 @@ class UserExtManager implements UserExtManagerInterface
         $attrDefs = $this->getAttrDefs($source);
         $modified = false;
                 
-        DB::transaction(function() use ($source, $user, $data, $attrDefs, $modified) {
+        DB::transaction(function() use ($source, $user, $data, $attrDefs, &$modified) {
                 
             // remove all current attributes that are not in new data
             $present_attr_ids = array_values(array_map(function ($val) {
@@ -115,7 +120,11 @@ class UserExtManager implements UserExtManagerInterface
                 }
             }
         });
-        
+
+        if ($modified) {
+            event(new UserExtUpdatedEvent($user->refresh()));
+        }
+
         return $user;
     }
 
