@@ -207,7 +207,7 @@ class IdentityManager implements IdentityManagerInterface
     }
 
 
-    public function validateIdentity($user_ext_data) : bool {
+    public function validateIdentity(array $user_ext_data) : bool {
         $this->validator = Validator::make($user_ext_data, $this->identityRequirements);
         $this->validator->sometimes('residency.org_number', 'required_without:residency.ev_number|integer',
             function($input) { return !empty($input->residency); }
