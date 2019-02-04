@@ -102,7 +102,7 @@ class UserManager implements UserManagerInterface
                         $contact = $this->contact_mgr->createContact($user, $user_ext, $contact_data, $class);
                     } else {
                         // this is not neccessary - unless contact manager performs more intelligent search
-                        $contact = $this->contact_mgr->updateContact($contact, $user_ext, $contact_data);
+                        // $contact = $this->contact_mgr->updateContact($contact, $user_ext, $contact_data);
                     }
                 }
             }
