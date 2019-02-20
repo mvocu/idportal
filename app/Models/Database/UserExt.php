@@ -10,7 +10,7 @@ class UserExt extends Model
 
     protected $table = 'user_ext';
     
-    protected $fillable = ['user_id', 'ext_source_id', 'login'];
+    protected $fillable = ['login'];
     
     public function attributes() {
         return $this->hasMany('App\Models\Database\UserExtAttribute', 'user_ext_id');    

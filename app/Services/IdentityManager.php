@@ -157,24 +157,32 @@ class IdentityManager implements IdentityManagerInterface
                 $user_trust = $this->user_mgr->getRequiredTrustLevel($user);
                 $candidate_trust = $user_ext->extSource->trust_level;
                 // if adding the candidate to the user identity would lead to identity with higher trust requirements,
-                // we should rather build separate identity and possibly merge later 
+                // we should rather build separate identity and possibly merge later,
+                // or do not build identity at all 
                 if($candidate_trust > $user_trust ||
                     $candidate_trust == $user_trust && 
                     !empty($data->phones) && 
                     $this->contact_mgr->findTrustedContacts($user, Contact::TYPE_PHONE, $user_trust)->isEmpty()) 
                 {
-                    // the currently found identity is less trusted, create a new one 
-                    if($this->validateIdentity($user_ext_data)) {
-                        // this should never happen - we have found identity using this data, so the uniqueness requirement
-                        // should not be fulfilled
-                        $user = $this->user_mgr->createUserWithContacts($user_ext, $user_ext_data);
+
+                    if($user->confidence_level > 1) {
+                        // we are pretty sure this is the same user, but adding it would compromise the candidates
+                        // trust level requirements, so we back off
+                        $user = null;   
                     } else {
-                        // try to build identity of data that remained after validation
-                        $data = $this->validator->valid();
-                        if($this->validateIdentity($data)) {
-                            $user = $this->user_mgr->createUserWithContacts($user_ext, $data);
+                        // the currently found identity is less trusted, create a new one 
+                        if($this->validateIdentity($user_ext_data)) {
+                            // this should never happen - we have found identity using this data, so the uniqueness requirement
+                            // should not be fulfilled
+                            $user = $this->user_mgr->createUserWithContacts($user_ext, $user_ext_data);
                         } else {
-                            $user = null;
+                            // try to build identity of data that remained after validation
+                            $data = $this->validator->valid();
+                            if($this->validateIdentity($data)) {
+                                $user = $this->user_mgr->createUserWithContacts($user_ext, $data);
+                            } else {
+                                $user = null;
+                            }
                         }
                     }
                 } else {
@@ -199,7 +207,7 @@ class IdentityManager implements IdentityManagerInterface
     }
 
 
-    public function validateIdentity($user_ext_data) : bool {
+    public function validateIdentity(array $user_ext_data) : bool {
         $this->validator = Validator::make($user_ext_data, $this->identityRequirements);
         $this->validator->sometimes('residency.org_number', 'required_without:residency.ev_number|integer',
             function($input) { return !empty($input->residency); }

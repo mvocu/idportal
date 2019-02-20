@@ -6,7 +6,7 @@ use App\Models\Database\ExtSource;
 use Adldap\Adldap;
 use Adldap\AdldapException;
 
-class ADConnector implements ExtSourceConnector
+class ADConnector extends AbstractExtSourceConnector implements ExtSourceConnector
 {
 
     protected $attribute_names = ['samaccountname', 'givenname', 'sn', 'telephonenumber', 'mail' ];
@@ -48,6 +48,7 @@ class ADConnector implements ExtSourceConnector
             $results = $this->ad->search()->select('*')
                 ->where([
                     ['objectclass', '=', 'person'  ],
+                    ['objectclass', '=', 'user' ],
                     ['objectclass', '!', 'computer']
                 ])
                 ->get();
@@ -72,7 +73,7 @@ class ADConnector implements ExtSourceConnector
         $result = [];
         foreach($this->attribute_names as $name) {
             if(empty($entry[$name])) continue;
-            if($name == 'mail') {
+            if(false && $name == 'mail') {
                 $result[$name] = $entry[$name];
             } else {
                 $result[$name] = count($entry[$name]) > 1 ? $entry[$name] : $entry[$name][0];
@@ -81,15 +82,15 @@ class ADConnector implements ExtSourceConnector
         if(!empty($entry['proxyaddresses'])) {
             foreach($entry['proxyaddresses'] as $addr) {
                 $parts = explode(':', $addr);
-                if($parts[0] != 'smtp' || $parts[0] != 'SMTP') continue; 
+                if($parts[0] != 'smtp' && $parts[0] != 'SMTP') continue; 
                 if(ends_with($parts[1], array(".local"))) continue;
                 if(!array_key_exists('mail', $result)) {
-                    $result['mail'] = [];
+                    $result['proxyaddresses'] = [];
                 }
-                $result['mail'][] = $parts[1];
+                $result['proxyaddresses'][] = $parts[1];
             }
         }
-        return $result;
+        return $this->makeResource($result, 'samaccountname');
     }
 }
 

@@ -15,23 +15,24 @@ use App\Models\Database\Databox;
 use App\Models\Database\Phone;
 use App\Models\Database\Email;
 use App\Models\Database\UserExt;
+use App\Http\Resources\UserResource;
+use App\Events\UserCreatedEvent;
+use App\Events\UserUpdatedEvent;
 
 class UserManager implements UserManagerInterface
 {
     protected $contact_mgr;
     
-    public function __construct(ContactManagerInterface $contact_mgr) {
+    public function __construct(ContactManagerInterface $contact_mgr) 
+    {
         $this->contact_mgr = $contact_mgr;
     }
     
-    public function createUserWithContacts(UserExt $user_ext, array $data): User {
-
+    public function createUserWithContacts(UserExt $user_ext, array $data): User 
+    {
         $user = new User();
-
         $user->fill($data);
-
         $user->createdBy()->associate($user_ext);
-        
         $user->identifier = Uuid::uuid4();
 
         DB::transaction(function() use ($user, $user_ext, $data) {
@@ -61,6 +62,8 @@ class UserManager implements UserManagerInterface
         
         }); // END transaction
 
+        event(new UserCreatedEvent($user));
+        
         return $user;
     }
 
@@ -70,7 +73,6 @@ class UserManager implements UserManagerInterface
      */
     public function updateUserWithContacts(User $user, UserExt $user_ext, array $data): User
     {
-        
         $user->updatedBy()->associate($user_ext);
         $user->fill($data);
         
@@ -95,16 +97,19 @@ class UserManager implements UserManagerInterface
         foreach(Contact::$contactModels as $name => $class) {
             if(array_key_exists($name, $data) && is_array($data[$name])) {
                 foreach($data[$name] as $contact_data) {
-                    $contact = $contact_mgr->findContact($user, $contact_data, $name);
-                    if(empty($contact)) {
+                    $contacts = $contact_mgr->findContact($user, $contact_data, $name);
+                    if(empty($contacts) || $contacts->isEmpty()) {
                         $contact = $this->contact_mgr->createContact($user, $user_ext, $contact_data, $class);
                     } else {
                         // this is not neccessary - unless contact manager performs more intelligent search
-                        $contact = $this->contact_mgr->updateContact($contact, $user_ext, $contact_data);
+                        // $contact = $this->contact_mgr->updateContact($contact, $user_ext, $contact_data);
                     }
                 }
             }
         }
+        
+        event(new UserUpdatedEvent($user));
+        
         return $user;
     }
     
