@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
-                <div class="panel-heading"> {{ __('Dashboard') }}</div>
+                <div class="panel-heading">{{ __('Dashboard') }} @if (isset($user)) - {{ $user->name }} @endif</div>
 
                 <div class="panel-body">
                     @if (session('status'))
@@ -15,9 +15,6 @@
                     @endif
 
                     @if ( isset($user) )
-                    	<div class="row">
-                    		<div class="col-xs-12">{{ $user->name }}</div>
-                    	</div>
                     	<div class="row">
                     		<div class="col-xs-4 text-right">{{ __('Login') }}</div>
                     		<div class="col-xs-8">{{ implode(",", $user->uid) }}</div>
