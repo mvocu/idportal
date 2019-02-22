@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\Resource;
 
-class ExtUserResource extends JsonResource
+class ExtUserResource extends Resource
 {
     public function toArray($request) {
         return $this->resource['attributes'];
