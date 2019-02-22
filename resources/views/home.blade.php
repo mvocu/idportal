@@ -30,7 +30,11 @@
 					@foreach ($accounts as $account)
                         <div class="row">
                                 <div class="col-4 text-right">{{ __($account['name']) }}</div>
-                                <div class="col-8">{{ empty($value = $user->getFirstAttribute('employeenumber;x-'.$account['tag'])) ? "ne" : "ano" }}</div>
+                                <div class="col-2">{{ empty($value = $user->getFirstAttribute('employeenumber;x-'.$account['tag'])) ? "ne" : "ano" }}</div>
+					@if (!empty($user->getFirstAttribute('employeenumber;x-'.$account['tag']))) 
+                                <div class="col-3">{{ empty($account['phones']) ? "" : $account['phones'][0] }}</div>
+                                <div class="col-3">{{ empty($account['emails']) ? "" : $account['emails'][0] }}</div>
+					@endif
                         </div>
 					@endforeach
                     @endif
