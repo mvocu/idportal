@@ -41,8 +41,8 @@ class HomeController extends Controller
         if($user != null) {
             foreach($user->accounts as $account) {
                 $data = $this->user_ext_mgr->getUserResource($account)->toArray(null);
-                $accounts[$account->extSource->id]['phones'] = $data['phones'];
-                $accounts[$account->extSource->id]['emails'] = $data['emails'];
+                if(array_key_exists('phones', $data)) $accounts[$account->extSource->id]['phone'] = $data['phones'][0]['phone'];
+                if(array_key_exists('emails', $data)) $accounts[$account->extSource->id]['email'] = $data['emails'][0]['email'];
             }
         }
         return view('home', ['user' => Auth::user(), 'accounts' => $accounts ]);
