@@ -27,30 +27,16 @@
                     		<div class="col-xs-4 text-right">{{ __('Phone') }}</div>
                     		<div class="col-xs-8">{{ empty($user->getTelephoneNumber()) ? "" : implode("; ", $user->telephonenumber) }}</div>
                     	</div>
+					@foreach ($accounts as $account)
                         <div class="row">
-                                <div class="col-xs-4 text-right">{{ __('SMS info') }}</div>
-                                <div class="col-xs-8">{{ empty($value = $user->getFirstAttribute('employeenumber;x-sms-contacts')) ? "ne" : "ano" }}</div>
+                                <div class="col-xs-4 text-right">{{ __($account['name']) }}</div>
+                                <div class="col-xs-2">{{ empty($value = $user->getFirstAttribute('employeenumber;x-'.$account['tag'])) ? "ne" : "ano" }}</div>
+					@if (!empty($user->getFirstAttribute('employeenumber;x-'.$account['tag']))) 
+                                <div class="col-xs-3">{{ empty($account['phones']) ? "" : $account['phones'][0] }}</div>
+                                <div class="col-xs-3">{{ empty($account['emails']) ? "" : $account['emails'][0] }}</div>
+					@endif
                         </div>
-                        <div class="row">
-                                <div class="col-xs-4 text-right">{{ __('Newsletter') }}</div>
-                                <div class="col-xs-8">{{ empty($value = $user->getFirstAttribute('employeenumber;x-mail-contacts')) ? "ne" : "ano" }}</div>
-                        </div>
-                        <div class="row">
-                                <div class="col-xs-4 text-right">{{ __('Helios Energo') }}</div>
-                                <div class="col-xs-8">{{ empty($value = $user->getFirstAttribute('employeenumber;x-helios-energo')) ? "ne" : "ano" }}</div>
-                        </div>
-                        <div class="row">
-                                <div class="col-xs-4 text-right">{{ __('Ginis') }}</div>
-                                <div class="col-xs-8">{{ empty($value = $user->getFirstAttribute('employeenumber;x-ginis')) ? "ne" : "ano" }}</div>
-                        </div>
-                        <div class="row">
-                                <div class="col-xs-4 text-right">{{ __('Clavius') }}</div>
-                                <div class="col-xs-8">{{ empty($value = $user->getFirstAttribute('employeenumber;x-clavius')) ? "ne" : "ano" }}</div>
-                        </div>
-                        <div class="row">
-                                <div class="col-xs-4 text-right">{{ __('AD Uvaly') }}</div>
-                                <div class="col-xs-8">{{ empty($value = $user->getFirstAttribute('employeenumber;x-ad-meu-uvaly')) ? "ne" : "ano" }}</div>
-                        </div>
+					@endforeach
                     @endif
                 </div>
             </div>
