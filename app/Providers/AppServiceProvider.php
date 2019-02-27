@@ -80,5 +80,8 @@ class AppServiceProvider extends ServiceProvider
         foreach($this->singletons as $interface => $implementation) {
             $this->app->singleton($interface, $implementation );
         }
+        foreach ($this->bindings as $key => $value) {
+            $this->app->bind($key, $value);
+        }
     }
 }
