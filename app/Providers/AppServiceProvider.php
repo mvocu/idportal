@@ -23,6 +23,7 @@ use App\Utils\Names;
 use App\Services\ConsentManager;
 use App\Services\GinisConnector;
 use App\Services\TritiusConnector;
+use App\Services\HeliosConnector;
 use App\Services\ADConnector;
 use App\Services\SynchronizationManager;
 
@@ -44,6 +45,7 @@ class AppServiceProvider extends ServiceProvider
         'Ginis' => GinisConnector::class,
         'Tritius' => TritiusConnector::class,
         'AD' => ADConnector::class,
+        'Helios' => HeliosConnector::class,
     ];
     
     /**
