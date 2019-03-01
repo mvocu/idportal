@@ -11,7 +11,11 @@
                     <form method="POST" action="{{ route('register') }}" aria-label="{{ __('Register') }}">
                         @csrf
 
-						@include('components.smsauthorization')
+						@component('components.smsauthorization')
+						    @slot('url')
+						    {{ route('register.authorize') }}
+						    @endslot
+						@endcomponent
 						
                         <div class="form-group row">
                             <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('First name') }}</label>
