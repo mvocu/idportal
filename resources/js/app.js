@@ -17,7 +17,7 @@ window.Vue = require('vue');
 
 // Vue.component('example-component', require('./components/ExampleComponent.vue'));
 
-// Vue.component('sms-authorization', require('./components/SMSAuthorization.vue'));
+// Vue.component('smsauthorization', require('./components/SMSAuthorizationComponent.vue'));
 
 const app = new Vue({
     el: '#app'
