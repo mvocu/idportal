@@ -21,6 +21,6 @@ Route::post('/password/send', 'Auth\ForgotPasswordController@sendResetCode')->na
 // ...redirects to...
 Route::get('/password/token', 'Auth\ResetPasswordController@showResetForm')->name('password.token');
 
-Route::post('/register/authorize', 'Auth\RegisterController@authorize' )->name('register.authorize');
+Route::post('/register/authorize', 'Auth\RegisterController@sendAuthorizationToken' )->name('register.authorize');
 
 Route::get('/home', 'HomeController@index')->name('home');
