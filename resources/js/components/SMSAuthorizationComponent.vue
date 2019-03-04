@@ -4,7 +4,7 @@
                             <label for="phone" class="col-md-4 col-form-label text-md-right">{{ phone.label }}</label>
 
                             <div class="col-md-6">
-                                <input id="phone" type="text" v-model="mobile" v-bind:class="'form-control' + (phone.valid ? '' : ' is-invalid')" name="phone" required>
+                                <input id="phone" type="text" v-model="mobile" class="form-control" v-bind:class="{ 'is-invalid': !phone.valid }" name="phone" required>
 
 								<slot name="phone-error"></slot>
                             </div>
@@ -22,7 +22,7 @@
                             <label for="token" class="col-md-4 col-form-label text-md-right">{{ token.label }}</label>
 
                             <div class="col-md-6">
-                                <input id="token" type="text" v-bind:class="'form-control' + (token.valid ? '' : 'is-invalid')" name="token" v-bind:value="token.old" required autofocus>
+                                <input id="token" type="text" class="form-control" v-bind:class="{ 'is-invalid': !token.valid }" name="token" v-bind:value="token.old" required autofocus>
 
 								<slot name="token-error"></slot>
                             </div>
