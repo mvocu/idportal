@@ -40,7 +40,6 @@ class PhoneUser implements CanResetPassword {
 trait AuthorizesBySMS {
 
     public function sendAuthorizationToken(Request $request) {
-        // 6LeL7JUUAAAAALrXc4tX-O7PyxPCewKhFrXZU1ie
         
         $this->validatePhone($request);
         

@@ -3,6 +3,7 @@
   v-bind:phone="{ label: '{{ __('Phone number') }}', old: '{{ old('phone') }}', valid: {{ $errors->has('phone') ? false : true }} }"
   v-bind:token="{ label: '{{ __('Authorization token') }}', old : '{{ old('token') }}', valid: {{ $errors->has('token') ? false : true }} }"
   v-bind:send="{ label: '{{ __('Send authorization code') }}', url: '{{ $url }}' }"
+  v-bind:recaptcha="{ client_secret: '{{ (Config::get('recaptcha'))['client_secret'] }}' }"
   >
 <template name="phone-error">
                                 @if ($errors->has('phone'))

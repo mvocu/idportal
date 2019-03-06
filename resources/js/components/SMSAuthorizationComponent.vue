@@ -3,7 +3,7 @@
 
                          <div class="form-group row">
                             <div class="col-md-6 offset-md-4">
-								<div class="g-recaptcha" data-sitekey="6LeL7JUUAAAAAEOvLzcFcaVQQdACA8Ap6ByvuRrK"></div>
+								<div class="g-recaptcha" v-bind:data-sitekey="recaptcha.client_secret"></div>
                             </div>
                         </div>
 
@@ -48,7 +48,8 @@
     	props: {
     		phone: Object,
     		token: Object,
-    		send: Object
+    		send: Object,
+    		recaptcha: Object
     	},
     	methods: {
 			sendToken: function(phone) {
