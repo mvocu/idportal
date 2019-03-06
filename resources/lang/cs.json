@@ -27,6 +27,7 @@
   "Regards," : "S pozdravem",
   "click-trouble" : "Máte-li problém s kliknutím na tlačítko :button, zkopírujte odkaz níže do adresního řádku vašeho prohlížeče:",
   "sms-reset-code" : "Pro nastavení nového hesla použijte tento autorizační kód: :token",
+  "sms-authorization-code" : "Váš autorizační kód: :token",
   "Reset Password Notification" : "Požadavek na nastavení hesla",
   "You are receiving this email because we received a password reset request for your account." : "Tento e-mail jste obdrželi, protože jsme dostali žádost o nastavení nového hesla pro váš účet.",
   "Reset password" : "Nastavit nové heslo",

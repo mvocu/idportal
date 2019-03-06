@@ -1,6 +1,13 @@
 <template>
 <div class="sms-authorization">
-                        <div class="form-group row">
+
+                         <div class="form-group row">
+                            <div class="col-md-6 offset-md-4">
+								<div class="g-recaptcha" data-sitekey="6LeL7JUUAAAAAEOvLzcFcaVQQdACA8Ap6ByvuRrK"></div>
+                            </div>
+                        </div>
+
+                         <div class="form-group row">
                             <label for="phone" class="col-md-4 col-form-label text-md-right">{{ phone.label }}</label>
 
                             <div class="col-md-6">
@@ -45,7 +52,10 @@
     	},
     	methods: {
 			sendToken: function(phone) {
-				jQuery.post(this.send.url, this.mobile).done(function(data) { this.tokenSent = 1 });
+				var context = this;
+				var reCaptcha = grecaptcha.getResponse();
+				jQuery.post(this.send.url, { 'phone': this.mobile, 'recaptcha': reCaptcha })
+					  .done(function(data) { context.tokenSent = 1 });
 			}
     	}
     }

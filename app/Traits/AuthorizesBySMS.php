@@ -40,10 +40,14 @@ class PhoneUser implements CanResetPassword {
 trait AuthorizesBySMS {
 
     public function sendAuthorizationToken(Request $request) {
+        // 6LeL7JUUAAAAALrXc4tX-O7PyxPCewKhFrXZU1ie
+        
         $this->validatePhone($request);
         
-        $phone_user = new PhoneUser($request->only('phone'));
+        $phone_user = new PhoneUser($request->input('phone'));
         $phone_user->sendPasswordResetNotification($this->getRepository()->create($phone_user));
+        
+        return response()->json(['phone' => $request->input('phone'), 'status' => 1 ]);
     }
     
     public function validatePhone(Request $request) {
