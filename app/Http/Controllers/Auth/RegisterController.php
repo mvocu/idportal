@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Foundation\Auth\ResetsPasswords;
 use App\Traits\AuthorizesBySMS;
 
 class RegisterController extends Controller
@@ -22,7 +23,14 @@ class RegisterController extends Controller
     |
     */
 
-    use RegistersUsers, AuthorizesBySMS;
+    use RegistersUsers {    /* PROVIDES: showRegistrationForm, register, registered, guard */
+                            /* REQUIRES: validator, create */
+            guard as registerGuard;    
+        }                  
+
+    use AuthorizesBySMS,    /* PROVIDES: sendAuthorizationToken, validatePhone, validateToken */ 
+        ResetsPasswords;    /* PROVIDES: showResetForm, reset, rules, validationErrorMessage, credentials, resetPassword,
+                               sendResetResponse, sendResetFailedResponse, broker, guard */
 
     /**
      * Where to redirect users after registration.

@@ -55,7 +55,7 @@
 			sendToken: function(phone) {
 				var context = this;
 				var reCaptcha = grecaptcha.getResponse();
-				jQuery.post(this.send.url, { 'phone': this.mobile, 'recaptcha': reCaptcha })
+				jQuery.post(this.send.url, { 'phone': this.mobile, 'g-recaptcha-response': reCaptcha })
 					  .done(function(data) { context.tokenSent = 1 });
 			}
     	}

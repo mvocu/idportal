@@ -44,18 +44,18 @@ trait AuthorizesBySMS {
         $this->validatePhone($request);
         
         $phone_user = new PhoneUser($request->input('phone'));
-        $phone_user->sendPasswordResetNotification($this->getRepository()->create($phone_user));
+        $phone_user->sendPasswordResetNotification($this->broker()->getRepository()->create($phone_user));
         
         return response()->json(['phone' => $request->input('phone'), 'status' => 1 ]);
     }
     
     public function validatePhone(Request $request) {
-        $request->validate(['phone' => 'required|phone']);
+        $request->validate(['phone' => 'required|phone', 'g-recaptcha-response' => 'required|recaptcha']);
     }
 
-    public function getRepository() {
-        // reuse token repository for password resets
-        return Password::broker()->getRepository();
+    public function validateToken(Request $request) {
+        
     }
+    
 }
 
