@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\User;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RegistersUsers;
-use Illuminate\Foundation\Auth\ResetsPasswords;
+use Illuminate\Http\Request;
 use App\Traits\AuthorizesBySMS;
+use App\Interfaces\UserExtManager;
+use App\Models\Database\ExtSource;
+use App\Http\Resources\ExtUserResource;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class RegisterController extends Controller
 {
@@ -23,32 +27,49 @@ class RegisterController extends Controller
     |
     */
 
-    use RegistersUsers {    /* PROVIDES: showRegistrationForm, register, registered, guard */
+    use RegistersUsers;     /* PROVIDES: showRegistrationForm, register, registered, guard */
                             /* REQUIRES: validator, create */
-            guard as registerGuard;    
-        }                  
-
-    use AuthorizesBySMS,    /* PROVIDES: sendAuthorizationToken, validatePhone, validateToken */ 
-        ResetsPasswords;    /* PROVIDES: showResetForm, reset, rules, validationErrorMessage, credentials, resetPassword,
-                               sendResetResponse, sendResetFailedResponse, broker, guard */
-
+    use AuthorizesBySMS;    /* PROVIDES: sendAuthorizationToken, validatePhone, validateToken */ 
+    
     /**
      * Where to redirect users after registration.
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/auth/activate';
 
+    protected $user_ext_mgr;
+    
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(UserExtManager $user_ext_mgr)
     {
         $this->middleware('guest');
+        $this->user_ext_mgr = $user_ext_mgr;
     }
 
+    /**
+     * Handle a registration request for the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function register(Request $request)
+    {
+        $this->validator($request->all())->validate();
+        
+        // check token
+        $this->validateToken($request);
+        
+        event(new Registered($user = $this->create($request->all())));
+        
+        return $this->registered($request, $user)
+            ?: redirect($this->redirectPath());
+    }
+    
     /**
      * Get a validator for an incoming registration request.
      *
@@ -58,9 +79,10 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
+            'firstname' => 'required|string|max:255',
+            'lastname' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:contact',
+            'phone' => 'required|string|phone|max:255|unique:contact',
         ]);
     }
 
@@ -68,14 +90,27 @@ class RegisterController extends Controller
      * Create a new user instance after a valid registration.
      *
      * @param  array  $data
-     * @return \App\User
+     * @return 
      */
     protected function create(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
+        $source = ExtSource::where('type', 'Internal')->get()->first();
+        if($source == null) throw new ModelNotFoundException();
+        $resource = new ExtUserResource([ 'id' => $data['email'], 'active' => false, 'attributes' => $data ]);
+        $user = $this->user_ext_mgr->createUserWithAttributes($source, $resource);
+        return $user;
     }
+    
+    /**
+     * The user has been registered.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return mixed
+     */
+    protected function registered(Request $request, $user)
+    {
+        return redirect()->action('Auth\ActivateController@showActivationForm', [ 'id' => $user->login ]);
+    }
+    
 }

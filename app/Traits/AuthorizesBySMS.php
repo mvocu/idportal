@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Notifications\Notification;
@@ -54,8 +55,25 @@ trait AuthorizesBySMS {
     }
 
     public function validateToken(Request $request) {
-        
+        $phone_user = new PhoneUser($request->input['phone']);
+        $tokens = $this->broker()->getRepository();
+        Validator::make($request->all(), [
+            'phone' => 'required|phone',
+            'token' => [
+                'required',
+                'string',
+                function($attribute, $value, $fail) use ($tokens, $phone_user) {
+                    if(!$tokens->exists($phone_user, $value)) {
+                       $fail($attribute.' is invalid.'); 
+                    }
+                }
+            ]
+        ])->validate();
     }
     
+    protected function broker()
+    {
+        return Password::broker();
+    }
 }
 

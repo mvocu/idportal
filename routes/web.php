@@ -21,4 +21,6 @@ Route::post('/password/send', 'Auth\ForgotPasswordController@sendResetCode')->na
 // ...redirects to...
 Route::get('/password/token', 'Auth\ResetPasswordController@showResetForm')->name('password.token');
 
+Route::get('/auth/activate', 'Auth\ActivateController@showActivationForm')->name('auth.activate');
+
 Route::get('/home', 'HomeController@index')->name('home');

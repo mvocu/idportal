@@ -32,7 +32,7 @@ class UserExtManager implements UserExtManagerInterface
     public function createUserWithAttributes(ExtSource $source, ExtUserResource $data): UserExt
     {
         $user = new UserExt();
-        $user->fill([ 'login' => $data->getId() ]);
+        $user->fill([ 'login' => $data->getId(), 'active' => $data->isActive() ]);
         $user->extSource()->associate($source);
 
         $attrDefs = $this->getAttrDefs($source);
@@ -64,7 +64,7 @@ class UserExtManager implements UserExtManagerInterface
                 
         });
         
-        event(new UserExtCreatedEvent($user));
+        if($data->isActive()) event(new UserExtCreatedEvent($user));
         
         return $user; 
     }
