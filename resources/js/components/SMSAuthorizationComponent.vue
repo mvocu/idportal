@@ -25,7 +25,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group row" v-if="tokenSent">
+                        <div class="form-group row" v-if="tokenSent || !token.valid ">
                             <label for="token" class="col-md-4 col-form-label text-md-right">{{ token.label }}</label>
 
                             <div class="col-md-6">

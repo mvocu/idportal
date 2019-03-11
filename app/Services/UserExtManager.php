@@ -136,7 +136,7 @@ class UserExtManager implements UserExtManagerInterface
     {
         $result = array();
         foreach($users as $user_resource) {
-            $user = UserExt::where('login', $user_resource->getId())->first();
+            $user = $this->getUser($source, $user_resource);
             if($user == null) {
                 $result[] = $this->createUserWithAttributes($source, $user_resource);
             } else {
@@ -144,6 +144,15 @@ class UserExtManager implements UserExtManagerInterface
             }
         }
         return collect($result);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\UserExtManager::getUser()
+     */
+    public function getUser(ExtSource $source, ExtUserResource $data): UserExt
+    {
+        return UserExt::where('login', $user_resource->getId())->where('ext_source_id', $source->id)->first();
     }
 
     protected function getAttrDefs(ExtSource $source) {

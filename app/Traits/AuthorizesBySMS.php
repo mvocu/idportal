@@ -55,7 +55,7 @@ trait AuthorizesBySMS {
     }
 
     public function validateToken(Request $request) {
-        $phone_user = new PhoneUser($request->input['phone']);
+        $phone_user = new PhoneUser($request->input('phone'));
         $tokens = $this->broker()->getRepository();
         Validator::make($request->all(), [
             'phone' => 'required|phone',

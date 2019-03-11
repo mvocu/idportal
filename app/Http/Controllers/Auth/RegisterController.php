@@ -64,6 +64,11 @@ class RegisterController extends Controller
         // check token
         $this->validateToken($request);
         
+        // check presence
+        $data = $request->all();
+        $resource = new ExtUserResource([ 'id' => $data['email'], 'active' => false, 'attributes' => $data ]);
+        $user_ext = $this->user_ext_mgr->getUserResource($user_ext);
+        
         event(new Registered($user = $this->create($request->all())));
         
         return $this->registered($request, $user)
@@ -81,8 +86,8 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'firstname' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:contact',
-            'phone' => 'required|string|phone|max:255|unique:contact',
+            'email' => 'required|string|email|max:255|unique:contact,email',
+            'phone' => 'required|string|phone|max:255|unique:contact,phone',
         ]);
     }
 
