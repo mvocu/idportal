@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Auth\Events\Registered;
@@ -13,6 +14,43 @@ use App\Interfaces\UserExtManager;
 use App\Models\Database\ExtSource;
 use App\Http\Resources\ExtUserResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Contracts\Auth\CanResetPassword;
+
+class ActivateUser implements CanResetPassword
+{
+
+    use Notifiable;
+    
+    // this is used to route notifications through mail channel
+    protected $email;
+    
+    public function __construct($email)
+    {
+        $this->email = $email;
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \Illuminate\Contracts\Auth\CanResetPassword::getEmailForPasswordReset()
+     */
+    public function getEmailForPasswordReset()
+    {
+        // used as key for tokens table
+        return $this->email;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \Illuminate\Contracts\Auth\CanResetPassword::sendPasswordResetNotification()
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        // create and send notification
+        $this->notify(new ActivateUserNotification($token));
+    }
+
+    
+}
 
 class RegisterController extends Controller
 {
@@ -29,7 +67,7 @@ class RegisterController extends Controller
 
     use RegistersUsers;     /* PROVIDES: showRegistrationForm, register, registered, guard */
                             /* REQUIRES: validator, create */
-    use AuthorizesBySMS;    /* PROVIDES: sendAuthorizationToken, validatePhone, validateToken */ 
+    use AuthorizesBySMS;    /* PROVIDES: sendAuthorizationToken, validatePhone, validateToken, broker */ 
     
     /**
      * Where to redirect users after registration.
@@ -64,12 +102,12 @@ class RegisterController extends Controller
         // check token
         $this->validateToken($request);
         
-        // check presence
-        $data = $request->all();
-        $resource = new ExtUserResource([ 'id' => $data['email'], 'active' => false, 'attributes' => $data ]);
-        $user_ext = $this->user_ext_mgr->getUserResource($user_ext);
+        $user = $this->create($request->all());
+        if(false === $user) {
+            return redirect('/register')->withErrors([__('User already registered.')]);    
+        }
         
-        event(new Registered($user = $this->create($request->all())));
+        event(new Registered($user));
         
         return $this->registered($request, $user)
             ?: redirect($this->redirectPath());
@@ -102,6 +140,10 @@ class RegisterController extends Controller
         $source = ExtSource::where('type', 'Internal')->get()->first();
         if($source == null) throw new ModelNotFoundException();
         $resource = new ExtUserResource([ 'id' => $data['email'], 'active' => false, 'attributes' => $data ]);
+        $user = $this->user_ext_mgr->getUser($source, $resource);
+        if($user != null) {
+            return false;
+        }
         $user = $this->user_ext_mgr->createUserWithAttributes($source, $resource);
         return $user;
     }
@@ -115,6 +157,8 @@ class RegisterController extends Controller
      */
     protected function registered(Request $request, $user)
     {
+        // send activation challenge
+        
         return redirect()->action('Auth\ActivateController@showActivationForm', [ 'id' => $user->login ]);
     }
     
