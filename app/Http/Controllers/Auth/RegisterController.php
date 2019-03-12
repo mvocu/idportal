@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -13,6 +12,7 @@ use App\Traits\AuthorizesBySMS;
 use App\Interfaces\UserExtManager;
 use App\Models\Database\ExtSource;
 use App\Http\Resources\ExtUserResource;
+use App\Notifications\ActivateUserNotification;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Contracts\Auth\CanResetPassword;
 
@@ -159,7 +159,7 @@ class RegisterController extends Controller
     {
         // send activation challenge
         
-        return redirect()->action('Auth\ActivateController@showActivationForm', [ 'id' => $user->login ]);
+        return redirect()->route('activate.token', [ 'id' => $user->login ]);
     }
     
 }
