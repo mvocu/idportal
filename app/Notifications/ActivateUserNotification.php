@@ -11,6 +11,7 @@ class ActivateUserNotification extends Notification
 {
     use Queueable;
     
+    private $user;
     private $token;
     
     /**
@@ -18,8 +19,9 @@ class ActivateUserNotification extends Notification
      *
      * @return void
      */
-    public function __construct($token)
+    public function __construct($user, $token)
     {
+        $this->user = $user;
         $this->token = $token;
     }
     
@@ -44,8 +46,11 @@ class ActivateUserNotification extends Notification
     {
         return (new MailMessage)
         ->subject(Lang::getFromJson('Account Activation Required'))
-        ->line(Lang::getFromJson('You are receiving this email because we received a new account registration request.'))
-        ->action(Lang::getFromJson('Activate Account'), url(config('app.url').route('auth.activate', $this->token, false)))
+        ->line(Lang::getFromJson('You are receiving this email because we received a new account registration request. To activate your account, please click on the link below or enter this code into activation form: :token', [ 'token' => $this->token ]))
+        ->action(Lang::getFromJson('Activate Account'), url(config('app.url').route('activate.token', 
+                                                                                    ['id' => $this->user,
+                                                                                     'token' => $this->token], 
+                                                                                    false)))
         ->line(Lang::getFromJson('If you did not register new account, no further action is required.'));
     }
     

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -12,45 +11,8 @@ use App\Traits\AuthorizesBySMS;
 use App\Interfaces\UserExtManager;
 use App\Models\Database\ExtSource;
 use App\Http\Resources\ExtUserResource;
-use App\Notifications\ActivateUserNotification;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Contracts\Auth\CanResetPassword;
-
-class ActivateUser implements CanResetPassword
-{
-
-    use Notifiable;
-    
-    // this is used to route notifications through mail channel
-    protected $email;
-    
-    public function __construct($email)
-    {
-        $this->email = $email;
-    }
-    
-    /**
-     * {@inheritDoc}
-     * @see \Illuminate\Contracts\Auth\CanResetPassword::getEmailForPasswordReset()
-     */
-    public function getEmailForPasswordReset()
-    {
-        // used as key for tokens table
-        return $this->email;
-    }
-
-    /**
-     * {@inheritDoc}
-     * @see \Illuminate\Contracts\Auth\CanResetPassword::sendPasswordResetNotification()
-     */
-    public function sendPasswordResetNotification($token)
-    {
-        // create and send notification
-        $this->notify(new ActivateUserNotification($token));
-    }
-
-    
-}
+use App\Traits\SendsAccountActivationEmail;
 
 class RegisterController extends Controller
 {
@@ -68,6 +30,8 @@ class RegisterController extends Controller
     use RegistersUsers;     /* PROVIDES: showRegistrationForm, register, registered, guard */
                             /* REQUIRES: validator, create */
     use AuthorizesBySMS;    /* PROVIDES: sendAuthorizationToken, validatePhone, validateToken, broker */ 
+
+    use SendsAccountActivationEmail; /* PROVIDES: sendActivationLink */
     
     /**
      * Where to redirect users after registration.
@@ -104,7 +68,9 @@ class RegisterController extends Controller
         
         $user = $this->create($request->all());
         if(false === $user) {
-            return redirect('/register')->withErrors([__('User already registered.')]);    
+            return redirect('/register')
+                ->withInput($request->all())
+                ->withErrors(['email' => __('User already registered.')]);    
         }
         
         event(new Registered($user));
@@ -142,7 +108,12 @@ class RegisterController extends Controller
         $resource = new ExtUserResource([ 'id' => $data['email'], 'active' => false, 'attributes' => $data ]);
         $user = $this->user_ext_mgr->getUser($source, $resource);
         if($user != null) {
-            return false;
+            if($user->active) {
+                return false;
+            } else {
+                $this->user_ext_mgr->updateUserWithAttributes($source, $user, $resource);
+                return $user;
+            }
         }
         $user = $this->user_ext_mgr->createUserWithAttributes($source, $resource);
         return $user;
@@ -158,8 +129,10 @@ class RegisterController extends Controller
     protected function registered(Request $request, $user)
     {
         // send activation challenge
+        $this->sendActivationLink($request);
         
-        return redirect()->route('activate.token', [ 'id' => $user->login ]);
+        return redirect()->route('activate.token', [ 'id' => $user->login ])
+            ->with('status', __('Activation code was sent to :address', [ 'address' => $request->input('email') ]));
     }
     
 }

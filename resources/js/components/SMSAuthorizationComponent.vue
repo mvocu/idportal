@@ -29,7 +29,7 @@
                             <label for="token" class="col-md-4 col-form-label text-md-right">{{ token.label }}</label>
 
                             <div class="col-md-6">
-                                <input id="token" type="text" class="form-control" v-bind:class="{ 'is-invalid': !token.valid }" name="token" v-bind:value="token.old" required autofocus>
+                                <input id="token" type="text" class="form-control" v-bind:class="{ 'is-invalid': !token.valid }" v-model="authcode" name="token" required autofocus>
 
 								<slot name="token-error"></slot>
                             </div>
@@ -42,7 +42,8 @@
     	data() {
     		return {
     			tokenSent: 0,
-    			mobile: this.phone.old
+    			mobile: this.phone.old,
+    			authcode: ""
     		}
     	},
     	props: {
@@ -56,7 +57,7 @@
 				var context = this;
 				var reCaptcha = grecaptcha.getResponse();
 				jQuery.post(this.send.url, { 'phone': this.mobile, 'g-recaptcha-response': reCaptcha })
-					  .done(function(data) { context.tokenSent = 1 });
+					  .done(function(data) { context.tokenSent = 1; context.authcode = "" });
 			}
     	}
     }

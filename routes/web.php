@@ -25,9 +25,8 @@ Route::get('/activate/request', 'Auth\ActivateController@showRequestForm')->name
 // posts to
 Route::post('/activate/send', 'Auth\ActivateController@sendActivationCode')->name('activate.send');
 // redirects to
-Route::get('/activate/token/{id}/{token?}', 'Auth\ActivateController@showTokenForm')->name('activate.token');
+Route::get('/activate/token/{id}/{token?}', 'Auth\ActivateController@showActivateForm')->name('activate.token');
 // posts to
 Route::post('/activate/activate', 'Auth\ActivateController@activate')->name('activate.activate');
-// redirects to /password/token
 
 Route::get('/home', 'HomeController@index')->name('home');

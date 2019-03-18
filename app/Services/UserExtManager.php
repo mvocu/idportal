@@ -150,9 +150,9 @@ class UserExtManager implements UserExtManagerInterface
      * {@inheritDoc}
      * @see \App\Interfaces\UserExtManager::getUser()
      */
-    public function getUser(ExtSource $source, ExtUserResource $data): UserExt
+    public function getUser(ExtSource $source, ExtUserResource $data): ?UserExt
     {
-        return UserExt::where('login', $user_resource->getId())->where('ext_source_id', $source->id)->first();
+        return UserExt::where('login', $data->getId())->where('ext_source_id', $source->id)->first();
     }
 
     protected function getAttrDefs(ExtSource $source) {
