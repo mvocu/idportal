@@ -3,9 +3,12 @@
 namespace App\Traits;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Password;
 
 trait ActivatesAccount {
 
+    use SendsAccountActivationEmail;
+    
     public function showActivateForm(Request $request, $id, $token = null)
     {
         return view('auth.activate')->with(
@@ -15,6 +18,7 @@ trait ActivatesAccount {
 
     public function activate(Request $request)
     {
+        $this->validateToken($request);
         $this->validate($request, $this->rules(), $this->validationErrorMessages());
         
         // Here we will attempt to reset the user's password. If it is successful we
@@ -43,8 +47,6 @@ trait ActivatesAccount {
     protected function rules()
     {
         return [
-            'token' => 'required',
-            'uid' => 'required|email',
             'password' => 'required|confirmed|min:6',
         ];
     }

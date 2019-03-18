@@ -5,6 +5,7 @@ namespace App\Traits;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Validator;
 use App\Notifications\ActivateUserNotification;
 
 class ActivateUser implements CanResetPassword
@@ -55,6 +56,23 @@ trait SendsAccountActivationEmail {
     {
         $user = new ActivateUser($request->input('email'));
         $user->sendPasswordResetNotification($this->broker()->getRepository()->create($user));
+    }
+    
+    public function validateToken(Request $request) {
+        $activate_user = new ActivateUser($request->input('uid'));
+        $tokens = $this->broker()->getRepository();
+        Validator::make($request->all(), [
+            'uid' => 'required|email',
+            'token' => [
+                'required',
+                'string',
+                function($attribute, $value, $fail) use ($tokens, $activate_user) {
+                    if(!$tokens->exists($activate_user, $value)) {
+                        $fail($attribute.' is invalid.');
+                    }
+                }
+                ]
+                ])->validate();
     }
     
 }
