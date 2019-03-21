@@ -11,6 +11,8 @@ use App\Models\Database\UserExt;
 use Illuminate\Support\Facades\Validator;
 use App\Interfaces\ContactManager;
 use App\Models\Database\Contact;
+use App\Events\UserIdentityFailedEvent;
+use Illuminate\Support\MessageBag;
 
 class IdentityManager implements IdentityManagerInterface
 {
@@ -128,6 +130,7 @@ class IdentityManager implements IdentityManagerInterface
         $users = $this->user_mgr->findUser($user_ext_data);
         if($users->count() > 1) {
             // more users were found for this single external record
+            event(new UserIdentityFailedEvent($user_ext, new MessageBag(['failure' => 'More than one candidate found.'])));
             return $users->pluck('id')->toArray();
         }
         
@@ -200,6 +203,9 @@ class IdentityManager implements IdentityManagerInterface
             $user_ext->user()->associate($user);
             $user_ext->save();
         } else {
+            $errors = $this->validator->errors();
+            $errors->add('failure', 'Identity creation failed.');
+            event(new UserIdentityFailedEvent($user_ext, $errors));
             return $this->validator;
         }
         

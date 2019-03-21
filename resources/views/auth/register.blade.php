@@ -8,45 +8,22 @@
                 <div class="panel-heading">{{ __('Registration') }}</div>
 
                 <div class="panel-body">
+
+                    @if ($errors->has('failure'))
+                        <div class="alert alert-error" role="alert">
+                            {{ $errors->first('failure') }}
+                        </div>
+                    @endif
+
                     <form class="form-horizontal" method="POST" action="{{ route('register') }}">
                         {{ csrf_field() }}
 
-                        <div class="form-group row {{ $errors->has('phone') ? ' has-error' : '' }}">
-                            <label for="phone" class="col-md-4 col-form-label text-md-right control-label">{{ __('Phone number') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="phone" type="text" class="form-control{{ $errors->has('phone') ? ' is-invalid' : '' }}" name="phone" value="{{ old('phone') }}" required>
-
-                                @if ($errors->has('phone'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('phone') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <div class="col-md-6 offset-md-4 col-md-offset-4">
-                                <button type="button" class="btn btn-primary">
-                                    {{ __('Send authorization code') }}
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="form-group row {{ $errors->has('token') ? ' has-error' : '' }}">
-                            <label for="token" class="col-md-4 col-form-label text-md-right control-label">{{ __('Authorization token') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="token" type="text" class="form-control{{ $errors->has('token') ? ' is-invalid' : '' }}" name="token" value="{{ $token ?? old('token') }}" required autofocus>
-
-                                @if ($errors->has('token'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('token') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
+						@component('components.smsauthorization')
+						    @slot('url')
+						    {{ route('register.authorize') }}
+						    @endslot
+						@endcomponent
+						
                         <div class="form-group row {{ $errors->has('firstname') ? ' has-error' : '' }}">
                             <label for="firstname" class="col-md-4 col-form-label text-md-right control-label">{{ __('First name') }}</label>
 
@@ -86,28 +63,6 @@
                                         <strong>{{ $errors->first('email') }}</strong>
                                     </span>
                                 @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                            <label for="password" class="col-md-4 control-label">{{ __('Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control" name="password" required>
-
-                                @if ($errors->has('password'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('password') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="password-confirm" class="col-md-4 control-label">{{ __('Confirm Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
                             </div>
                         </div>
 

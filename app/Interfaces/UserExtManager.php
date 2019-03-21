@@ -18,5 +18,8 @@ interface UserExtManager
     
     public function syncUsers(ExtSource $source, Collection $users);
     
+    public function getUser(ExtSource $source, ExtUserResource $data) : ?UserExt ;
+    
+    public function activateUser(ExtSource $source, ExtUserResource $data) : ?UserExt;
 }
 

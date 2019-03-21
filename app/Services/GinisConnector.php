@@ -79,7 +79,7 @@ class GinisConnector extends AbstractExtSourceConnector implements ExtSourceConn
      */
     public function listUsers(\App\Models\Database\ExtSource $source)
     {
-        return null;
+        return $this->findUser($source, [ "Uroven-pristupu" => 9000 ]);
     }
 
     /**
@@ -88,7 +88,7 @@ class GinisConnector extends AbstractExtSourceConnector implements ExtSourceConn
      */
     public function supportsUserListing(\App\Models\Database\ExtSource $source)
     {
-        return false;        
+        return true;        
     }
 
     protected function mapResult($data) {
@@ -101,7 +101,7 @@ class GinisConnector extends AbstractExtSourceConnector implements ExtSourceConn
                 $result[$key] = $value;
             }
         }
-        return $result;
+        return $this->makeResource($result, "Id-esu");
     }
     
 }

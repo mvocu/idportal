@@ -37,7 +37,7 @@ class SmsAuthorizationCode extends Notification
 
 
     public function toSms($notifiable) {
-        return new SmsMessage('Your authorization code: ' . $this->token);
+        return new SmsMessage( __('sms-authorization-code', [ 'token' => $this->token ]) );
     }
     
     /**

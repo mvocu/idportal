@@ -32,7 +32,7 @@ class UserExtManager implements UserExtManagerInterface
     public function createUserWithAttributes(ExtSource $source, ExtUserResource $data): UserExt
     {
         $user = new UserExt();
-        $user->fill([ 'login' => $data->getId() ]);
+        $user->fill([ 'login' => $data->getId(), 'active' => $data->isActive() ]);
         $user->extSource()->associate($source);
 
         $attrDefs = $this->getAttrDefs($source);
@@ -64,7 +64,7 @@ class UserExtManager implements UserExtManagerInterface
                 
         });
         
-        event(new UserExtCreatedEvent($user));
+        if($data->isActive()) event(new UserExtCreatedEvent($user));
         
         return $user; 
     }
@@ -136,7 +136,7 @@ class UserExtManager implements UserExtManagerInterface
     {
         $result = array();
         foreach($users as $user_resource) {
-            $user = UserExt::where('login', $user_resource->getId())->first();
+            $user = $this->getUser($source, $user_resource);
             if($user == null) {
                 $result[] = $this->createUserWithAttributes($source, $user_resource);
             } else {
@@ -144,6 +144,31 @@ class UserExtManager implements UserExtManagerInterface
             }
         }
         return collect($result);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\UserExtManager::getUser()
+     */
+    public function getUser(ExtSource $source, ExtUserResource $data): ?UserExt
+    {
+        return UserExt::where('login', $data->getId())->where('ext_source_id', $source->id)->first();
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\UserExtManager::activateUser()
+     */
+    public function activateUser(ExtSource $source, ExtUserResource $data): ?UserExt
+    {
+        $user = $this->getUser($source, $data);
+        if($user == null) return null;
+        $user->active = true;
+        $user->save();
+
+        event(new UserExtUpdatedEvent($user->refresh()));
+        
+        return $user;
     }
 
     protected function getAttrDefs(ExtSource $source) {
