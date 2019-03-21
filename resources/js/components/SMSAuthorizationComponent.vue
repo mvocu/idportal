@@ -29,7 +29,7 @@
                             <label for="token" class="col-md-4 col-form-label text-md-right">{{ token.label }}</label>
 
                             <div class="col-md-6">
-                                <input id="token" type="text" class="form-control" v-bind:class="{ 'is-invalid': !token.valid }" v-model="authcode" name="token" required autofocus>
+                                <input ref="token" id="token" type="text" class="form-control" v-bind:class="{ 'is-invalid': !token.valid }" v-model="authcode" name="token" required autofocus>
 
 								<slot name="token-error"></slot>
                             </div>
@@ -57,7 +57,10 @@
 				var context = this;
 				var reCaptcha = grecaptcha.getResponse();
 				jQuery.post(this.send.url, { 'phone': this.mobile, 'g-recaptcha-response': reCaptcha })
-					  .done(function(data) { context.tokenSent = 1; context.authcode = "" });
+					  .done(function(data) { context.tokenSent = 1; context.authcode = ""; context.setFocus() });
+			},
+			setFocus: function() {
+				this.$nextTick(() => this.$refs.token.focus());
 			}
     	}
     }

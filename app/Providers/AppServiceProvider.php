@@ -14,19 +14,21 @@ use App\Interfaces\LdapConnector as LdapConnectorInterface;
 use App\Interfaces\ContactManager as ContactManagerInterface;
 use App\Interfaces\ConsentManager as ConsentManagerInterface;
 use App\Interfaces\SynchronizationManager as SynchronizationManagerInterface;
+use App\Interfaces\ActivationManager as ActivationManagerInterface;
 use App\Services\ContactManager;
 use App\Services\UserExtManager;
 use App\Services\UserManager;
 use App\Services\ExtSourceManager;
 use App\Services\IdentityManager;
 use App\Services\LdapConnector;
-use App\Utils\Names;
 use App\Services\ConsentManager;
 use App\Services\GinisConnector;
 use App\Services\TritiusConnector;
 use App\Services\HeliosConnector;
 use App\Services\ADConnector;
 use App\Services\SynchronizationManager;
+use App\Services\ActivationManager;
+use App\Utils\Names;
 use GuzzleHttp\Client;
 
 class AppServiceProvider extends ServiceProvider
@@ -48,6 +50,8 @@ class AppServiceProvider extends ServiceProvider
         'Tritius' => TritiusConnector::class,
         'AD' => ADConnector::class,
         'Helios' => HeliosConnector::class,
+        // other services
+        ActivationManagerInterface::class => ActivationManager::class
     ];
     
     /**

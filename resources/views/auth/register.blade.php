@@ -8,6 +8,13 @@
                 <div class="card-header">{{ __('Registration') }}</div>
 
                 <div class="card-body">
+
+                    @if ($errors->has('failure'))
+                        <div class="alert alert-error" role="alert">
+                            {{ $errors->first('failure') }}
+                        </div>
+                    @endif
+
                     <form method="POST" action="{{ route('register') }}" aria-label="{{ __('Register') }}">
                         @csrf
 

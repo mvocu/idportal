@@ -9,6 +9,8 @@ use App\Models\Ldap\LdapUser;
 use Illuminate\Support\Str;
 use App\Interfaces\LdapConnector as LdapConnectorInterface;
 use App\Interfaces\ConsentManager;
+use App\Events\LdapUserCreatedEvent;
+use App\Events\LdapUserUpdatedEvent;
 
 class LdapConnector implements LdapConnectorInterface
 {
@@ -46,6 +48,7 @@ class LdapConnector implements LdapConnectorInterface
         }
         $ldapuser = $this->ldap->getProvider('admin')->make()->user($data);
         $ldapuser->save();
+        event(new LdapUserCreatedEvent($ldapuser));
         return $ldapuser;
     }
 
@@ -80,6 +83,7 @@ class LdapConnector implements LdapConnectorInterface
         $data = $this->_mapUser($user);
         $entry->fill($data);
         $entry->save();
+        event(new LdapUserUpdatedEvent($entry));
         return $entry;
     }
 
@@ -110,10 +114,15 @@ class LdapConnector implements LdapConnectorInterface
      */
     public function changePassword(LdapUser $user, $password)
     {
-       // use admin connection for the user
-       $user->getQuery()->setConnection($this->ldap->getProvider('admin')->getConnection());
-       $user->setPassword($password);
-       $user->save();
+        try {
+            // use admin connection for the user
+            $user->getQuery()->setConnection($this->ldap->getProvider('admin')->getConnection());
+            $user->setPassword($password);
+            $user->save();
+        } catch (\ErrorException $exc) {
+            return false;
+        }
+        return true;
     }
 
     protected function _mapUser(User $user) {

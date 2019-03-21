@@ -3,11 +3,20 @@
 namespace App\Traits;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Password;
+use App\Interfaces\ActivationManager;
+use App\Auth\ActivationUser;
+use App\Events\LdapUserCreatedEvent;
+use App\Events\UserCreatedEvent;
+use App\Events\UserIdentityFailedEvent;
+use Illuminate\Foundation\Auth\RedirectsUsers;
+use Illuminate\Contracts\Support\MessageBag;
 
 trait ActivatesAccount {
 
-    use SendsAccountActivationEmail;
+    use RedirectsUsers;
     
     public function showActivateForm(Request $request, $id, $token = null)
     {
@@ -18,25 +27,54 @@ trait ActivatesAccount {
 
     public function activate(Request $request)
     {
-        $this->validateToken($request);
+        $ldap_user = null;
+        $errors = null;
+        
+        // validate input fields
         $this->validate($request, $this->rules(), $this->validationErrorMessages());
+
+        // validate token against the token database
+        $activation_mgr = $this->activationManager();
+        $user = new ActivationUser($request->input('uid'));
+        $activation_mgr->validateToken($user, $request->only('token'));
+        
+        // setup listener for LdapUserCreatedEvent
+        Event::listen('App\Events\LdapUserCreatedEvent', function(LdapUserCreatedEvent $event) use (&$ldap_user) {
+            $ldap_user = $event->user;
+        });
+        // setup listener for UserIdentityFailedEvent
+        Event::listen('App\Events\UserIdentityFailedEvent', function(UserIdentityFailedEvent $event) use (&$errors) {
+            $errors = $event->errors;
+        });
+
+        // activate user
+        $user_ext = $activation_mgr->activateAccount($user);
+        if($user_ext == null) {
+            return $this->sendActivationFailedResponse($request, 'activation-not-found');
+        }
+            
+        // wait for the async user creation
+        for($count = 0; $count < 30 && $ldap_user == null && $errors == null; $count++) {
+            sleep(1);
+        }
+
+        if($ldap_user == null) {
+            return $this->sendActivationFailedResponse($request, ($errors == null) ? 'activation-failed' : $errors);
+        }
         
         // Here we will attempt to reset the user's password. If it is successful we
         // will update the password on an actual user model and persist it to the
         // database. Otherwise we will parse the error and return the response.
-        $response = $this->broker()->reset(
-            $this->credentials($request), function ($user, $password) {
-                $this->resetPassword($user, $password);
-            }
-            );
+        if(!$this->resetPassword($ldap_user, $request->input('password'))) {
+            return redirect()->route('password.request')
+                ->with('failure', 'reset-failed');
+        }
+        
         
         // If the password was successfully reset, we will redirect the user back to
         // the application's home authenticated view. If there is an error we can
         // redirect them back to where they came from with their error message.
-        return $response == Password::PASSWORD_RESET
-        ? $this->sendResetResponse($request, $response)
-        : $this->sendResetFailedResponse($request, $response);
-        
+        return $this->sendActivationResponse($request, 'activation-done');
     }
 
     /**
@@ -47,6 +85,7 @@ trait ActivatesAccount {
     protected function rules()
     {
         return [
+            'uid' => 'required|email',
             'password' => 'required|confirmed|min:6',
         ];
     }
@@ -92,7 +131,7 @@ trait ActivatesAccount {
      * @param  string  $response
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
-    protected function sendResetResponse(Request $request, $response)
+    protected function sendActivationResponse(Request $request, $response)
     {
         return redirect($this->redirectPath())
         ->with('status', trans($response));
@@ -105,11 +144,25 @@ trait ActivatesAccount {
      * @param  string  $response
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
-    protected function sendResetFailedResponse(Request $request, $response)
+    protected function sendActivationFailedResponse(Request $request, $response)
     {
-        return redirect()->back()
-        ->withInput($request->only('email'))
-        ->withErrors(['email' => trans($response)]);
+        if($response instanceof MessageBag) {
+            return redirect('/register')
+                ->withInput($request->only('uid'))
+                ->withErrors($response);
+        } else {
+            return redirect('/register')
+                ->withInput($request->only('uid'))
+                ->with(['failure' => trans($response)]);
+        }
+    }
+    
+    protected function activationManager() : ActivationManager
+    {
+        return app()->makeWith('App\Interfaces\ActivationManager', [
+            'tokens' => $this->broker()
+            ->getRepository()
+        ]);
     }
     
     /**
@@ -117,7 +170,7 @@ trait ActivatesAccount {
      *
      * @return \Illuminate\Contracts\Auth\PasswordBroker
      */
-    public function broker()
+    protected function broker()
     {
         return Password::broker();
     }
