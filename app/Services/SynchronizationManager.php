@@ -26,7 +26,8 @@ class SynchronizationManager implements SynchronizationManagerInterface
         $connector = $this->ext_source_mgr->getConnector($es);
         if($connector != null && $connector->supportsUserListing($es)) {
             $users = $connector->listUsers($es);
-            return $this->user_ext_mgr->syncUsers($es, $users);
+            if($users != null)
+                return $this->user_ext_mgr->syncUsers($es, $users);
         }
         return null;
     }
