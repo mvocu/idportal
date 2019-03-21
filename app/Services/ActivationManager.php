@@ -51,7 +51,7 @@ class ActivationManager implements ActivationManagerInterface
      * {@inheritDoc}
      * @see \App\Interfaces\ActivationManager::activateAccount()
      */
-    public function activateAccount(CanResetPassword $user): ?UserExt
+    public function activateAccount(CanResetPassword $user)
     {
         $source = ExtSource::where('type', 'Internal')->get()->first();
         if($source == null) throw new ModelNotFoundException();

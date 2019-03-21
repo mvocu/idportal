@@ -11,6 +11,6 @@ interface ActivationManager
 
     public function validateToken(CanResetPassword $user, $data);
 
-    public function activateAccount(CanResetPassword $user) : ?UserExt;
+    public function activateAccount(CanResetPassword $user);
 }
 
