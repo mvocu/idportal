@@ -26,7 +26,7 @@ class TritiusConnector extends AbstractExtSourceConnector implements ExtSourceCo
     {
         $response = $this->client->get('users');
         $result = $this->parseResponse($response);
-        return collect($result['results']);
+        return collect($result['results'])->map(function($item, $key) { return $this->makeResource($item, "id"); });
     }
 
     /**
@@ -45,7 +45,7 @@ class TritiusConnector extends AbstractExtSourceConnector implements ExtSourceCo
      */
     public function getUser(\App\Models\Database\ExtSource $source, $id)
     {
-        return $this->parseResponse($this->client->get('users/' . $id));     
+        return $this->makeResource($this->parseResponse($this->client->get('users/' . $id)), "id");     
     }
 
     /**

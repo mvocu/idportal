@@ -115,6 +115,7 @@ class DatabaseTokenRepository extends TokenRepository implements TokenRepository
     public function createNewToken()
     {
         $random = Str::random(12);
+        $random = strtr($random, "IlO0", "ijQ7");
         return substr($random, 0, 3) . "-" . substr($random,3,3) . "-" . substr($random, 6, 3) . "-" . substr($random, 9, 3);
     }
     

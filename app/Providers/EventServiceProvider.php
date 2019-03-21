@@ -17,6 +17,8 @@ class EventServiceProvider extends ServiceProvider
         // 'App\Events\UserExtUpdatedEvent' => [],
         // 'App\Events\UserUpdatedEvent' => [],
         // 'App\Events\UserCreatedEvent' => [],
+        // 'App\Events\LdapUserCreatedEvent' => [],
+        // 'App\Events\LdapUserUpdatedEvent' => [],
     ];
 
     protected $subscribe = [
