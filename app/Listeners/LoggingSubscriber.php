@@ -7,10 +7,10 @@ use Illuminate\Support\Facades\Log;
 class LoggingSubscriber 
 {
 
-    public function handle($event)
+    public function handle($event, $data)
     {
-        Log::info("Dispatched event", ['event' => $event]);
-        return 0;
+        Log::info("Dispatched event " . $event, ['event' => $data]);
+        return true;
     }
     
     public function subscribe($events)
