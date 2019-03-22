@@ -2,10 +2,9 @@
 
 namespace App\Listeners;
 
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 
-class LoggingSubscriber implements ShouldQueue
+class LoggingSubscriber 
 {
 
     public function handle($event)
@@ -15,7 +14,7 @@ class LoggingSubscriber implements ShouldQueue
     
     public function subscribe($events)
     {
-        $events->listen('*', 'App\Listeners\LoggingSubscriber');
+        $events->listen('App\Events\*', 'App\Listeners\LoggingSubscriber@handle');
     }
     
 }
