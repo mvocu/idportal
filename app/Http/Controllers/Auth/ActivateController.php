@@ -6,6 +6,7 @@ use Illuminate\Auth\Events\PasswordReset;
 use App\Http\Controllers\Controller;
 use App\Traits\ActivatesAccount;
 use App\Interfaces\LdapConnector;
+use App\Models\Database\UserExt;
 
 class ActivateController extends Controller
 {
@@ -54,5 +55,11 @@ class ActivateController extends Controller
         return true;
     }
     
+    protected function checkAccount(UserExt $user_ext)
+    {
+        $user = $user_ext->user;
+        if(empty($user)) return null;
+        return $this->ldap_mgr->findUser($user);
+    }
 }
 
