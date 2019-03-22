@@ -38,12 +38,20 @@
   "You are receiving this email because we received a new account registration request. To activate your account, please click on the link below or enter this code into activation form: :token" : "Obdrželi jste tento e-mail, protože jsme dostali žádost o registraci nového účtu. Aby byl váš účet aktivován, klikněte na odkaz níže nebo na aktivačním formuláři zadejte tento kód: :token",
   "Activate Account" : "Aktivovat účet",
   "Account Activation" : "Aktivace účtu",
+  "activation-not-found" : "Bohužel jsme nenalezli účet, který bychom mohli aktivovat.",
+  "activation-failed" : "Aktivace účtu se nezdařila.",
+  "reset-failed" : "Aktivovanému účtu nebylo nastaveno heslo.",
+  "activation-done" : "Váš účet byl úspěšně aktivován.",
   "If you did not register new account, no further action is required." : "Pokud jste nežádali o registraci nového účtu, ignorujte prosím tento e-mail.",
   
   "Helios Energo" : "Vodné a stočné",
   "Ginis" : "Poplatky za odpad a psa",
+  "GINIS" : "Poplatky za odpad a psa",
   "Clavius" : "Knihovní systém",
   "AD Uvaly" : "Databáze městského úřadu",
+  "AD MěÚ Úvaly" : "Databáze městského úřadu",
+  "SMS contacts" : "Informační SMS zprávy",
+  "Mail contacts" : "Odběr newsletteru",
   "Dashboard" : "Přehled nastavení"
 }
 
