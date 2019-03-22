@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Log;
 use App\Interfaces\IdentityManager;
 use App\Events\UserExtCreatedEvent;
 use App\Events\UserExtUpdatedEvent;
@@ -40,6 +41,11 @@ class UserExtEventSubscriber implements ShouldQueue
                                                     $event->user_ext, 
                                                     $this->user_ext_mgr->getUserResource($event->user_ext)->toArray(null));
         }
+    }
+    
+    public function failed($event, $exception)
+    {
+        Log::error('Failed to handle ext user event', [ 'event' => $event, 'exception' => $exception ]);
     }
     
     public function subscribe($events) 
