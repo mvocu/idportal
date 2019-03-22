@@ -24,6 +24,7 @@ class EventServiceProvider extends ServiceProvider
     protected $subscribe = [
         'App\Listeners\UserExtEventSubscriber',
         'App\Listeners\UserEventSubscriber',
+        'App\Listeners\LoggingSubscriber'
     ];
     
     /**
