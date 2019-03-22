@@ -54,6 +54,5 @@ class ActivateController extends Controller
         return true;
     }
     
-    
 }
 
