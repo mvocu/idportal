@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Password;
 use App\Interfaces\ActivationManager;
+use App\Models\Database\UserExt;
 use App\Auth\ActivationUser;
 use App\Events\LdapUserCreatedEvent;
 use App\Events\UserCreatedEvent;
@@ -41,10 +42,12 @@ trait ActivatesAccount {
         // setup listener for LdapUserCreatedEvent
         Event::listen('App\Events\LdapUserCreatedEvent', function(LdapUserCreatedEvent $event) use (&$ldap_user) {
             $ldap_user = $event->user;
+            return 0;
         });
         // setup listener for UserIdentityFailedEvent
         Event::listen('App\Events\UserIdentityFailedEvent', function(UserIdentityFailedEvent $event) use (&$errors) {
             $errors = $event->errors;
+            return 0;
         });
 
         // activate user
@@ -56,6 +59,10 @@ trait ActivatesAccount {
         // wait for the async user creation
         for($count = 0; $count < 30 && $ldap_user == null && $errors == null; $count++) {
             sleep(1);
+            $new_user = $this->checkAccount($user_ext);
+            if(!empty($new_user)) {
+                $ldap_user = $new_user;
+            }
         }
 
         if($ldap_user == null) {
@@ -124,6 +131,11 @@ trait ActivatesAccount {
     {
     }
     
+    protected function checkAccount(UserExt $user_ext) 
+    {
+        return null;
+    }
+
     /**
      * Get the response for a successful password reset.
      *

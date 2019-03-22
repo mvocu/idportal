@@ -28,6 +28,7 @@ class UserExtEventSubscriber implements ShouldQueue
     public function onUserCreated(UserExtCreatedEvent $event) 
     {
         $this->identity_mgr->buildIdentityForUser($event->user_ext);
+        return 0;
     }
 
     public function onUserUpdated(UserExtUpdatedEvent $event)
@@ -41,6 +42,7 @@ class UserExtEventSubscriber implements ShouldQueue
                                                     $event->user_ext, 
                                                     $this->user_ext_mgr->getUserResource($event->user_ext)->toArray(null));
         }
+        return 0;
     }
     
     public function failed($event, $exception)
