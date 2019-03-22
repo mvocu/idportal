@@ -60,7 +60,7 @@ trait ActivatesAccount {
         // database. Otherwise we will parse the error and return the response.
         if(!$this->resetPassword($ldap_user, $request->input('password'))) {
             return redirect()->route('password.request')
-                ->with('failure', 'reset-failed');
+                ->withErrors('failure', 'reset-failed');
         }
         
         
@@ -151,7 +151,7 @@ trait ActivatesAccount {
         } else {
             return redirect('/register')
                 ->withInput($request->only('uid'))
-                ->with(['failure' => trans($response)]);
+                ->withErrors(['failure' => trans($response)]);
         }
     }
     
