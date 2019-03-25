@@ -4,13 +4,10 @@ namespace App\Traits;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Password;
 use App\Interfaces\ActivationManager;
+use App\Models\Database\UserExt;
 use App\Auth\ActivationUser;
-use App\Events\LdapUserCreatedEvent;
-use App\Events\UserCreatedEvent;
-use App\Events\UserIdentityFailedEvent;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Contracts\Support\MessageBag;
 
@@ -38,14 +35,6 @@ trait ActivatesAccount {
         $user = new ActivationUser($request->input('uid'));
         $activation_mgr->validateToken($user, $request->only('token'));
         
-        // setup listener for LdapUserCreatedEvent
-        Event::listen('App\Events\LdapUserCreatedEvent', function(LdapUserCreatedEvent $event) use (&$ldap_user) {
-            $ldap_user = $event->user;
-        });
-        // setup listener for UserIdentityFailedEvent
-        Event::listen('App\Events\UserIdentityFailedEvent', function(UserIdentityFailedEvent $event) use (&$errors) {
-            $errors = $event->errors;
-        });
 
         // activate user
         $user_ext = $activation_mgr->activateAccount($user);
@@ -56,6 +45,10 @@ trait ActivatesAccount {
         // wait for the async user creation
         for($count = 0; $count < 30 && $ldap_user == null && $errors == null; $count++) {
             sleep(1);
+            $new_user = $this->checkAccount($user_ext->refresh());
+            if(!empty($new_user)) {
+                $ldap_user = $new_user;
+            }
         }
 
         if($ldap_user == null) {
@@ -67,7 +60,7 @@ trait ActivatesAccount {
         // database. Otherwise we will parse the error and return the response.
         if(!$this->resetPassword($ldap_user, $request->input('password'))) {
             return redirect()->route('password.request')
-                ->with('failure', 'reset-failed');
+                ->withErrors('failure', 'reset-failed');
         }
         
         
@@ -124,6 +117,11 @@ trait ActivatesAccount {
     {
     }
     
+    protected function checkAccount(UserExt $user_ext) 
+    {
+        return null;
+    }
+
     /**
      * Get the response for a successful password reset.
      *
@@ -153,7 +151,7 @@ trait ActivatesAccount {
         } else {
             return redirect('/register')
                 ->withInput($request->only('uid'))
-                ->with(['failure' => trans($response)]);
+                ->withErrors(['failure' => trans($response)]);
         }
     }
     

@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Log;
 use App\Interfaces\IdentityManager;
 use App\Events\UserExtCreatedEvent;
 use App\Events\UserExtUpdatedEvent;
@@ -27,6 +28,7 @@ class UserExtEventSubscriber implements ShouldQueue
     public function onUserCreated(UserExtCreatedEvent $event) 
     {
         $this->identity_mgr->buildIdentityForUser($event->user_ext);
+        return true;
     }
 
     public function onUserUpdated(UserExtUpdatedEvent $event)
@@ -40,6 +42,12 @@ class UserExtEventSubscriber implements ShouldQueue
                                                     $event->user_ext, 
                                                     $this->user_ext_mgr->getUserResource($event->user_ext)->toArray(null));
         }
+        return true;
+    }
+    
+    public function failed($event, $exception)
+    {
+        Log::error('Failed to handle ext user event', [ 'event' => $event, 'exception' => $exception ]);
     }
     
     public function subscribe($events) 
