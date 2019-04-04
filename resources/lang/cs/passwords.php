@@ -18,4 +18,5 @@ return [
     'sent.sms' => 'SMS s klíčem pro obnovu hesla byla odeslána.',
     'token'    => 'Klíč pro obnovu hesla je nesprávný.',
     'user'     => 'Nepodařilo se najít uživatele s touto e-mailovou adresou.',
+    'not_allowed' => 'Nastavení hesla není u tohoto účtu povoleno.',
 ];

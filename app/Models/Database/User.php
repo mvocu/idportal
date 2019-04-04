@@ -90,4 +90,8 @@ class User extends Model
     public function updatedBy() {
         return $this->belongsTo('App\Models\Database\UserExt', 'updated_by');
     }
+    
+    public function parent() {
+        return $this->belongsTo('App\Models\Database\User', 'parent_id');
+    }
 }

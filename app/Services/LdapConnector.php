@@ -179,6 +179,12 @@ class LdapConnector implements LdapConnectorInterface
                 }
             }
         }
+        
+        $parent = $user->parent;
+        if(!empty($parent)) {
+            $data['manager'] = $this->buildDN($parent);    
+        }
+        
         return $data;
     }
     
