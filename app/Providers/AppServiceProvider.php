@@ -30,6 +30,7 @@ use App\Services\SynchronizationManager;
 use App\Services\ActivationManager;
 use App\Utils\Names;
 use GuzzleHttp\Client;
+use App\Services\PortalObcanaConnector;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -50,6 +51,7 @@ class AppServiceProvider extends ServiceProvider
         'Tritius' => TritiusConnector::class,
         'AD' => ADConnector::class,
         'Helios' => HeliosConnector::class,
+        'PortalObcana' => PortalObcanaConnector::class,
         // other services
         ActivationManagerInterface::class => ActivationManager::class
     ];
