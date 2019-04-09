@@ -25,13 +25,13 @@
                             </div>
                         </div>
 
-                         <div class="fixed-top text-center w-100 h-100" style="background-color: rgba(240,240,240,0.6)" v-if="busy">
-                             <img class="position-absolute" style="top: 30%" src="/images/ajax-loader.gif">
-                         </div>
+			<div class="fixed-top text-center w-100 h-100" style="background-color: rgba(240,240,240,0.6)" v-if="busy">
+			    <img class="position-absolute" style="top: 30%" src="/images/ajax-loader.gif">
+			</div>
 
                         <div class="form-group row" v-bind:class="{ 'has-error': !token.valid }" v-if="tokenSent || !token.valid ">
                             <label for="token" class="col-md-4 col-form-label text-md-right control-label">{{ token.label }}</label>
-						
+
                             <div class="col-md-6">
                                 <input ref="token" id="token" type="text" class="form-control" v-model="authcode" name="token" required autofocus>
 
