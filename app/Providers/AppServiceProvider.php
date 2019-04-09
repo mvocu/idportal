@@ -26,11 +26,11 @@ use App\Services\GinisConnector;
 use App\Services\TritiusConnector;
 use App\Services\HeliosConnector;
 use App\Services\ADConnector;
+use App\Services\PortalObcanaConnector;
 use App\Services\SynchronizationManager;
 use App\Services\ActivationManager;
 use App\Utils\Names;
 use GuzzleHttp\Client;
-use App\Services\PortalObcanaConnector;
 
 class AppServiceProvider extends ServiceProvider
 {
