@@ -3,11 +3,13 @@
 namespace App\Auth\Passwords;
 
 use Illuminate\Auth\Passwords\PasswordBroker as Broker;
+use App\User;
 
 class PasswordBroker extends Broker
 {
     const RESET_LINK_SENT_SMS = "passwords.sent.sms";
     const INVALID_CONTACT = "passwords.nomail";
+    const NOT_ALLOWED = "passwords.not_allowed";
     
     /**
      * {@inheritDoc}
@@ -22,6 +24,10 @@ class PasswordBroker extends Broker
         
         if (is_null($user)) {
             return static::INVALID_USER;
+        }
+
+        if ($user->cant('resetpw', User::class)) {
+            return static::NOT_ALLOWED;
         }
         
         // Once we have the reset token, we are ready to send the message out to this

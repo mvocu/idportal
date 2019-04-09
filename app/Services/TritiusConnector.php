@@ -17,7 +17,11 @@ class TritiusConnector extends AbstractExtSourceConnector implements ExtSourceCo
         $this->client = new Client([
             'base_uri' => $this->config['url'] . (ends_with($this->config['url'], '/') ? '' : '/'),
             'auth' => [ $this->config['username'], $this->config['password'] ],
-            'headers' => [ 'Content-type' => 'application/vnd.tritius-v1.0+json', 'X-Library' => 1 ],
+            'headers' => [ 
+                'Content-type' => 'application/vnd.tritius-v1.0+json', 
+                'X-Library' => 1, 
+                'Accept' => 'application/vnd.tritius-v1.0+json'
+            ],
             'debug' => true,
         ]);
     }

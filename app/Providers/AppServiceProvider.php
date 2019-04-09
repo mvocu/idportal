@@ -26,6 +26,7 @@ use App\Services\GinisConnector;
 use App\Services\TritiusConnector;
 use App\Services\HeliosConnector;
 use App\Services\ADConnector;
+use App\Services\PortalObcanaConnector;
 use App\Services\SynchronizationManager;
 use App\Services\ActivationManager;
 use App\Utils\Names;
@@ -50,6 +51,7 @@ class AppServiceProvider extends ServiceProvider
         'Tritius' => TritiusConnector::class,
         'AD' => ADConnector::class,
         'Helios' => HeliosConnector::class,
+        'PortalObcana' => PortalObcanaConnector::class,
         // other services
         ActivationManagerInterface::class => ActivationManager::class
     ];
