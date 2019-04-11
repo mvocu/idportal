@@ -27,6 +27,9 @@
                     		<div class="col-4 text-right">{{ __('Phone') }}</div>
                     		<div class="col-8">{{ empty($user->getTelephoneNumber()) ? "" : implode(",", $user->telephonenumber) }}</div>
                     	</div>
+              	</div>
+
+                <div class="card-body">
 					@foreach ($accounts as $account)
                         <div class="row">
                                 <div class="col-4 text-right">{{ __($account['name']) }}</div>
@@ -39,6 +42,13 @@
 					@endforeach
                     @endif
                 </div>
+                
+            	<div class="card-footer">
+					<div class="row">
+						<div class="col-4"><a href="" class="btn btn-primary btn-block">{{ __('Change password') }}</a></div>
+					</div>
+            	</div>
+
             </div>
         </div>
     </div>
