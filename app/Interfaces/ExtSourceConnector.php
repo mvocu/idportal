@@ -13,5 +13,6 @@ interface ExtSourceConnector
     public function listUsers(ExtSource $source);
     
     public function supportsUserListing(ExtSource $source);
+    
 }
 

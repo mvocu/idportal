@@ -49,14 +49,17 @@ abstract class AbstractExtSourceConnector implements ExtSourceConnector
         return $this->lastStatus;
     }
     
-    protected function makeResource($data, $key) {
+    protected function makeResource($data, $key, $parent_attr = null) {
         if(array_key_exists($key, $data)) {
             $id = $data[$key];
             unset($data[$key]);
         } else {
             $id = "";
         }
-        return new ExtUserResource([ 'id' => $id, 'attributes' => $data ]);
+        return new ExtUserResource([ 
+            'id' => $id, 
+            'attributes' => $data, 
+            'parent' => (is_null($parent_attr) || !array_key_exists($parent_attr, $data) ) ? null : $data[$parent_attr]]);
     }
 }
 

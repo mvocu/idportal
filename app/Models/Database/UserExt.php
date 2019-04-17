@@ -23,5 +23,9 @@ class UserExt extends Model
     public function user() {
         return $this->belongsTo('App\Models\Database\User', 'user_id');
     }
+
+    public function parent() {
+        return $this->belongsTo('App\Models\Database\UserExt', 'parent_id');
+    }
     
 }
