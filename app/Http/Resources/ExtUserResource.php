@@ -3,8 +3,9 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\Resource;
+use App\Interfaces\ExtUserResourceInterface;
 
-class ExtUserResource extends Resource
+class ExtUserResource extends Resource implements ExtUserResourceInterface
 {
     public function toArray($request) 
     {
@@ -14,6 +15,11 @@ class ExtUserResource extends Resource
     public function getId() 
     {
         return $this->resource['id'];
+    }
+    
+    public function getParent()
+    {
+        return $this->resource['parent']; 
     }
     
     public function isActive() 

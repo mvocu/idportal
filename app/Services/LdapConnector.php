@@ -142,18 +142,26 @@ class LdapConnector implements LdapConnectorInterface
         }
         if(!empty($user->first_name)) {
             $data['givenName'] = $user->first_name;
+        } else {
+            $data['givenName'] = null;
         }
         if(!empty($user->country)) {
             $data['c'] = $user->country;
+        } else {
+            $data['c'] = null;
         }
         
         $phones = $user->phones;
         if($phones->isNotEmpty()) {
             $data['telephoneNumber'] = $phones->pluck('phone')->unique()->all();
+        } else {
+            $data['telephoneNumber'] = array();
         }
         $emails = $user->emails;
         if($emails->isNotEmpty()) {
             $data['mail'] = $emails->pluck('email')->unique()->all();
+        } else {
+            $data['mail'] = array();
         }
         $address = $user->residency;
         if(!empty($address)) {
@@ -162,11 +170,19 @@ class LdapConnector implements LdapConnectorInterface
             if(!empty($address->state)) $data['st'] = $address->state;
             if(!empty($address->post_number)) $data['postalCode'] = $address->post_number;
             $data['houseIdentifier'] = $address->getHouseNumber();
+        } else {
+            $data['street'] = null;
+            $data['l'] = null;
+            $data['st'] = null;
+            $data['postalCode'] = null;
+            $data['houseIdentifier'] = null;
         }
         $addresses = $user->addresses;
         if($addresses->isNotEmpty()) {
             $data['postalAddress'] = $addresses->map(function($item, $key) { return $item->getFormattedAddress(); })
                                         ->unique()->all();
+        } else {
+            $data['postalAddress'] = array();
         }
 
         $accounts = $user->accounts;
@@ -176,6 +192,8 @@ class LdapConnector implements LdapConnectorInterface
                 if(!empty($login)) {
                     $name = Str::kebab(Str::lower(Str::ascii($account->extSource->name)));
                     $data['employeeNumber;x-'.$name] = $login;
+                } else {
+                    $data['employeeNumber;x-'.$name] = null;
                 }
             }
         }
@@ -183,6 +201,8 @@ class LdapConnector implements LdapConnectorInterface
         $parent = $user->parent;
         if(!empty($parent)) {
             $data['manager'] = $this->buildDN($parent);    
+        } else {
+            $data['manager'] = null;
         }
         
         return $data;
