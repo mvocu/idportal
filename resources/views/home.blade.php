@@ -29,7 +29,7 @@
                     	</div>
               	</div>
 
-                <div class="card-body">
+                <div class="panel-body">
 					@foreach ($accounts as $account)
                         <div class="row">
                                 <div class="col-xs-3 text-right">{{ __($account['name']) }}</div>
@@ -43,9 +43,9 @@
                     @endif
                 </div>
                 
-            	<div class="card-footer">
+            	<div class="panel-footer">
 					<div class="row">
-						<div class="col-4"><a href="" class="btn btn-primary btn-block">{{ __('Change password') }}</a></div>
+						<div class="col-xs-4"><a href="" class="btn btn-primary btn-block">{{ __('Change password') }}</a></div>
 					</div>
             	</div>
 
