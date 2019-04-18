@@ -81,7 +81,7 @@ class ForgotPasswordController extends Controller
     {
         return back()
         ->withInput($request->only('uid'))
-        ->withErrors(['uid' => trans($response)]);
+        ->withErrors(['failure' => trans($response)]);
     }
     
 }
