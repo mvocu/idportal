@@ -110,7 +110,7 @@ class ResetPasswordController extends Controller
     {
         return redirect()->back()
         ->withInput($request->only('uid'))
-        ->withErrors(['token' => trans($response)]);
+        ->withErrors(['failure' => trans($response)]);
     }
     
     

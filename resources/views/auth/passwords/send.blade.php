@@ -14,6 +14,12 @@
                         </div>
                     @endif
 
+                    @if ($errors->has('failure'))
+                        <div class="alert alert-error" role="alert">
+                            {{ $errors->first('failure') }}
+                        </div>
+                    @endif
+
                     <form method="POST" action="{{ route('password.send') }}" aria-label="{{ __('Reset Password') }}">
                         @csrf
 
