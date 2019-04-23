@@ -97,7 +97,7 @@ class UserManager implements UserManagerInterface
         foreach(Contact::$contactModels as $name => $class) {
             if(array_key_exists($name, $data) && is_array($data[$name])) {
                 foreach($data[$name] as $contact_data) {
-                    $contacts = $contact_mgr->findContact($user, $contact_data, $name);
+                    $contacts = $this->contact_mgr->findContact($user, $contact_data, $name);
                     if(empty($contacts) || $contacts->isEmpty()) {
                         $contact = $this->contact_mgr->createContact($user, $user_ext, $contact_data, $class);
                     } else {
