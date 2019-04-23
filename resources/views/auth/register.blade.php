@@ -10,7 +10,7 @@
                 <div class="panel-body">
 
                     @if ($errors->has('failure'))
-                        <div class="alert alert-error" role="alert">
+                        <div class="alert alert-danger" role="alert">
                             {{ $errors->first('failure') }}
                         </div>
                     @endif
