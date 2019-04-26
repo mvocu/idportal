@@ -109,9 +109,15 @@ class ResetPasswordController extends Controller
      */
     protected function sendResetFailedResponse(Request $request, $response)
     {
-        return redirect()->back()
-        ->withInput($request->only('uid'))
-        ->withErrors(['failure' => ($response instanceof MessageBag) ? _($response->first()) : _($response)]);
+        if($response instanceof MessageBag) {
+            return redirect()->back()
+            ->withInput($request->only('uid'))
+            ->withErrors($response);
+        } else {
+            return redirect()->back()
+            ->withInput($request->only('uid'))
+            ->withErrors(['failure' => _($response)]);
+        }
     }
     
     
