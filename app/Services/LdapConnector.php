@@ -113,15 +113,11 @@ class LdapConnector implements LdapConnectorInterface
      * @see \App\Interfaces\LdapConnector::changePassword()
      */
     public function changePassword(LdapUser $user, $password)
-    {
-        try {
-            // use admin connection for the user
-            $user->getQuery()->setConnection($this->ldap->getProvider('admin')->getConnection());
-            $user->setPassword($password);
-            $user->save();
-        } catch (\ErrorException $exc) {
-            return false;
-        }
+   {
+        // use admin connection for the user
+        $user->getQuery()->setConnection($this->ldap->getProvider('admin')->getConnection());
+        $user->setPassword($password);
+        $user->save();
         return true;
     }
 
