@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Contracts\Support\MessageBag;
 use App\Interfaces\LdapConnector;
 
 class ResetPasswordController extends Controller
@@ -110,7 +111,7 @@ class ResetPasswordController extends Controller
     {
         return redirect()->back()
         ->withInput($request->only('uid'))
-        ->withErrors(['failure' => trans($response)]);
+        ->withErrors(['failure' => ($response instanceof MessageBag) ? _($response->first()) : _($response)]);
     }
     
     
