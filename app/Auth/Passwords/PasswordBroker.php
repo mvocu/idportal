@@ -3,7 +3,9 @@
 namespace App\Auth\Passwords;
 
 use Illuminate\Auth\Passwords\PasswordBroker as Broker;
+use Closure;
 use App\User;
+use Illuminate\Support\MessageBag;
 
 class PasswordBroker extends Broker
 {
@@ -11,6 +13,19 @@ class PasswordBroker extends Broker
     const INVALID_CONTACT = "passwords.nomail";
     const NOT_ALLOWED = "passwords.not_allowed";
     
+    /**
+     * {@inheritDoc}
+     * @see \Illuminate\Auth\Passwords\PasswordBroker::reset()
+     */
+    public function reset(array $credentials, Closure $callback)
+    {
+        try {
+            $result = parent::reset();
+        } catch (\Exception $exc) {
+            return new MessageBag([ 'failure' => $exc->getMessage() ]);
+        }
+    }
+
     /**
      * {@inheritDoc}
      * @see \Illuminate\Auth\Passwords\PasswordBroker::sendResetLink()
