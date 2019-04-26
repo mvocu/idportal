@@ -20,7 +20,7 @@ class PasswordBroker extends Broker
     public function reset(array $credentials, Closure $callback)
     {
         try {
-            $result = parent::reset();
+            $result = parent::reset($credentials, $callback);
         } catch (\Exception $exc) {
             return new MessageBag([ 'failure' => $exc->getMessage() ]);
         }
