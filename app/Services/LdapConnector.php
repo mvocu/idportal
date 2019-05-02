@@ -46,7 +46,8 @@ class LdapConnector implements LdapConnectorInterface
         if(empty($data['uid'])) {
             $data['uid'] = $this->_generateLogin($user);
         }
-        $ldapuser = $this->ldap->getProvider('admin')->make()->user($data);
+        $ndata = array_filter($data, function($el) { return !empty($el); });
+        $ldapuser = $this->ldap->getProvider('admin')->make()->user($ndata);
         $ldapuser->save();
         event(new LdapUserCreatedEvent($ldapuser));
         return $ldapuser;
