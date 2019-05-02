@@ -9,7 +9,7 @@ use Adldap\AdldapException;
 class ADConnector extends AbstractExtSourceConnector implements ExtSourceConnector
 {
 
-    protected $attribute_names = ['samaccountname', 'givenname', 'sn', 'telephonenumber', 'mail' ];
+    protected $attribute_names = ['samaccountname', 'givenname', 'sn', 'telephonenumber', 'pager', 'mail' ];
     
     protected $config;
     protected $ad;
