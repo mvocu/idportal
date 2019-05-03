@@ -21,7 +21,7 @@ class ContactManager implements ContactManagerInterface
      * {@inheritDoc}
      * @see \App\Interfaces\ContactManager::findContact()
      */
-    public function findContact(User $user, array $data, $name): Contact
+    public function findContact(User $user, array $data, $name)
     {
         if(!array_key_exists($name, $this->contactTypeMap)) 
             return null;    
