@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 interface ContactManager
 {
-    public function findContact(User $user, array $data, $name) : Contact;
+    public function findContact(User $user, array $data, $name);
     
     public function createContact(User $user, UserExt $ext_user, array $data, $class = Address::class) : Contact;
     

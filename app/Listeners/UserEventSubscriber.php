@@ -23,7 +23,7 @@ class UserEventSubscriber implements ShouldQueue
     
     public function onUserUpdated($event)
     {
-        $this->ldapc->syncUsers(collect($event->user));
+        $this->ldapc->syncUsers(collect([$event->user]));
         return true;
     }
     
