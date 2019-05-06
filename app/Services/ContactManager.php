@@ -56,6 +56,7 @@ class ContactManager implements ContactManagerInterface
         $contact = new $class;
         $contact->fill($data);
         $contact->createdBy()->associate($ext_user);
+        $contact->extSources()->attach($ext_user->extSource);
         $contact->trust_level = $ext_user->extSource->trust_level;
         $user->contacts()->save($contact);
         return $contact;

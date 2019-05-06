@@ -53,6 +53,10 @@ class Contact extends Model
         return $this->belongsTo('App\Models\Database\UserExt', 'updated_by');
     }
 
+    public function extSources() {
+        return $this->belongsToMany('App\Models\Database\ExtSource', 'contact_ext_sources', 'contact_id', 'ext_source_id');    
+    }
+    
     public function setPhoneAttribute($value) {
         if($value == null) {
             unset($this->attributes['phone']);

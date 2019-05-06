@@ -105,6 +105,8 @@ class UserManager implements UserManagerInterface
                         // $contact = $this->contact_mgr->updateContact($contact, $user_ext, $contact_data);
                     }
                 }
+            } else {
+                
             }
         }
         
