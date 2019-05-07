@@ -21,7 +21,7 @@ class ContactManager implements ContactManagerInterface
      * {@inheritDoc}
      * @see \App\Interfaces\ContactManager::findContact()
      */
-    public function findContact(User $user, array $data, $name, $source = null)
+    public function findContact(User $user, array $data, $name, $ext_user = null)
     {
         if(!array_key_exists($name, $this->contactTypeMap)) 
             return null;    
@@ -33,6 +33,11 @@ class ContactManager implements ContactManagerInterface
         foreach($data as $key => $value) {
             // account for mutators
             $query = $query->where($key, '=', $obj->$key);
+        }
+        if(!empty($ext_user)) {
+            $query = $query->whereHas('userExt', function($query) use ($ext_user) {
+                $query->where('user_ext_id', '=', $ext_user->id);
+            });
         }
         $contacts = $query->get()->map(function($contact) use ($class) { return new $class($contact->toArray()); });
         return $contacts;
@@ -96,15 +101,26 @@ class ContactManager implements ContactManagerInterface
             if(empty($contacts) || $contacts->isEmpty()) {
                     $contact = $this->createContact($user, $user_ext, $contact_data, Contact::$contactModels[$name]);
             } else {
-                
+                // if it is in the current contacts, remove it
+                $key = $current->search(function($item, $key) use ($contact_data) {
+                    return $item->equalsTo($contact_data);
+                });
+                if($key !== false) {
+                    $current->forget($key);
+                } else {
+                    // contact exists, but is not yet assigned to the current ext user
+                    foreach($contacts as $contact) {
+                        $contact->userExt()->assign($ext_user);
+                    }
+                }
             }
         }
-        
+        // $current now contains contacts of the current ext user that were not found in the new data
+        // => remove them
+        foreach($current as $contact) {
+            $contact->delete();
+        }
     }
     
-    protected function isEqualContact(array $contact_a, array $contact_b) 
-    {
-    
-    }
 }
 

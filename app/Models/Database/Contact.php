@@ -97,4 +97,14 @@ class Contact extends Model
         $this->attributes['post_number'] = preg_replace('/\s+/', '', $value);
     }
     
+    public function equalsTo($other) {
+        if($other instanceof Contact) {
+            $other = $other->toArray();
+        }
+        if(!is_array($other)) return false;
+        foreach($other as $key => $value) {
+            if($this->$key != $value) return false;
+        }
+        return true;
+    }
 }
