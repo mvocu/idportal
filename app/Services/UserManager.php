@@ -96,25 +96,9 @@ class UserManager implements UserManagerInterface
         // update contacts for contact types
         foreach(Contact::$contactModels as $name => $class) {
             if(array_key_exists($name, $data) && is_array($data[$name])) {
-                // data for contact exists:
-                //  - no contact yet => add
-                //  - same contact exists => attach
-                //  - the contact from this source has changed => modify
-                foreach($data[$name] as $contact_data) {
-                    // find by data
-                    $contacts = $this->contact_mgr->findContact($user, $contact_data, $name);
-                    if(empty($contacts) || $contacts->isEmpty()) {
-                        // check contacts from this source
-                        
-                        // no contact yet, add one
-                        $contact = $this->contact_mgr->createContact($user, $user_ext, $contact_data, $class);
-                    } else {
-                        // same contact exists, attach
-                        $contact = $this->contact_mgr->attachSource($contacts->first(), $user_ext);
-                    }
-                }
+                $this->contact_mgr->syncContacts($user, $user_ext, $data[$name], $name);
             } else {
-                
+                $this->contact_mgr->syncContacts($user, $user_ext, array(), $name);
             }
         }
         

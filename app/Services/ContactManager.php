@@ -56,7 +56,7 @@ class ContactManager implements ContactManagerInterface
         $contact = new $class;
         $contact->fill($data);
         $contact->createdBy()->associate($ext_user);
-        $contact->extSources()->attach($ext_user->extSource);
+        $contact->userExt()->attach($ext_user);
         $contact->trust_level = $ext_user->extSource->trust_level;
         $user->contacts()->save($contact);
         return $contact;
@@ -79,14 +79,32 @@ class ContactManager implements ContactManagerInterface
 
     /**
      * {@inheritDoc}
-     * @see \App\Interfaces\ContactManager::attachSource()
+     * @see \App\Interfaces\ContactManager::syncContacts()
      */
-    public function attachSource(Contact $contact, UserExt $ext_user): Contact
+    public function syncContacts(User $user, UserExt $ext_user, array $data, $name)
     {
-        $contact->extSources()->attach($ext_user->extSource);
-        $contact->save();
-        return $contact;
+        // current contacts from this UserExt (source)
+        $current = $this->findContact($user, array(), $name);
+
+        // data for contact exists:
+        //  - no contact yet => add
+        //  - same contact exists => attach
+        //  - the contact from this source has changed => modify
+        foreach($data[$name] as $contact_data) {
+            // find by data
+            $contacts = $this->findContact($user, $contact_data, $name);
+            if(empty($contacts) || $contacts->isEmpty()) {
+                    $contact = $this->createContact($user, $user_ext, $contact_data, Contact::$contactModels[$name]);
+            } else {
+                
+            }
+        }
+        
     }
     
+    protected function isEqualContact(array $contact_a, array $contact_b) 
+    {
+    
+    }
 }
 
