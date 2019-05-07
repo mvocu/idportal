@@ -10,11 +10,13 @@ use Illuminate\Database\Eloquent\Collection;
 
 interface ContactManager
 {
-    public function findContact(User $user, array $data, $name);
+    public function findContact(User $user, array $data, $name, $source = null);
     
     public function createContact(User $user, UserExt $ext_user, array $data, $class = Address::class) : Contact;
     
     public function updateContact(Contact $contact, UserExt $ext_user, array $data) : Contact;
+    
+    public function attachSource(Contact $contact, UserExt $ext_user) : Contact;
     
     public function findTrustedContacts(User $user, $type, $trust_level) : Collection; 
 }

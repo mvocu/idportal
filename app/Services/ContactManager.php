@@ -21,7 +21,7 @@ class ContactManager implements ContactManagerInterface
      * {@inheritDoc}
      * @see \App\Interfaces\ContactManager::findContact()
      */
-    public function findContact(User $user, array $data, $name)
+    public function findContact(User $user, array $data, $name, $source = null)
     {
         if(!array_key_exists($name, $this->contactTypeMap)) 
             return null;    
@@ -77,7 +77,16 @@ class ContactManager implements ContactManagerInterface
         return $contact;
     }
 
-
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\ContactManager::attachSource()
+     */
+    public function attachSource(Contact $contact, UserExt $ext_user): Contact
+    {
+        $contact->extSources()->attach($ext_user->extSource);
+        $contact->save();
+        return $contact;
+    }
     
 }
 
