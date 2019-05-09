@@ -53,6 +53,10 @@ class Contact extends Model
         return $this->belongsTo('App\Models\Database\UserExt', 'updated_by');
     }
 
+    public function userExt() {
+        return $this->belongsToMany('App\Models\Database\UserExt', 'contact_user_ext', 'contact_id', 'user_ext_id');    
+    }
+    
     public function setPhoneAttribute($value) {
         if($value == null) {
             unset($this->attributes['phone']);
@@ -93,4 +97,14 @@ class Contact extends Model
         $this->attributes['post_number'] = preg_replace('/\s+/', '', $value);
     }
     
+    public function equalsTo($other) {
+        if($other instanceof Contact) {
+            $other = $other->toArray();
+        }
+        if(!is_array($other)) return false;
+        foreach($other as $key => $value) {
+            if($this->$key != $value) return false;
+        }
+        return true;
+    }
 }

@@ -21,7 +21,7 @@ class ContactManager implements ContactManagerInterface
      * {@inheritDoc}
      * @see \App\Interfaces\ContactManager::findContact()
      */
-    public function findContact(User $user, array $data, $name)
+    public function findContact(User $user, array $data, $name, $ext_user = null)
     {
         if(!array_key_exists($name, $this->contactTypeMap)) 
             return null;    
@@ -34,7 +34,13 @@ class ContactManager implements ContactManagerInterface
             // account for mutators
             $query = $query->where($key, '=', $obj->$key);
         }
-        $contacts = $query->get()->map(function($contact) use ($class) { return new $class($contact->toArray()); });
+        if(!empty($ext_user)) {
+            $query = $query->whereHas('userExt', function($query) use ($ext_user) {
+                $query->where('user_ext_id', '=', $ext_user->id);
+            });
+        }
+        #$contacts = $query->get()->map(function($contact) use ($class) { return new $class($contact->toArray()); });
+        $contacts = $query->withCount('userExt')->get();
         return $contacts;
     }
     
@@ -58,6 +64,7 @@ class ContactManager implements ContactManagerInterface
         $contact->createdBy()->associate($ext_user);
         $contact->trust_level = $ext_user->extSource->trust_level;
         $user->contacts()->save($contact);
+        $contact->userExt()->attach($ext_user);
         return $contact;
     }
 
@@ -76,7 +83,51 @@ class ContactManager implements ContactManagerInterface
         return $contact;
     }
 
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\ContactManager::syncContacts()
+     */
+    public function syncContacts(User $user, UserExt $ext_user, array $data, $name)
+    {
+        // current contacts from this UserExt (source)
+        $current = $this->findContact($user, array(), $name);
 
+        // data for contact exists:
+        //  - no contact yet => add
+        //  - same contact exists => attach
+        //  - the contact from this source has changed => modify
+        foreach($data as $contact_data) {
+            // find by data
+            $contacts = $this->findContact($user, $contact_data, $name);
+            if(empty($contacts) || $contacts->isEmpty()) {
+                $contact = $this->createContact($user, $ext_user, $contact_data, Contact::$contactModels[$name]);
+            } else {
+                // if it is in the current contacts, remove it
+                $key = $current->search(function($item, $key) use ($contact_data) {
+                    return $item->equalsTo($contact_data);
+                });
+                if($key !== false) {
+                    $current->forget($key);
+                } else {
+                    // contact exists, but is not yet assigned to the current ext user
+                    foreach($contacts as $contact) {
+                        $contact->userExt()->assign($ext_user);
+                    }
+                }
+            }
+        }
+        
+        // $current now contains contacts of the current ext user that were not found in the new data
+        // => remove them
+        if(!empty($current)) {
+            foreach($current as $contact) {
+                $contact->userExt()->detach($ext_user);
+                if($contact->user_ext_count == 1) {
+                    $contact->delete();
+                }
+            }
+        }
+    }
     
 }
 
