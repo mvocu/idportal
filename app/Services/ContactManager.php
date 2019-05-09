@@ -39,7 +39,8 @@ class ContactManager implements ContactManagerInterface
                 $query->where('user_ext_id', '=', $ext_user->id);
             });
         }
-        $contacts = $query->get()->map(function($contact) use ($class) { return new $class($contact->toArray()); });
+        #$contacts = $query->get()->map(function($contact) use ($class) { return new $class($contact->toArray()); });
+        $contacts = $query->withCount('userExt')->get();
         return $contacts;
     }
     
@@ -61,9 +62,9 @@ class ContactManager implements ContactManagerInterface
         $contact = new $class;
         $contact->fill($data);
         $contact->createdBy()->associate($ext_user);
-        $contact->userExt()->attach($ext_user);
         $contact->trust_level = $ext_user->extSource->trust_level;
         $user->contacts()->save($contact);
+        $contact->userExt()->attach($ext_user);
         return $contact;
     }
 
@@ -99,7 +100,7 @@ class ContactManager implements ContactManagerInterface
             // find by data
             $contacts = $this->findContact($user, $contact_data, $name);
             if(empty($contacts) || $contacts->isEmpty()) {
-                $contact = $this->createContact($user, $user_ext, $contact_data, Contact::$contactModels[$name]);
+                $contact = $this->createContact($user, $ext_user, $contact_data, Contact::$contactModels[$name]);
             } else {
                 // if it is in the current contacts, remove it
                 $key = $current->search(function($item, $key) use ($contact_data) {
@@ -120,7 +121,10 @@ class ContactManager implements ContactManagerInterface
         // => remove them
         if(!empty($current)) {
             foreach($current as $contact) {
-                $contact->delete();
+                $contact->userExt()->detach($ext_user);
+                if($contact->user_ext_count == 1) {
+                    $contact->delete();
+                }
             }
         }
     }
