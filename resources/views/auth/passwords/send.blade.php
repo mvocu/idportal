@@ -38,7 +38,7 @@
                         </div>
                         
                         <div class="form-group row">
-							<label for="preferred" class="col-md-4 col-form-label text-md-right">{{ __('Preferred verification method') }}</label>
+							<label for="preferred" class="col-md-4 control-label">{{ __('Preferred verification method') }}</label>
 
 							<div class="col-md-6">
 								<input id="preferred_sms" type="radio" name="preferred" value="sms" checked>&nbsp;{{ __('SMS') }}</input>
