@@ -22,6 +22,7 @@ class User extends LdapUser implements AuthenticatableContract, AuthorizableCont
     use CanResetPassword { sendPasswordResetNotification as sendPasswordResetNotificationMail; }
 
     protected $db_user;
+    protected $_preferred_reset_method;
     
     /**
      * {@inheritDoc}
@@ -79,7 +80,7 @@ class User extends LdapUser implements AuthenticatableContract, AuthorizableCont
      */
     public function sendPasswordResetNotification($token)
     {
-        if($this->getPasswordResetContactType($this) == Contact::TYPE_PHONE) {
+        if($this->getPasswordResetContactType() == Contact::TYPE_PHONE) {
             $this->notify(new SmsPasswordReset($token));
             return "sms";
         } else {
@@ -120,13 +121,22 @@ class User extends LdapUser implements AuthenticatableContract, AuthorizableCont
         return $contact;
     }
     
-    public function getPasswordResetContactType(User $user) {
-        $contact = $user->getTrustedContact(Contact::TYPE_PHONE);
-        if(!empty($contact)) {
+    public function getPasswordResetContactType() {
+        $contact = $this->getTrustedContact(Contact::TYPE_PHONE);
+        if(!empty($contact) && $this->getPreferredPasswordResetMethod() != 'email') {
             return Contact::TYPE_PHONE;
         } else {
             return Contact::TYPE_EMAIL;
         }
     }
     
+    public function getPreferredPasswordResetMethod() 
+    {
+       return empty($this->_preferred_reset_method) ? 'sms' : $this->_preferred_reset_method;
+    }
+    
+    public function setPreferredPasswordResetMethod($method)
+    {
+        $this->_preferred_reset_method = $method;
+    }
 }

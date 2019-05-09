@@ -48,7 +48,7 @@ class ForgotPasswordController extends Controller
         // to send the link, we will examine the response then see the message we
         // need to show to the user. Finally, we'll send out a proper response.
         $response = $this->broker()->sendResetLink(
-            $request->only('uid')
+            $request->only(['uid', 'preferred'])
             );
         
         return starts_with($response, Password::RESET_LINK_SENT) 
