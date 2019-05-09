@@ -36,6 +36,15 @@
                                 @endif
                             </div>
                         </div>
+                        
+                        <div class="form-group row">
+							<label for="preferred" class="col-md-4 col-form-label text-md-right">{{ __('Preferred verification method') }}</label>
+
+							<div class="col-md-6">
+								<input id="preferred_sms" type="radio" name="preferred" value="sms" checked>&nbsp;{{ __('SMS') }}</input>
+								<input id="preferred_email" type="radio" name="preferred" value="email">&nbsp;{{ __('E-mail') }}</input>
+							</div>
+                        </div>
 
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">

@@ -32,6 +32,10 @@ class PasswordBroker extends Broker
      */
     public function sendResetLink(array $credentials)
     {
+        if(array_key_exists('preferred', $credentials)) {
+            $preferred = $credentials['preferred'];
+            unset($credentials['preferred']);
+        }
         // First we will check to see if we found a user at the given credentials and
         // if we did not we will redirect back to this current URI with a piece of
         // "flash" data in the session to indicate to the developers the errors.
@@ -43,6 +47,10 @@ class PasswordBroker extends Broker
 
         if ($user->cant('resetpw', User::class)) {
             return static::NOT_ALLOWED;
+        }
+        
+        if(!empty($preferred)) {
+            $user->setPreferredPasswordResetMethod($preferred);
         }
         
         // Once we have the reset token, we are ready to send the message out to this
