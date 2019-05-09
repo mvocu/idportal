@@ -95,26 +95,30 @@ class ContactManager implements ContactManagerInterface
         //  - no contact yet => add
         //  - same contact exists => attach
         //  - the contact from this source has changed => modify
-        foreach($data[$name] as $contact_data) {
-            // find by data
-            $contacts = $this->findContact($user, $contact_data, $name);
-            if(empty($contacts) || $contacts->isEmpty()) {
-                    $contact = $this->createContact($user, $user_ext, $contact_data, Contact::$contactModels[$name]);
-            } else {
-                // if it is in the current contacts, remove it
-                $key = $current->search(function($item, $key) use ($contact_data) {
-                    return $item->equalsTo($contact_data);
-                });
-                if($key !== false) {
-                    $current->forget($key);
+        if(array_key_exists($name, $data)) {
+            foreach($data[$name] as $contact_data) {
+                // find by data
+                $contacts = $this->findContact($user, $contact_data, $name);
+                if(empty($contacts) || $contacts->isEmpty()) {
+                        $contact = $this->createContact($user, $user_ext, $contact_data, Contact::$contactModels[$name]);
                 } else {
-                    // contact exists, but is not yet assigned to the current ext user
-                    foreach($contacts as $contact) {
-                        $contact->userExt()->assign($ext_user);
+                    // if it is in the current contacts, remove it
+                    $key = $current->search(function($item, $key) use ($contact_data) {
+                        return $item->equalsTo($contact_data);
+                    });
+                    if($key !== false) {
+                        $current->forget($key);
+                    } else {
+                        // contact exists, but is not yet assigned to the current ext user
+                        foreach($contacts as $contact) {
+                            $contact->userExt()->assign($ext_user);
+                        }
                     }
                 }
             }
         }
+        
+        echo "Removing $name ", var_dump($current), "\n";
         // $current now contains contacts of the current ext user that were not found in the new data
         // => remove them
         foreach($current as $contact) {
