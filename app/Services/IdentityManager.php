@@ -169,9 +169,8 @@ class IdentityManager implements IdentityManagerInterface
                 {
 
                     if($user->confidence_level > 1) {
-                        // we are pretty sure this is the same user, but adding it would compromise the candidates
-                        // trust level requirements, so we back off
-                        $user = null;   
+                        // we are pretty sure this is the same user
+                        $this->user_mgr->updateUserWithContacts($user, $user_ext, $data);
                     } else {
                         // the currently found identity is less trusted, create a new one 
                         if($this->validateIdentity($user_ext_data)) {
