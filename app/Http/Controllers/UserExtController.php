@@ -6,6 +6,7 @@ use App\Interfaces\UserExtManager;
 use App\Models\Database\ExtSource;
 use App\Models\Database\User;
 use Illuminate\Http\Request;
+use App\Http\Resources\UserResource;
 
 class UserExtController extends Controller
 {
@@ -24,7 +25,7 @@ class UserExtController extends Controller
     
     public function showAddUserExtForm(Request $request, User $user, ExtSource $ext_source)
     {
-        $attributes = [];
+        $attributes = (new UserResource($user))->getExtAttributes($ext_source->attributes);
         return view('userext', [
             'action' => 'add', 
             'user' => $user, 

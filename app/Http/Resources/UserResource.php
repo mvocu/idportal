@@ -38,7 +38,7 @@ class UserResource extends JsonResource
                     if($names[1] == 'phone')
                         $value = $this->_normalizePhone($value);
                     // attribute of some relation in the form: relation[index].name
-                    if (preg_match("/([a-zA-Z]*)\[(\d+)\]/", $names[0], $matches)) {
+                    if (preg_match("/([_a-zA-Z]*)\[(\d+)\]/", $names[0], $matches)) {
                         // hasMany relation: get relation name and index
                         $attr_name = $matches[1];
                         $index = $matches[2];
@@ -47,7 +47,7 @@ class UserResource extends JsonResource
                             $result[$attr_name][$index][$names[1]] = $value;
                         }
                     // attribute of some relation in the form: relation[].name
-                    } elseif (preg_match("/([a-zA-Z]*)\[\]/", $names[0], $matches)) {
+                    } elseif (preg_match("/([_a-zA-Z]*)\[\]/", $names[0], $matches)) {
                         // hasMany relation with one multivalued attribute
                         $attr_name = $matches[1];
                         if(in_array($attr_name, Contact::$contactTypes)) {
@@ -72,7 +72,28 @@ class UserResource extends JsonResource
             return parent::toArray($request);
         }
     }
-    
+
+
+    public function getExtAttributes($attrDefs)
+    {
+        $attributes = [];
+        if($this->resource instanceof User) {
+            $data = $this->toArray(null); 
+            foreach($attrDefs as $attr_def) {
+                $names = explode(".", $attr_def->core_name);
+                if(count($names) == 1) {
+                    $attributes[$attr_def->name] = $data[$attr_def->core_name];
+                } else {
+                    if(preg_match("/([_a-zA-Z]*)\[\d*\]", $names[0], $matches)) {
+                        $attr_name = $matches[1];
+                        $attributes[$attr_def->name] = $data[$attr_name];
+                    }
+                }
+            }
+        }
+        return $attributes;
+    }
+
     protected function _normalizePhone($value) 
     {
         $contact = new Contact();
