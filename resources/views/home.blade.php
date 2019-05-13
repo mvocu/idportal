@@ -28,15 +28,22 @@
                     		<div class="col-8">{{ empty($user->getTelephoneNumber()) ? "" : implode(",", $user->telephonenumber) }}</div>
                     	</div>
               	</div>
-
                 <div class="card-body">
-					@foreach ($accounts as $account)
+					@foreach ($accounts as $account_id => $account)
                         <div class="row">
                                 <div class="col-4 text-right">{{ __($account['name']) }}</div>
-                                <div class="col-2">{{ empty($value = $user->getFirstAttribute('employeenumber;x-'.$account['tag'])) ? "ne" : "ano" }}</div>
+                                <div class="col-1">{{ empty($value = $user->getFirstAttribute('employeenumber;x-'.$account['tag'])) ? "ne" : "ano" }}</div>
 					@if (!empty($user->getFirstAttribute('employeenumber;x-'.$account['tag']))) 
                                 <div class="col-3">tel. {{ empty($account['phone']) ? "" : $account['phone'] }}</div>
                                 <div class="col-3">mail {{ empty($account['email']) ? "" : $account['email'] }}</div>
+						@if ($account['editable'])
+								<div class="col-1"><a class="pull-right btn btn-default btn-sm btn-small"><span class="fa fa-pencil">&nbsp;</span></a></div>
+						@endif
+					@else
+						@if ($account['editable'])
+								<div class="col-7"><a href="{{ route('ext.account.add', [ 'user' => $user->getDatabaseUser(), 'source' => $account_id ]) }}" class="pull-right btn btn-default btn-sm btn-small"><span class="fa fa-plus">&nbsp;</span></a></div>
+						@endif
+					
 					@endif
                         </div>
 					@endforeach

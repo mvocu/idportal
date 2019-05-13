@@ -126,6 +126,21 @@ class UserManager implements UserManagerInterface
     public function findUser(array $data): Collection
     {
         $results = array();
+
+        /*
+         * maybe we have already identified user
+         */
+        if(array_key_exists('identifier', $data) && !empty($data['identifier'])) {
+            $query = User::where('identifier', '=', $data['identifier']);
+            $users = $query->get();
+            if($users->isNotEmpty()) {
+                // there could be only one result
+                $user = $users->first();
+                $user->confidence_level = 100;
+                $result[$user->id] = $user;
+                return $result;
+            }
+        }
         
         /*
          * These properties are unique for the identity, even though the identity may posses more instances
