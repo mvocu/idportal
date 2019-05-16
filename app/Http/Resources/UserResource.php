@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Arr;
 use App\Models\Database\Contact;
 use App\Models\Database\UserExt;
 use App\Models\Database\User;
@@ -82,11 +83,15 @@ class UserResource extends JsonResource
             foreach($attrDefs as $attr_def) {
                 $names = explode(".", $attr_def->core_name);
                 if(count($names) == 1) {
-                    $attributes[$attr_def->name] = $data[$attr_def->core_name];
+                    if(array_key_exists($attr_def->core_name, $data)) {
+                        $attributes[$attr_def->name] = $data[$attr_def->core_name];
+                    }
                 } else {
-                    if(preg_match("/([_a-zA-Z]*)\[\d*\]", $names[0], $matches)) {
+                    if(preg_match("/([_a-zA-Z]*)\[\d*\]/", $names[0], $matches)) {
                         $attr_name = $matches[1];
-                        $attributes[$attr_def->name] = $data[$attr_name];
+                        if(array_key_exists($attr_name, $data)) {
+                            $attributes[$attr_def->name] = Arr::pluck($data[$attr_name], $names[1]);
+                        }
                     }
                 }
             }

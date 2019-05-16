@@ -68,7 +68,7 @@ class User extends Model
     }
 
     public function dataBox() {
-        return $this->hasMany('App\Models\Database\DataBox', 'user_id')->where('type', Contact::TYPE_DATABOX);
+        return $this->hasMany('App\Models\Database\Databox', 'user_id')->where('type', Contact::TYPE_DATABOX);
     }
 
     public function uris() {

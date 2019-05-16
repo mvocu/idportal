@@ -17,5 +17,11 @@ interface UserManager
     public function mergeUserWithContacts(User $source, User $dest);
     
     public function getRequiredTrustLevel(User $user);
+
+    public function validateUpdate(User $user, $user_ext_data) : bool;
+    
+    public function getValidData();
+
+    public function getValidationErrors();
 }
 
