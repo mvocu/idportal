@@ -62,42 +62,7 @@ class IdentityManager implements IdentityManagerInterface
         'candidate.dataBox' => 'sometimes|required|string|same_if_exists:user.dataBox',
     ];
     
-    protected $updateIdentityRequirements = [
-        'phones' => 'sometimes|required|array',
-        'phones.*.phone' => 'required|phone|unique:contact,phone',
-        'emails' => 'sometimes|required|array',
-        'emails.*.email' => 'required|email|unique:contact,email',
-        'residency' => 'sometimes|required|array',
-        'residency.street' => 'required_with:residency|string',
-        'residency.city' => 'required_with:residency|string',
-        'residency.state' => 'sometimes|required|string',
-        //'residency.org_number' => 'required_with:residency|required_without:residency.ev_number|integer',
-        //'residency.ev_number' => 'required_with:residency|required_without:residency.org_number|string',
-        'address' => 'sometimes|required|array',
-        'address.street' => 'required_with:address|string',
-        'address.city' => 'required_with:address|string',
-        'address.state' => 'sometimes|required|string',
-        //'address.org_number' => 'required_with:address|required_without:address.ev_number|integer',
-        //'address.ev_number' => 'required_with:address|required_without:address.org_number|string',
-        'addressTmp' => 'sometimes|required|array',
-        'addressTmp.street' => 'required_with:addressTmp|string',
-        'addressTmp.city' => 'required_with:addressTmp|string',
-        //'addressTmp.state' => 'sometimes|required|string',
-        //'addressTmp.org_number' => 'required_with:addressTmp|required_without:address.ev_number|integer',
-        'addressTmp.ev_number' => 'required_with:addressTmp|required_without:address.org_number|string',
-        'addresses' => 'sometimes|required|array',
-        'addresses.*.street' => 'required|string',
-        'addresses.*.city' => 'required|string',
-        'addresses.*.state' => 'sometimes|required|string',
-        'addresses.*.org_number' => 'required_without:addresses.*.ev_number|integer',
-        'addresses.*.ev_number' => 'required_without:addresses.*.org_number|string',
-        'dataBox' => 'sometimes|required|unique:contact,databox',
-        'bankAccounts' => 'sometimes|required|array',
-        'bankAccounts.*.bank_account' => 'required|string',
-        'birth_code' => [ 'sometimes', 'required', 'regex:/\d{9,10}/', 'unique:user,birth_code' ],
-        'birth_date' => 'sometimes|required|date',
-    ];
-    
+   
     protected $user_mgr;
     protected $user_ext_mgr;
     protected $ext_source_mgr;
@@ -150,10 +115,10 @@ class IdentityManager implements IdentityManagerInterface
         } else {
             // we already know identity for this record
             $user = $users->first();
-            if($this->validateUpdate($user_ext_data)) {
+            if($this->user_mgr->validateUpdate($user, $user_ext_data)) {
                 $data = $user_ext_data;
             } else {
-                $data = $this->validator->valid();
+                $data = $this->user_mgr->getValidData();
             }
             if($this->validateEqualIdentity($user, $data)) {
                 // check the required trust level
@@ -213,25 +178,38 @@ class IdentityManager implements IdentityManagerInterface
 
 
     public function validateIdentity(array $user_ext_data) : bool {
-        $this->validator = Validator::make($user_ext_data, $this->identityRequirements);
-        $this->validator->sometimes('residency.org_number', 'required_without:residency.ev_number|integer',
-            function($input) { return !empty($input->residency); }
-            );
-        $this->validator->sometimes('residency.ev_number', 'required_without:residency.org_number|string',
-            function($input) { return !empty($input->residency); }
-            );
-        $this->validator->sometimes('address.org_number', 'required_without:address.ev_number|integer',
-            function($input) { return !empty($input->address); }
-            );
-        $this->validator->sometimes('address.ev_number', 'required_without:address.org_number|string',
-            function($input) { return !empty($input->address); }
-            );
-        $this->validator->sometimes('addressTmp.org_number', 'required_without:addressTmp.ev_number|integer',
-            function($input) { return !empty($input->addressTmp); }
-            );
-        $this->validator->sometimes('addressTmp.ev_number', 'required_without:addressTmp.org_number|string',
-            function($input) { return !empty($input->addressTmp); }
-            );
+        $requirements = $this->identityRequirements;
+        if(array_key_exists('residency', $user_ext_data)) {
+            $requirements['residency.org_number'] = [
+                'required_without:residency.ev_number',
+                'integer'
+            ];
+            $requirements['residency.ev_number'] = [
+                'required_without:residency.org_number',
+                'string'
+            ];
+        }
+        if(array_key_exists('address', $user_ext_data)) {
+            $requirements['address.org_number'] = [
+                'required_without:address.ev_number',
+                'integer'
+            ];
+            $requirements['address.ev_number'] = [
+                'required_without:address.org_number',
+                'string'
+            ];
+        }
+        if(array_key_exists('addressTmp', $user_ext_data)) {
+            $requirements['addressTmp.org_number']  = [
+                'required_without:addressTmp.ev_number',
+                'integer'
+            ];
+            $requirements['addressTmp.ev_number'] = [
+                'required_without:addressTmp.org_number',
+                'string'
+            ];
+        }
+        $this->validator = Validator::make($user_ext_data, $requirements);
         return $this->validator->passes();
     }
     
@@ -242,29 +220,6 @@ class IdentityManager implements IdentityManagerInterface
         
     }
     
-    public function validateUpdate($user_ext_data) : bool {
-        $this->validator = Validator::make($user_ext_data, $this->updateIdentityRequirements);
-        $this->validator->sometimes('residency.org_number', 'required_without:residency.ev_number|integer',
-            function($input) { return !empty($input->residency); }
-            );
-        $this->validator->sometimes('residency.ev_number', 'required_without:residency.org_number|string',
-            function($input) { return !empty($input->residency); }
-            );
-        $this->validator->sometimes('address.org_number', 'required_without:address.ev_number|integer',
-            function($input) { return !empty($input->address); }
-            );
-        $this->validator->sometimes('address.ev_number', 'required_without:address.org_number|string',
-            function($input) { return !empty($input->address); }
-            );
-        $this->validator->sometimes('addressTmp.org_number', 'required_without:addressTmp.ev_number|integer',
-            function($input) { return !empty($input->addressTmp); }
-            );
-        $this->validator->sometimes('addressTmp.ev_number', 'required_without:addressTmp.org_number|string',
-            function($input) { return !empty($input->addressTmp); }
-            );
-        return $this->validator->passes();
-    }
-
     /**
      * {@inheritDoc}
      * @see \App\Interfaces\IdentityManager::mergeUser()

@@ -111,7 +111,9 @@ class ContactManager implements ContactManagerInterface
                 } else {
                     // contact exists, but is not yet assigned to the current ext user
                     foreach($contacts as $contact) {
-                        $contact->userExt()->attach($ext_user);
+                        if(!$contact->userExt->pluck('id')->contains($ext_user->id)) {
+                            $contact->userExt()->attach($ext_user);
+                        }
                     }
                 }
             }

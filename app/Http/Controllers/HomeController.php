@@ -36,7 +36,8 @@ class HomeController extends Controller
         foreach(ExtSource::all() as $source) {
             $name = $source->name;
             $tag = Str::kebab(Str::lower(Str::ascii($name)));
-            $accounts[$source->id] = [ 'name' => $name, 'tag' => $tag ];
+            $editable = $source->editable;
+            $accounts[$source->id] = [ 'name' => $name, 'tag' => $tag, 'editable' => $editable ];
         }
         if($user != null) {
             foreach($user->accounts as $account) {
