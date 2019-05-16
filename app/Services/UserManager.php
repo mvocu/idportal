@@ -9,6 +9,8 @@ use App\Models\Database\Contact;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Ramsey\Uuid\Uuid;
 use App\Models\Database\Address;
 use App\Models\Database\Databox;
@@ -22,7 +24,45 @@ use App\Events\UserUpdatedEvent;
 class UserManager implements UserManagerInterface
 {
     protected $contact_mgr;
+
+    protected $updateRequirements = [
+        'phones' => 'sometimes|required|array',
+        //'phones.*.phone' => 'required|phone|unique:contact,phone',
+        'emails' => 'sometimes|required|array',
+        //'emails.*.email' => 'required|email|unique:contact,email',
+        'residency' => 'sometimes|required|array',
+        'residency.street' => 'required_with:residency|string',
+        'residency.city' => 'required_with:residency|string',
+        'residency.state' => 'sometimes|required|string',
+        //'residency.org_number' => 'required_with:residency|required_without:residency.ev_number|integer',
+        //'residency.ev_number' => 'required_with:residency|required_without:residency.org_number|string',
+        'address' => 'sometimes|required|array',
+        'address.street' => 'required_with:address|string',
+        'address.city' => 'required_with:address|string',
+        'address.state' => 'sometimes|required|string',
+        //'address.org_number' => 'required_with:address|required_without:address.ev_number|integer',
+        //'address.ev_number' => 'required_with:address|required_without:address.org_number|string',
+        'addressTmp' => 'sometimes|required|array',
+        'addressTmp.street' => 'required_with:addressTmp|string',
+        'addressTmp.city' => 'required_with:addressTmp|string',
+        //'addressTmp.state' => 'sometimes|required|string',
+        //'addressTmp.org_number' => 'required_with:addressTmp|required_without:address.ev_number|integer',
+        //'addressTmp.ev_number' => 'required_with:addressTmp|required_without:address.org_number|string',
+        'addresses' => 'sometimes|required|array',
+        'addresses.*.street' => 'required|string',
+        'addresses.*.city' => 'required|string',
+        'addresses.*.state' => 'sometimes|required|string',
+        'addresses.*.org_number' => 'required_without:addresses.*.ev_number|integer',
+        'addresses.*.ev_number' => 'required_without:addresses.*.org_number|string',
+        //'dataBox' => 'sometimes|required|unique:contact,databox',
+        'bankAccounts' => 'sometimes|required|array',
+        'bankAccounts.*.bank_account' => 'required|string',
+        //'birth_code' => [ 'sometimes', 'required', 'regex:/\d{9,10}/', 'unique:user,birth_code' ],
+        'birth_date' => 'sometimes|required|date',
+    ];
     
+    private $validator;
+
     public function __construct(ContactManagerInterface $contact_mgr) 
     {
         $this->contact_mgr = $contact_mgr;
@@ -73,6 +113,10 @@ class UserManager implements UserManagerInterface
      */
     public function updateUserWithContacts(User $user, UserExt $user_ext, array $data): User
     {
+        if(!$this->validateUpdate($user, $data)) {
+            $data = $this->getValidData();
+        }
+        
         $user->updatedBy()->associate($user_ext);
         $user->fill($data);
         
@@ -126,6 +170,21 @@ class UserManager implements UserManagerInterface
     public function findUser(array $data): Collection
     {
         $results = array();
+
+        /*
+         * maybe we have already identified user
+         */
+        if(array_key_exists('identifier', $data) && !empty($data['identifier'])) {
+            $query = User::where('identifier', '=', $data['identifier']);
+            $users = $query->get();
+            if($users->isNotEmpty()) {
+                // there could be only one result
+                $user = $users->first();
+                $user->confidence_level = 100;
+                $result[$user->id] = $user;
+                return $result;
+            }
+        }
         
         /*
          * These properties are unique for the identity, even though the identity may posses more instances
@@ -181,6 +240,77 @@ class UserManager implements UserManagerInterface
         return $trust_level;
     }
 
+    public function validateUpdate(User $user, $user_ext_data) : bool {
+        $requirements = $this->updateRequirements;
+        //'phones.*.phone' => 'required|phone|unique:contact,phone',
+        $requirements['phones.*.phone'] = [
+            'required',
+            'phone',
+            Rule::unique('contact', 'phone')->ignore($user->id, 'user_id')
+        ];
+        //'emails.*.email' => 'required|email|unique:contact,email',
+        $requirements['emails.*.email'] = [
+            'required',
+            'email',
+            Rule::unique('contact', 'email')->ignore($user->id, 'user_id')
+        ];
+        //'dataBox' => 'sometimes|required|unique:contact,databox',
+        $requirements['dataBox'] = [
+            'sometimes',
+            'required',
+            Rule::unique('contact', 'databox')->ignore($user->id, 'user_id')
+        ];
+        //'birth_code' => [ 'sometimes', 'required', 'regex:/\d{9,10}/', 'unique:user,birth_code' ],
+        $requirements['birth_code'] =  [
+            'sometimes',
+            'required',
+            'regex:/\d{9,10}',
+            Rule::unique('user', 'birth_code')->ignore($user->id, 'user_id')
+        ];
+        if(array_key_exists('residency', $user_ext_data)) {
+            $requirements['residency.org_number'] = [
+                'required_without:residency.ev_number',
+                'integer'
+                ];
+            $requirements['residency.ev_number'] = [
+                'required_without:residency.org_number',
+                'string'
+                ];
+        }
+        if(array_key_exists('address', $user_ext_data)) {
+            $requirements['address.org_number'] = [
+                'required_without:address.ev_number',
+                'integer'
+                ];
+            $requirements['address.ev_number'] = [
+                'required_without:address.org_number',
+                'string'
+                ];
+        }
+        if(array_key_exists('addressTmp', $user_ext_data)) {
+            $requirements['addressTmp.org_number']  = [ 
+                'required_without:addressTmp.ev_number',
+                'integer'
+                ];
+            $requirements['addressTmp.ev_number'] = [
+                'required_without:addressTmp.org_number',
+                'string'
+                ];
+        }
+        $this->validator = Validator::make($user_ext_data, $requirements);
+        return $this->validator->passes();
+    }
+    
+    public function getValidData() 
+    {
+        return $this->validator->valid();    
+    }
+    
+    public function getValidationErrors()
+    {
+        return $this->validator->errors();    
+    }
+    
     protected function _normalizePhones(&$data) {
         foreach($data as &$phone) {
             $value = $phone['phone'];

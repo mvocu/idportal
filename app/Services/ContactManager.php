@@ -90,7 +90,7 @@ class ContactManager implements ContactManagerInterface
     public function syncContacts(User $user, UserExt $ext_user, array $data, $name)
     {
         // current contacts from this UserExt (source)
-        $current = $this->findContact($user, array(), $name);
+        $current = $this->findContact($user, array(), $name, $ext_user);
 
         // data for contact exists:
         //  - no contact yet => add
@@ -111,7 +111,9 @@ class ContactManager implements ContactManagerInterface
                 } else {
                     // contact exists, but is not yet assigned to the current ext user
                     foreach($contacts as $contact) {
-                        $contact->userExt()->assign($ext_user);
+                        if(!$contact->userExt->pluck('id')->contains($ext_user->id)) {
+                            $contact->userExt()->attach($ext_user);
+                        }
                     }
                 }
             }
