@@ -33,4 +33,18 @@ class UserExtController extends Controller
             'attributes' => $attributes
         ]);
     }
+
+    public function showUserExtForm(Request $request, User $user, ExtSource $ext_source)
+    {
+        $attributes = (new UserResource($user))->getExtAttributes($ext_source->attributes);
+        $user_ext = $user->accounts()->where('ext_source_id', $ext_source->id)->get()->first();
+        return view('userext', [
+            'action' => 'edit',
+            'user' => $user,
+            'user_ext' => $user_ext,
+            'ext_source' => $ext_source,
+            'attributes' => $attributes
+        ]);
+    }
+
 }

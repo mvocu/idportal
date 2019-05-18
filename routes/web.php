@@ -32,3 +32,5 @@ Route::post('/activate/activate', 'Auth\ActivateController@activate')->name('act
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/ext/account/add/{user}/{source}', 'UserExtController@showAddUserExtForm')->name('ext.account.add');
+
+Route::get('/ext/account/show/{user}/{source}', 'UserExtController@showUserExtForm')->name('ext.account.show');

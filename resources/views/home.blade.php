@@ -37,7 +37,7 @@
                                 <div class="col-3">tel. {{ empty($account['phone']) ? "" : $account['phone'] }}</div>
                                 <div class="col-3">mail {{ empty($account['email']) ? "" : $account['email'] }}</div>
 						@if ($account['editable'])
-								<div class="col-1"><a class="pull-right btn btn-default btn-sm btn-small"><span class="fa fa-pencil">&nbsp;</span></a></div>
+								<div class="col-1"><a href="{{ route('ext.account.show', [ 'user' => $user->getDatabaseUser(), 'source' => $account_id ]) }}"class="pull-right btn btn-default btn-sm btn-small"><span class="fa fa-pencil">&nbsp;</span></a></div>
 						@endif
 					@else
 						@if ($account['editable'])
