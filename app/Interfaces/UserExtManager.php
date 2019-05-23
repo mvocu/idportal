@@ -11,6 +11,8 @@ use Illuminate\Support\Collection;
 interface UserExtManager
 {
     public function getUserResource(UserExt $user_ext) : UserResource;
+    
+    public function getExtUserResource(UserExt $user_ext) : ExtUserResource;
   
     public function createUserWithAttributes(ExtSource $source, ExtUserResource $data) : UserExt;
     

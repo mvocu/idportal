@@ -12,6 +12,7 @@
   "First name" : "Jméno",
   "Last name" : "Příjmení",
   "E-mail address" : "E-mail",
+  "Phone": "Telefon",
   "Password" : "Heslo",
   "Remember Me" : "Pamatuj si mě",
   "Forgot Your Password?" : "Zapomenuté heslo",
@@ -44,6 +45,14 @@
   "activation-done" : "Váš účet byl úspěšně aktivován.",
   "If you did not register new account, no further action is required." : "Pokud jste nežádali o registraci nového účtu, ignorujte prosím tento e-mail.",
   "Preferred verification method" : "Ověřit pomocí",
+  "Change password": "Změnit heslo",
+  "User detail": "Podrobnosti o uživateli",
+  "Back": "Zpět",
+  "Attribute": "Vlastnost",
+  "Value": "Hodnota",
+  "Submit": "Uložit",
+  "Saved.": "Uloženo.",
+  
   
   "Helios Energo" : "Vodné a stočné",
   "Ginis" : "Poplatky za odpad a psa",
