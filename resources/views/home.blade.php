@@ -14,6 +14,12 @@
                         </div>
                     @endif
 
+                    @if ($errors->has('failure'))
+                        <div class="alert alert-danger" role="alert">
+                            {{ $errors->first('failure') }}
+                        </div>
+                    @endif
+
                     @if ( isset($user) )
                     	<div class="row">
                     		<div class="col-4 text-right">{{ __('Login') }}</div>
@@ -37,10 +43,10 @@
                                 <div class="col-3">tel. {{ empty($account['phone']) ? "" : $account['phone'] }}</div>
                                 <div class="col-3">mail {{ empty($account['email']) ? "" : $account['email'] }}</div>
 						@if ($account['editable'])
-								<div class="col-1"><a href="{{ route('ext.account.show', [ 'user' => $user->getDatabaseUser(), 'source' => $account_id ]) }}"class="pull-right btn btn-default btn-sm btn-small"><span class="fa fa-pencil">&nbsp;</span></a></div>
+								<div class="col-1"><a href="{{ route('ext.account.show', [ 'user' => $user->getDatabaseUser(), 'source' => $account_id ]) }}" class="pull-right btn btn-default btn-sm btn-small"><span class="fa fa-pencil">&nbsp;</span></a></div>
 						@endif
 					@else
-						@if ($account['editable'])
+						@if (false && $account['editable'])
 								<div class="col-7"><a href="{{ route('ext.account.add', [ 'user' => $user->getDatabaseUser(), 'source' => $account_id ]) }}" class="pull-right btn btn-default btn-sm btn-small"><span class="fa fa-plus">&nbsp;</span></a></div>
 						@endif
 					

@@ -75,6 +75,16 @@ class UserResource extends JsonResource
     }
 
 
+    /**
+     * For a given User resource, return mapping of attr_name => [ values ] 
+     * for attribute definitions passed in parameter $attrDefs, belonging to particular ExtSource,
+     * where keys are names of external attributes and values are taken from the database model.
+     * 
+     * This is 'inverse' to the toArray(), which takes ExtUser and produces core attributes
+     * 
+     * @param array $attrDefs
+     * @return array
+     */
     public function getExtAttributes($attrDefs)
     {
         $attributes = [];

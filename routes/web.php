@@ -34,3 +34,5 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/ext/account/add/{user}/{source}', 'UserExtController@showAddUserExtForm')->name('ext.account.add');
 
 Route::get('/ext/account/show/{user}/{source}', 'UserExtController@showUserExtForm')->name('ext.account.show');
+
+Route::post('/ext/account/modify/{user_ext}/{action}', 'UserExtController@modifyUserExt')->name('ext.account.modify');
