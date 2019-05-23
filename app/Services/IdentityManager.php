@@ -214,6 +214,9 @@ class IdentityManager implements IdentityManagerInterface
     }
     
     public function validateEqualIdentity(User $user, $user_ext_data) : bool  {
+        if(array_key_exists('identifier', $user_ext_data) && $user->identifier == $user_ext_data['identifier']) {
+            return true;            
+        }
         $data = [ 'user' => $user->toArray(), 'candidate' => $user_ext_data ];
         $this->validator = Validator::make($data, $this->sameIdentityRequirements);
         return $this->validator->passes();

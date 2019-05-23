@@ -8,6 +8,7 @@ use App\Models\Database\ExtSourceAttribute;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\ExtSourceManager as ExtSourceManagerInterface;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Support\Collection;
 
 class ExtSourceManager implements ExtSourceManagerInterface
 {
@@ -56,6 +57,19 @@ class ExtSourceManager implements ExtSourceManagerInterface
         return $connector;
     }
 
+    
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\ExtSourceManager::getUpdatableAttributes()
+     */
+    public function getUpdatableAttributes(ExtSource $ext_source)
+    {
+        if(!($ext_source->editable)) {
+            return new Collection();
+        }
+        
+        return $ext_source->attributes()->where('editable', 1)->get();
+    }
 
 }
 

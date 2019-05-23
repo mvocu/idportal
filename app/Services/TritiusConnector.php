@@ -39,7 +39,7 @@ class TritiusConnector extends AbstractExtSourceConnector implements ExtSourceCo
             $count = count($result['results']);
             $users = is_null($users) ? collect($result['results']) : $users->concat($result['results']);
         }
-        return $users->map(function($item, $key) { return $this->makeResource($item, "id", "note"); });
+        return $users->map(function($item, $key) { return $this->makeResource($item, "username", "note"); });
     }
 
     /**
@@ -58,7 +58,7 @@ class TritiusConnector extends AbstractExtSourceConnector implements ExtSourceCo
      */
     public function getUser(\App\Models\Database\ExtSource $source, $id)
     {
-        return $this->makeResource($this->parseResponse($this->client->get('users/' . $id)), "id", "note");     
+        return $this->makeResource($this->parseResponse($this->client->get('users/' . $id)), "username", "note");     
     }
 
     /**

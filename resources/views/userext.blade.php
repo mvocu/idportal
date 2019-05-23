@@ -3,11 +3,11 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('New registration for') }}  {{ __(($ext_source->name)) }}  </div>
+        <div class="col-md-8 col-md-offset-2">
+            <div class="panel panel-default">
+                <div class="panel-heading">{{ __($ext_source->name) }} - {{ __('User detail') }}</div>
 
-                <div class="card-body">
+                <div class="panel-body">
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
@@ -20,26 +20,28 @@
                         </div>
                     @endif
 
-                    <form method="POST" action="{{ route('password.send') }}" aria-label="{{ __('Reset Password') }}">
-                        @csrf
+                    <form method="POST" action="{{ route('ext.account.modify', [ 'user_ext' => $user_ext, 'action' => $action ]) }}" aria-label="{{ __('Update contacts') }}">
+                        {{ csrf_field() }}
 
-                        <div class="form-group row">
-                            <label for="uid" class="col-md-4 col-form-label text-md-right">{{ __('Username') }}</label>
+						@foreach ($editable as $attrdef)
+                        <div class="form-group row{{ $errors->has($attrdef->name) ? ' has-error' : '' }}">
+                            <label for="{{ $attrdef->name }}" class="col-md-4 control-label col-form-label text-right">{{ $attrdef->display_name }}</label>
 
                             <div class="col-md-6">
-                                <input id="uid" type="text" class="form-control{{ $errors->has('uid') ? ' is-invalid' : '' }}" name="uid" value="{{ old('uid') }}" required>
+                                <input id="{{ $attrdef->name }}" type="text" class="form-control" name="{{ $attrdef->name }}" value="{{ old($attrdef->name) }}" required>
 
-                                @if ($errors->has('uid'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('uid') }}</strong>
+                                @if ($errors->has($attrdef->name))
+                                    <span class="help-block" role="alert">
+                                        <strong>{{ $errors->first($attrdef->name) }}</strong>
                                     </span>
                                 @endif
                             </div>
                         </div>
+                        @endforeach
                         
 
                         <div class="form-group row mb-0">
-                            <div class="col-md-6 offset-md-4">
+                            <div class="col-md-6 col-md-offset-4">
                                 <button type="submit" class="btn btn-primary">
                                     {{ __('Submit') }} 
                                 </button>
@@ -48,6 +50,25 @@
                     </form>
 
               	</div>
+              	
+              	<div class="panel-body">
+                        <div class="form-group row border-bottom" style="border-bottom: 1px solid lightgrey">
+                                <div class="col-md-4 text-right font-weight-bold">{{ __('Attribute') }}</div>
+                                <div class="col-md-8 font-weight-bold">{{ __('Value') }}</div>
+						</div>						
+					@foreach ($attributes as $name => $value)
+                        <div class="row">
+                                <div class="col-md-4 text-right">{{ __($name) }}</div>
+                                <div class="col-md-8">{{ $value }}</div>
+						</div>						
+					@endforeach
+              	</div>
+
+            	<div class="panel-footer">
+					<div class="row">
+						<div class="col-md-2"><a href="{{ route('home') }}" class="btn btn-default btn-block"><span class="fa fa-long-arrow-left">&nbsp;</span>{{ __('Back') }}</a></div>
+					</div>
+            	</div>
 
             </div>
         </div>

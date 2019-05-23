@@ -27,6 +27,15 @@ class UserExtManager implements UserExtManagerInterface
 
     /**
      * {@inheritDoc}
+     * @see \App\Interfaces\UserExtManager::getExtUserResource()
+     */
+    public function getExtUserResource(UserExt $user_ext): ExtUserResource
+    {
+        return new ExtUserResource($user_ext);
+    }
+
+    /**
+     * {@inheritDoc}
      * @see \App\Interfaces\UserExtManager::createUserWithAttributes()
      */
     public function createUserWithAttributes(ExtSource $source, ExtUserResource $data): UserExt

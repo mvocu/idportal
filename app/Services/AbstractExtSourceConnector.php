@@ -48,7 +48,26 @@ abstract class AbstractExtSourceConnector implements ExtSourceConnector
     public function getLastStatus() {
         return $this->lastStatus;
     }
-    
+
+
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\ExtSourceConnector::modifyUser()
+     */
+    public function modifyUser(ExtUserResource $user_ext, $data)
+    {
+        
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\ExtSourceConnector::validateUpdate()
+     */
+    public function validateUpdate(ExtSource $source, $data, &$validator)
+    {
+        return $source->editable;        
+    }
+
     protected function makeResource($data, $key, $parent_attr = null) {
         if(array_key_exists($key, $data)) {
             $id = $data[$key];
