@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Interfaces\ContactManager;
 use App\Models\Database\Contact;
 use App\Events\UserIdentityFailedEvent;
+use App\Events\UserUpdatedEvent;
 use Illuminate\Support\MessageBag;
 
 class IdentityManager implements IdentityManagerInterface
@@ -166,6 +167,8 @@ class IdentityManager implements IdentityManagerInterface
         if($user != null) {
             $user_ext->user()->associate($user);
             $user_ext->save();
+            event(new UserUpdatedEvent($user));
+            
         } else {
             $errors = $this->validator->errors();
             $errors->add('failure', 'Identity creation failed.');
