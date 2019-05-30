@@ -105,7 +105,7 @@ class PortalObcanaConnector extends AbstractExtSourceConnector implements ExtSou
      */
     public function supportsUserListing(ExtSource $source)
     {
-        return false;
+        return true;
     }
     
     protected function parseResponse($response) {
