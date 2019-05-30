@@ -58,7 +58,7 @@ class PortalObcanaConnector extends AbstractExtSourceConnector implements ExtSou
             $data['phone_number'] = $old['phone_number'];
         }
         $id = $user_ext->getId();
-        $response = $this->update_client->put($id, [ 'json' => json_encode($data)]);
+        $response = $this->update_client->put($id, [ 'json' => $data ]);
         $result = $this->parseResponse($response);
         if(is_null($result)) {
             throw new Exception($this->lastStatus);
