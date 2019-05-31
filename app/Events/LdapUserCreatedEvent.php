@@ -9,22 +9,21 @@ use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use App\Models\Ldap\LdapUser;
 
 class LdapUserCreatedEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $user;
+    public $user_id;
     
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(LdapUser $user)
+    public function __construct($user_id)
     {
-        $this->user = $user;
+        $this->user_id = $user_id;
     }
 
     /**

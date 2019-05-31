@@ -9,6 +9,7 @@ use App\Events\UserExtCreatedEvent;
 use App\Events\UserExtUpdatedEvent;
 use App\Interfaces\UserManager;
 use App\Interfaces\UserExtManager;
+use App\Models\Database\UserExt;
 
 class UserExtEventSubscriber implements ShouldQueue
 {
@@ -27,20 +28,23 @@ class UserExtEventSubscriber implements ShouldQueue
     
     public function onUserCreated(UserExtCreatedEvent $event) 
     {
-        $this->identity_mgr->buildIdentityForUser($event->user_ext);
+        $user_ext = UserExt::findOrFail($event->user_ext_id);
+        $this->identity_mgr->buildIdentityForUser($user_ext);
         return true;
     }
 
     public function onUserUpdated(UserExtUpdatedEvent $event)
     {
-        if(empty($event->user->user_id)) {
+        $user_ext = UserExt::findOrFail($event->user_ext_id);
+        if(empty($user_ext->user_id)) {
             // does not have assigned identity 
-            $this->identity_mgr->buildIdentityForUser($event->user_ext);
+            $this->identity_mgr->buildIdentityForUser($user_ext);
         } else {
             // has identity, find and update user
-            $this->user_mgr->updateUserWithContacts($event->user_ext->user, 
-                                                    $event->user_ext, 
-                                                    $this->user_ext_mgr->getUserResource($event->user_ext)->toArray(null));
+            $data = $this->user_ext_mgr->getUserResource($user_ext)->toArray(null);
+            $this->user_mgr->updateUserWithContacts($user_ext->user, 
+                                                    $user_ext, 
+                                                    $data);
         }
         return true;
     }

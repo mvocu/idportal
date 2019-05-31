@@ -73,7 +73,7 @@ class UserExtManager implements UserExtManagerInterface
                 
         });
         
-        if($data->isActive()) event(new UserExtCreatedEvent($user));
+        if($data->isActive()) event(new UserExtCreatedEvent($user->id));
         
         return $user; 
     }
@@ -131,7 +131,7 @@ class UserExtManager implements UserExtManagerInterface
         });
 
         if ($modified) {
-            event(new UserExtUpdatedEvent($user->refresh()));
+            event(new UserExtUpdatedEvent($user->id));
         }
 
         return $user;
@@ -175,7 +175,7 @@ class UserExtManager implements UserExtManagerInterface
         $user->active = true;
         $user->save();
 
-        event(new UserExtUpdatedEvent($user->refresh()));
+        event(new UserExtUpdatedEvent($user->id));
         
         return $user;
     }

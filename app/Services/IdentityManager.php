@@ -96,7 +96,7 @@ class IdentityManager implements IdentityManagerInterface
         $users = $this->user_mgr->findUser($user_ext_data);
         if($users->count() > 1) {
             // more users were found for this single external record
-            event(new UserIdentityFailedEvent($user_ext, new MessageBag(['failure' => 'More than one candidate found.'])));
+            event(new UserIdentityFailedEvent($user_ext->id, new MessageBag(['failure' => 'More than one candidate found.'])));
             return $users->pluck('id')->toArray();
         }
         
@@ -167,12 +167,12 @@ class IdentityManager implements IdentityManagerInterface
         if($user != null) {
             $user_ext->user()->associate($user);
             $user_ext->save();
-            event(new UserUpdatedEvent($user));
+            event(new UserUpdatedEvent($user->id));
             
         } else {
             $errors = $this->validator->errors();
             $errors->add('failure', 'Identity creation failed.');
-            event(new UserIdentityFailedEvent($user_ext, $errors));
+            event(new UserIdentityFailedEvent($user_ext->id, $errors));
             return $this->validator;
         }
         

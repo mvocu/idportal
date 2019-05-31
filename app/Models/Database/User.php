@@ -19,6 +19,8 @@ class User extends Model
     
     protected $dates = ['birth_date'];
     
+    protected $hidden = ['accounts', 'parent', 'createdBy', 'updatedBy'];
+    
     public function setFirstNameAttribute($value) {
         $this->attributes['first_name'] = Str::title($value);    
     }

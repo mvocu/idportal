@@ -9,14 +9,13 @@ use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use App\Models\Database\UserExt;
 use Illuminate\Contracts\Support\MessageBag;
 
 class UserIdentityFailedEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    protected $user;
+    protected $user_id;
     protected $errors;
     
     /**
@@ -24,9 +23,9 @@ class UserIdentityFailedEvent
      *
      * @return void
      */
-    public function __construct(UserExt $user, MessageBag $errors)
+    public function __construct($user_id, MessageBag $errors)
     {
-        $this->user = $user;
+        $this->user_id = $user_id;
         $this->errors = $errors;
     }
 

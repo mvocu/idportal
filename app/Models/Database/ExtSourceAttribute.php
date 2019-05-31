@@ -11,6 +11,8 @@ class ExtSourceAttribute extends Model
     
     protected $fillable = [ 'name', 'core_name', 'display_name' ];
     
+    protected $hidden = [ 'extSource', 'values' ];
+    
     public function extSource() {
         return $this->belongsTo('App\Models\Database\ExtSource', 'ext_source_id');
     }

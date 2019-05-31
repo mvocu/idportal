@@ -102,7 +102,7 @@ class UserManager implements UserManagerInterface
         
         }); // END transaction
 
-        event(new UserCreatedEvent($user));
+        event(new UserCreatedEvent($user->id));
         
         return $user;
     }
@@ -146,7 +146,7 @@ class UserManager implements UserManagerInterface
             }
         }
         
-        event(new UserUpdatedEvent($user));
+        event(new UserUpdatedEvent($user->id));
         
         return $user;
     }
