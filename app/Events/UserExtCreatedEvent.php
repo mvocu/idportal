@@ -9,22 +9,21 @@ use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use App\Models\Database\UserExt;
 
 class UserExtCreatedEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $user_ext;
+    public $user_ext_id;
     
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(UserExt $user_ext)
+    public function __construct($user_ext_id)
     {
-        $this->user_ext = $user_ext;
+        $this->user_ext_id = $user_ext_id;
     }
 
     /**

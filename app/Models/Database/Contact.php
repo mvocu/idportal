@@ -41,6 +41,8 @@ class Contact extends Model
     protected $fillable = ['state', 'city', 'street', 'org_number', 'ev_number', 'post_number', 'email', 'phone', 
         'uri', 'databox', 'bank_account'];
     
+    protected $hidden = ['user', 'createdBy', 'updatedBy', 'userExt'];
+    
     public function user() {
         return $this->belongsTo('App\Models\Database\User', 'user_id');
     }

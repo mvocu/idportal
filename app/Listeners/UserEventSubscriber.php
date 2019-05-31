@@ -5,6 +5,7 @@ namespace App\Listeners;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 use App\Interfaces\LdapConnector;
+use App\Models\Database\User;
 
 class UserEventSubscriber implements ShouldQueue
 {
@@ -17,13 +18,15 @@ class UserEventSubscriber implements ShouldQueue
     
     public function onUserCreated($event)
     {
-        $this->ldapc->createUser($event->user);
+        $user = User::findOrFail($event->user_id);
+        $this->ldapc->createUser($user);
         return true;
     }
     
     public function onUserUpdated($event)
     {
-        $this->ldapc->syncUsers(collect([$event->user]));
+        $user = User::findOrFail($event->user_id);
+        $this->ldapc->syncUsers(collect([$user]));
         return true;
     }
     
