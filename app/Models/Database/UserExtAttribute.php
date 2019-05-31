@@ -11,6 +11,8 @@ class UserExtAttribute extends Model
     protected $table = 'user_ext_attributes';
     
     protected $fillable = ['value'];
+    
+    protected $hidden = [ 'user', 'attrDesc' ];
 
     public function user() {
         return $this->belongsTo('App\Models\Database\UserExt', 'user_ext_id');

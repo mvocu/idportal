@@ -49,7 +49,7 @@ class LdapConnector implements LdapConnectorInterface
         $ndata = array_filter($data, function($el) { return !empty($el); });
         $ldapuser = $this->ldap->getProvider('admin')->make()->user($ndata);
         $ldapuser->save();
-        event(new LdapUserCreatedEvent($ldapuser));
+        event(new LdapUserCreatedEvent($ldapuser->getDn()));
         return $ldapuser;
     }
 
@@ -84,7 +84,7 @@ class LdapConnector implements LdapConnectorInterface
         $data = $this->_mapUser($user);
         $entry->fill($data);
         $entry->save();
-        event(new LdapUserUpdatedEvent($entry));
+        event(new LdapUserUpdatedEvent($entry->getDn()));
         return $entry;
     }
 

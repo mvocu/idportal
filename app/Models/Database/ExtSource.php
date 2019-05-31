@@ -12,6 +12,8 @@ class ExtSource extends Model
     
     protected $fillable = ['name', 'type', 'configuration', 'trust_level', 'consent_required'];
     
+    protected $hidden = [ 'users', 'attributes' ];
+    
     public function users() {
         return $this->hasMany('App\Models\Database\UserExt', 'ext_source_id');
     }

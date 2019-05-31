@@ -12,6 +12,8 @@ class UserExt extends Model
     
     protected $fillable = ['login', 'active'];
     
+    protected $hidden = ['user', 'extSource'];
+    
     public function attributes() {
         return $this->hasMany('App\Models\Database\UserExtAttribute', 'user_ext_id');    
     }
