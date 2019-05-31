@@ -183,6 +183,8 @@ class UserManager implements UserManagerInterface
                 $user->confidence_level = 100;
                 $result[$user->id] = $user;
                 return new Collection($result);
+            } else {
+                return new Collection();
             }
         }
         
