@@ -10,6 +10,7 @@ use App\Events\UserExtUpdatedEvent;
 use App\Interfaces\UserManager;
 use App\Interfaces\UserExtManager;
 use App\Models\Database\UserExt;
+use App\Events\UserExtRemovedEvent;
 
 class UserExtEventSubscriber implements ShouldQueue
 {
@@ -49,6 +50,11 @@ class UserExtEventSubscriber implements ShouldQueue
         return true;
     }
     
+    public function onUserRemoved(UserExtRemovedEvent $event)
+    {
+        
+    }
+    
     public function failed($event, $exception)
     {
         Log::error('Failed to handle ext user event', [ 'event' => $event, 'exception' => $exception ]);
@@ -58,6 +64,7 @@ class UserExtEventSubscriber implements ShouldQueue
     {
         $events->listen('App\Events\UserExtCreatedEvent', 'App\Listeners\UserExtEventSubscriber@onUserCreated');
         $events->listen('App\Events\UserExtUpdatedEvent', 'App\Listeners\UserExtEventSubscriber@onUserUpdated');
+        $events->listen('App\Events\UserExtRemovedEvent', 'App\Listeners\UserExtEventSubscriber@onUserRemoved');
     }
     
 }

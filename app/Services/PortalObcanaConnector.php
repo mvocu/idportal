@@ -33,7 +33,8 @@ class PortalObcanaConnector extends AbstractExtSourceConnector implements ExtSou
         return $users->map(function($item, $key) { 
             unset($item['categories']); unset($item['zones']);
             $item['identifier'] = $item['uuid']; 
-            return $this->makeResource($item, "uuid"); 
+            unset($item['uuid']);
+            return $this->makeResource($item, $this->config['id_name']); 
         });
     }
     
@@ -49,6 +50,9 @@ class PortalObcanaConnector extends AbstractExtSourceConnector implements ExtSou
             'debug' => false,
         ]);
         $old = $user_ext->toArray(null);
+        /*
+         *  commented out filling in missing data
+         *  
         if((!array_key_exists('email', $data) || empty($data['email'])) &&
             array_key_exists('email', $old)) {
             $data['email'] = $old['email'];
@@ -57,15 +61,16 @@ class PortalObcanaConnector extends AbstractExtSourceConnector implements ExtSou
             array_key_exists('phone_number', $old)) {
             $data['phone_number'] = $old['phone_number'];
         }
-        $id = $user_ext->getId();
+        */
+        $id = $old['identifier'];
         $response = $this->update_client->put($id, [ 'json' => $data ]);
         $result = $this->parseResponse($response);
         if(is_null($result)) {
             throw new Exception($this->lastStatus);
         }
         $result['identifier'] = $id;
-        $result['uuid'] = $id;
-        return $this->makeResource($result, "uuid");
+        //$result['uuid'] = $id;
+        return $this->makeResource($result, $this->config['id_name']);
     }
 
     /**

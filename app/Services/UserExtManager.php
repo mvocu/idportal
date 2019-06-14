@@ -11,6 +11,7 @@ use App\Http\Resources\ExtUserResource;
 use App\Http\Resources\UserResource;
 use App\Events\UserExtUpdatedEvent;
 use App\Events\UserExtCreatedEvent;
+use App\Events\UserExtRemovedEvent;
 
 class UserExtManager implements UserExtManagerInterface
 {
@@ -128,6 +129,14 @@ class UserExtManager implements UserExtManagerInterface
                     $modified = true;
                 }
             }
+            
+            // check for modified login
+            if($user->login != $data->getId()) {
+                $user->login = $data->getId();
+                $user->save();
+                $modified = true;
+            }
+            
         });
 
         if ($modified) {
@@ -141,15 +150,25 @@ class UserExtManager implements UserExtManagerInterface
      * {@inheritDoc}
      * @see \App\Interfaces\UserExtManager::syncUsers()
      */
-    public function syncUsers(ExtSource $source, \Illuminate\Support\Collection $users)
+    public function syncUsers(ExtSource $source, \Illuminate\Support\Collection $users, bool $complete = false)
     {
         $result = array();
         foreach($users as $user_resource) {
+            if(empty($user_resource->getId())) continue;
             $user = $this->getUser($source, $user_resource);
             if($user == null) {
-                $result[] = $this->createUserWithAttributes($source, $user_resource);
+                $result[$user_resource->getId()] = $this->createUserWithAttributes($source, $user_resource);
             } else {
-                $result[] = $this->updateUserWithAttributes($source, $user, $user_resource);
+                $result[$user_resource->getId()] = $this->updateUserWithAttributes($source, $user, $user_resource);
+            }
+        }
+        if($complete) {
+            $deleting = UserExt::where('ext_source_id', $source->id)->whereNotIn('login', array_keys($result))->get();
+            UserExt::where('ext_source_id', $source->id)->whereNotIn('login', array_keys($result))->delete();
+            foreach($deleting as $user_ext) {
+                if(!empty($user_ext->user_id)) {
+                    event(new UserExtRemovedEvent($user_ext->user_id, $user_ext->id, $source->id));
+                }
             }
         }
         return collect($result);
@@ -161,6 +180,15 @@ class UserExtManager implements UserExtManagerInterface
      */
     public function getUser(ExtSource $source, ExtUserResource $data): ?UserExt
     {
+        // do we have attribute identifier?
+        $attrdef = $source->attributes()->where('core_name', 'identifier')->first();
+        $ext_data = $data->toArray(null);
+        if(!empty($attrdef) && array_key_exists('identifier', $ext_data)) {
+            $user = $attrdef->values()->where('value', $ext_data['identifier'])->first()->user()->first();
+            if(!empty($user)) 
+                return $user;
+        }
+
         return UserExt::where('login', $data->getId())->where('ext_source_id', $source->id)->first();
     }
 
