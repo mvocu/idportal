@@ -7,6 +7,7 @@ use App\Models\Database\Contact;
 use App\Models\Database\Address;
 use App\Models\Database\UserExt;
 use Illuminate\Database\Eloquent\Collection;
+use App\Models\Database\ExtSource;
 
 interface ContactManager
 {
@@ -17,6 +18,8 @@ interface ContactManager
     public function updateContact(Contact $contact, UserExt $ext_user, array $data) : Contact;
     
     public function syncContacts(User $user, UserExt $ext_user, array $data, $name);
+    
+    public function removeContacts(User $user, ExtSource $ext_source);
     
     public function findTrustedContacts(User $user, $type, $trust_level) : Collection; 
 }

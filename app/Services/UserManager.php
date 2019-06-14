@@ -14,6 +14,7 @@ use Illuminate\Validation\Rule;
 use Ramsey\Uuid\Uuid;
 use App\Models\Database\Address;
 use App\Models\Database\Databox;
+use App\Models\Database\ExtSource;
 use App\Models\Database\Phone;
 use App\Models\Database\Email;
 use App\Models\Database\UserExt;
@@ -161,6 +162,16 @@ class UserManager implements UserManagerInterface
             $contact->user()->associate($dest);
             $contact->save();
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\UserManager::removeAccount()
+     */
+    public function removeAccount(User $user, ExtSource $source)
+    {
+        $this->contact_mgr->removeContacts($user, $ext_source);
+        event(new UserUpdatedEvent($user->id));
     }
 
     /**

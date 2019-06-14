@@ -56,7 +56,7 @@ class ExtUserResource extends JsonResource implements ExtUserResourceInterface
         if(is_array($this->resource)) {
             return array_key_exists('active', $this->resource) ? $this->resource['active'] : true;    
         } elseif ($this->resource instanceof UserExt) {
-            
+            return $this->resource->active;
         } else {
             return false;
         }

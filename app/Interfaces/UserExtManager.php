@@ -18,7 +18,7 @@ interface UserExtManager
     
     public function updateUserWithAttributes(ExtSource $source, UserExt $user, ExtUserResource $data) : UserExt;
     
-    public function syncUsers(ExtSource $source, Collection $users);
+    public function syncUsers(ExtSource $source, Collection $users, bool $complete = false);
     
     public function getUser(ExtSource $source, ExtUserResource $data) : ?UserExt ;
     
