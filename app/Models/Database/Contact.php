@@ -73,7 +73,8 @@ class Contact extends Model
                 $value = "+" . $value;
         }
         if(strlen($value) > 15) {
-            throw new Exception("Value " . $value . " is too long for phone.");
+            // throw new Exception("Value " . $value . " is too long for phone.");
+            unset($this->attributes['phone']);
         }
         $this->attributes['phone'] = $value;
     }

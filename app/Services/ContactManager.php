@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Database\Address;
 use App\Models\Database\Contact;
+use App\Models\Database\ExtSource;
 use App\Models\Database\User;
 use App\Models\Database\UserExt;
 use Illuminate\Database\Eloquent\Collection;
@@ -130,6 +131,16 @@ class ContactManager implements ContactManagerInterface
             }
         }
     }
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\ContactManager::removeContacts()
+     */
+    public function removeContacts(User $user, ExtSource $ext_source)
+    {
+        // remove all contacts that have no external source
+        Contact::doesntHave('userExt')->delete();
+    }
+
     
 }
 

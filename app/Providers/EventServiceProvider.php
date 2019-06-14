@@ -15,6 +15,7 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         // 'App\Events\UserExtCreatedEvent' => [],
         // 'App\Events\UserExtUpdatedEvent' => [],
+        // 'App\Events\UserExtRemovedEvent' => [],
         // 'App\Events\UserUpdatedEvent' => [],
         // 'App\Events\UserCreatedEvent' => [],
         // 'App\Events\LdapUserCreatedEvent' => [],
