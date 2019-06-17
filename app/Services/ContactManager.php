@@ -138,7 +138,7 @@ class ContactManager implements ContactManagerInterface
     public function removeContacts(User $user, ExtSource $ext_source)
     {
         // remove all contacts that have no external source
-        Contact::doesntHave('userExt')->delete();
+        return $user->contacts()->doesntHave('userExt')->delete();
     }
 
     
