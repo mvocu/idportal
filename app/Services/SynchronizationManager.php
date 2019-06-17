@@ -29,7 +29,7 @@ class SynchronizationManager implements SynchronizationManagerInterface
             if($users != null) {
                 // safety check - if the total number of users is too much different, do not delete anything
                 if(abs($users->count() - $es->users()->count()) < 5) {
-                    return $this->user_ext_mgr->syncUsers($source, $users, true);
+                    return $this->user_ext_mgr->syncUsers($es, $users, true);
                 } else {
                     return $this->user_ext_mgr->syncUsers($es, $users, false);
                 }

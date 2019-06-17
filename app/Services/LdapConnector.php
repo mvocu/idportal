@@ -11,12 +11,15 @@ use App\Interfaces\LdapConnector as LdapConnectorInterface;
 use App\Interfaces\ConsentManager;
 use App\Events\LdapUserCreatedEvent;
 use App\Events\LdapUserUpdatedEvent;
+use App\Models\Database\ExtSource;
 
 class LdapConnector implements LdapConnectorInterface
 {
     protected $ldap;
     
     protected $consent_mgr;
+    
+    private $ext_sources;
     
     public function __construct(AdldapInterface $ldap, ConsentManager $cmgr) {
         $this->ldap = $ldap;
@@ -79,6 +82,7 @@ class LdapConnector implements LdapConnectorInterface
      */
     public function updateUser(User $user)
     {
+        $this->ext_sources = ExtSource::all();
         $entry = $this->ldap->getProvider('admin')->search()->findByDn($this->buildDN($user));
         if($entry == null) return null;
         $data = $this->_mapUser($user);
@@ -94,6 +98,7 @@ class LdapConnector implements LdapConnectorInterface
      */
     public function syncUsers(\Illuminate\Support\Collection $users)
     {
+        $this->ext_sources = ExtSource::all();
         foreach($users as $user) {
             $entry = $this->findUser($user);
             if($entry == null) {
@@ -192,6 +197,12 @@ class LdapConnector implements LdapConnectorInterface
                 } else {
                     $data['employeeNumber;x-'.$name] = null;
                 }
+            }
+        }
+        foreach($this->ext_sources as $source) {
+            $name = Str::kebab(Str::lower(Str::ascii($source->name)));
+            if(!array_key_exists('employeeNumber;x-'.$name, $data)) {
+                $data['employeeNumber;x-'.$name] = null;
             }
         }
         
