@@ -59,7 +59,7 @@ class IdentityManager implements IdentityManagerInterface
         'candidate.first_name' => 'sometimes|required|string|similar:user.first_name',
         'candidate.last_name' => 'sometimes|required|string|similar:user.last_name',
         'candidate.birth_code' => [ 'sometimes', 'required', 'regex:/\d{9,10}/', 'same_if_exists:user.birth_code' ],
-        'candidate.birth_date' => 'sometimes|required|date|same_if_exists:user.birth_date',
+        'candidate.birth_date' => 'sometimes|required|date|same_date_if_exists:user.birth_date',
         'candidate.dataBox' => 'sometimes|required|string|same_if_exists:user.dataBox',
     ];
     
