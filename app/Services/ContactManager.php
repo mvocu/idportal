@@ -73,7 +73,7 @@ class ContactManager implements ContactManagerInterface
      * {@inheritDoc}
      * @see \App\Interfaces\ContactManager::updateContact()
      */
-    public function updateContact(Contact $contact, UserExt $ext_user, array $data): Contact
+    public function updateContact(Contact $contact, UserExt $user_ext, array $data): Contact
     {
         $contact->fill($data);
         $contact->updatedBy()->associate($user_ext);

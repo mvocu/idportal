@@ -31,6 +31,7 @@ use App\Services\SynchronizationManager;
 use App\Services\ActivationManager;
 use App\Utils\Names;
 use GuzzleHttp\Client;
+use Carbon\Carbon;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -71,6 +72,13 @@ class AppServiceProvider extends ServiceProvider
         Validator::extend('sameIfExists', function ($attribute, $value, $parameters, $validator) {
             $other = Arr::get($validator->getData(), $parameters[0]);
             return empty($other) || $value == $other;
+        });
+        Validator::extend('sameDateIfExists', function($attribute, $value, $parameters, $validator) {
+           $other = Arr::get($validator->getData(), $parameters[0]);
+           if(empty($other)) return true;
+           $other_date = new Carbon($other);
+           if(!($value instanceof Carbon)) $value = new Carbon($value);
+           return $other_date->isSameDay($value);
         });
         Validator::extend('phone', function ($attribute, $value, $parameters, $validator) {
             $value = preg_replace("/\s+/", "", $value);
