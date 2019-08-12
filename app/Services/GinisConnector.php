@@ -17,7 +17,7 @@ class GinisConnector extends AbstractExtSourceConnector implements ExtSourceConn
     {
         $this->config = $config;
         $wsdl = resource_path() . "/wsdl/" . $this->config['endpoints']['gin'];
-        $this->soapClient = new \SoapClient($wsdl);
+        $this->soapClient = new \SoapClient($wsdl, [ 'trace' => 1 ]);
         $securityHeader = WsSecurity::createWsSecuritySoapHeader($this->config['username'], $this->config['password'], false);
         $this->soapClient->__setSoapHeaders([ $securityHeader ]);
     }
@@ -45,10 +45,25 @@ class GinisConnector extends AbstractExtSourceConnector implements ExtSourceConn
             $this->lastStatus = $e->getMessage();
             return new Collection();
         }
+        #echo "====== REQUEST HEADERS =====" . PHP_EOL;
+        #echo $this->soapClient->__getLastRequestHeaders();
+        #echo "========= REQUEST ==========" . PHP_EOL;
+        #echo $this->soapClient->__getLastRequest();
+        #echo "========= RESPONSE =========" . PHP_EOL;
+        #var_dump($result);
+        
         $this->lastStatus = null;
         $gusers = [];
-        foreach($result->{'Najdi-esuResult'}->Xrg->{'Najdi-esu'} as $guser) {
-            $gusers[] = $this->mapResult($guser);
+        if(property_exists($result->{'Najdi-esuResult'}->Xrg, 'Najdi-esu')) {
+            if(is_array($result->{'Najdi-esuResult'}->Xrg->{'Najdi-esu'})) {
+                foreach($result->{'Najdi-esuResult'}->Xrg->{'Najdi-esu'} as $guser) {
+                    $gusers[] = $this->mapResult($guser);
+                }
+            } else {
+                $gusers[] = $this->mapResult($result->{'Najdi-esuResult'}->Xrg->{'Najdi-esu'});
+            }
+        } else {
+            $this->lastStatus = $result;
         }
         return collect($gusers);
     }
@@ -79,7 +94,7 @@ class GinisConnector extends AbstractExtSourceConnector implements ExtSourceConn
      */
     public function listUsers(\App\Models\Database\ExtSource $source)
     {
-        return $this->findUser($source, [ "Uroven-pristupu" => 9000 ]);
+        return $this->findUser($source, [ "Uroven-pristupu" => '9000' ]);
     }
 
     /**
