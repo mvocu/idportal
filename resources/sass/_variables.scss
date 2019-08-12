@@ -4,12 +4,28 @@ $body-bg: #ddd;
 
 // Brands
 $brand-primary: #7bbb57;
+$brand-info: #8eb4cb;
+$brand-success: #2ab27b;
+$brand-warning: #cbb956;
+$brand-danger: #bf5329;
+
+$primary: $brand-primary;
+$info: $brand-info;
+$success: $brand-success;
+$warning: $brand-warning;
+$danger: $brand-danger;
 
 // Typography
 $font-family-sans-serif: "Poppins", sans-serif;
 $font-size-base: 0.9rem;
 $line-height-base: 1.6;
 $text-color: #2d2d1d;
+
+// Navbar
+$navbar-default-bg: #fff;
+
+// Buttons
+$btn-default-color: $text-color;
 
 // Colors
 $blue: #3490dc;
