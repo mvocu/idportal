@@ -69,6 +69,7 @@ abstract class AbstractExtSourceConnector implements ExtSourceConnector
     }
 
     protected function makeResource($data, $key, $parent_attr = null) {
+    var_dump($data);
         if(array_key_exists($key, $data)) {
             $id = $data[$key];
             //unset($data[$key]);
