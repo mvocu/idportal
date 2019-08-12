@@ -74,7 +74,7 @@ class TritiusConnector extends AbstractExtSourceConnector implements ExtSourceCo
      */
     public function supportsUserListing(\App\Models\Database\ExtSource $source)
     {
-        return false;        
+        return true;        
     }
 
     protected function parseResponse($response) {
