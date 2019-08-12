@@ -23,6 +23,7 @@ class SynchronizationManager implements SynchronizationManagerInterface
     
     public function synchronizeExtSource(ExtSource $es)
     {
+        if(empty($es->configuration)) return null;
         $connector = $this->ext_source_mgr->getConnector($es);
         if($connector != null && $connector->supportsUserListing($es)) {
             $users = $connector->listUsers($es);

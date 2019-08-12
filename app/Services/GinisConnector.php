@@ -103,7 +103,7 @@ class GinisConnector extends AbstractExtSourceConnector implements ExtSourceConn
      */
     public function supportsUserListing(\App\Models\Database\ExtSource $source)
     {
-        return true;        
+        return false;        
     }
 
     protected function mapResult($data) {
