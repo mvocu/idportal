@@ -199,10 +199,12 @@ class LdapConnector implements LdapConnectorInterface
                 }
             }
         }
-        foreach($this->ext_sources as $source) {
-            $name = Str::kebab(Str::lower(Str::ascii($source->name)));
-            if(!array_key_exists('employeeNumber;x-'.$name, $data)) {
-                $data['employeeNumber;x-'.$name] = null;
+        if(!empty($this->ext_sources)) {
+            foreach($this->ext_sources as $source) {
+                $name = Str::kebab(Str::lower(Str::ascii($source->name)));
+                if(!array_key_exists('employeeNumber;x-'.$name, $data)) {
+                    $data['employeeNumber;x-'.$name] = null;
+                }
             }
         }
         
