@@ -56,11 +56,11 @@
                     </form>
                 </div>
 
-				<div class="card-header">
+				<div class="panel-heading">
 					{{ __('Reset password using') }}:
 				</div>
 				
-				<div class="card-body">
+				<div class="panel-body">
 					<div class="form-group row">
 						@if (!empty($idp))
 						@foreach ($idp as $name) 

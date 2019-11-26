@@ -2,12 +2,12 @@
 
 @section('content')
 <div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __($ext_source->name) }} - {{ __('Ask for new account') }}</div>
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="panel panel-default">
+                <div class="panel-heading">{{ __($ext_source->name) }} - {{ __('Ask for new account') }}</div>
 
-                <div class="card-body">
+                <div class="panel-body">
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
@@ -24,7 +24,7 @@
                         @csrf
 
                         <div class="form-group row mb-0">
-                            <div class="col-md-6 offset-md-4">
+                            <div class="col-md-6 col-md-offset-4">
                                 <button type="submit" class="btn btn-primary">
                                     {{ __('Submit') }} 
                                 </button>
@@ -34,9 +34,9 @@
 
               	</div>
               	
-            	<div class="card-footer">
+            	<div class="panel-footer">
 					<div class="row">
-						<div class="col-2"><a href="{{ route('home') }}" class="btn btn-default btn-block"><span class="fa fa-long-arrow-left">&nbsp;</span>{{ __('Back') }}</a></div>
+						<div class="col-xs-2"><a href="{{ route('home') }}" class="btn btn-default btn-block"><span class="fa fa-long-arrow-left">&nbsp;</span>{{ __('Back') }}</a></div>
 					</div>
             	</div>
 
