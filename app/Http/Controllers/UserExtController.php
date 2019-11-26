@@ -91,5 +91,12 @@ class UserExtController extends Controller
         return back()
         ->with('status', __('Saved.'));
     }
-    
+
+    public function removeUserExt(Request $request, UserExt $user_ext)
+    {
+        $source = $user_ext->extSource;
+        $this->user_ext_mgr->removeUser($source, $user_ext);
+        return back()
+        ->with('status', __('External identity removed'));
+    }
 }
