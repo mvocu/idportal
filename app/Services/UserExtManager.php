@@ -242,6 +242,15 @@ class UserExtManager implements UserExtManagerInterface
         return collect($result);    
     }
 
+    public function removeUser(ExtSource $source, UserExt $euser)
+    {
+        $user = $euser->user;
+        if(!is_null($user)) {
+            event(new UserExtRemovedEvent($user->id, $euser->extSource->id));
+        }
+        $euser->delete();
+    }
+    
     protected function getAttrDefs(ExtSource $source) {
         if(!is_array($this->attrDefs)) {
             $this->attrDefs = array();

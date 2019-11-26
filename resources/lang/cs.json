@@ -62,7 +62,10 @@
   "Identity already registered": "Tato externí identita je již registrována",
   "Use another identity": "Použít jinou identitu",
   "Failed to add external identity": "Externí identitu se nepodařilo vytvořit",
-   
+  "Target user not found": "Cílový uživatel neexistuje",
+  "External identity added": "Externí identita přidána",
+  "External identity removed": "Externí identita odstraněna",
+  
   "Helios Energo" : "Vodné a stočné",
   "Ginis" : "Poplatky za odpad a psa",
   "GINIS" : "Poplatky za odpad a psa",

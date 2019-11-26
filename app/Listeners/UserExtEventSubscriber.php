@@ -9,6 +9,8 @@ use App\Events\UserExtCreatedEvent;
 use App\Events\UserExtUpdatedEvent;
 use App\Interfaces\UserManager;
 use App\Interfaces\UserExtManager;
+use App\Models\Database\ExtSource;
+use App\Models\Database\User;
 use App\Models\Database\UserExt;
 use App\Events\UserExtRemovedEvent;
 
@@ -52,7 +54,9 @@ class UserExtEventSubscriber implements ShouldQueue
     
     public function onUserRemoved(UserExtRemovedEvent $event)
     {
-        
+        $user = User::findOrFail($event->user_id);
+        $source = ExtSource::findOrFail($event->ext_source_id);
+        $this->user_mgr->removeAccount($user, $source);
     }
     
     public function failed($event, $exception)

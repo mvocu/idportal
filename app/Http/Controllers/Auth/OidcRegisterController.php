@@ -78,6 +78,10 @@ class OidcRegisterController extends Controller
     {
         $user = Auth::guard($client)->user();
         $auth_user = Auth::user()->getDatabaseUser();
+        if(is_null($auth_user)) {
+            return redirect()->route('home')
+                ->withErrors(['failure' => __('Target user not found')]);
+        }
         $data = $user->getAttributes();
         $validator = $this->validator($data);
         if($validator->fails()) {

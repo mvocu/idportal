@@ -170,7 +170,7 @@ class UserManager implements UserManagerInterface
      */
     public function removeAccount(User $user, ExtSource $source)
     {
-        $this->contact_mgr->removeContacts($user, $ext_source);
+        $this->contact_mgr->removeContacts($user, $source);
         event(new UserUpdatedEvent($user->id));
     }
 
