@@ -14,14 +14,18 @@ class UserExtRemovedEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public $user_id;
+    public $ext_source_id;
+    
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($user_id, $ext_source_id)
     {
-        //
+        $this->user_id = $user_id;
+        $this->ext_source_id = $ext_source_id;
     }
 
     /**

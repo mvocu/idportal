@@ -208,6 +208,49 @@ class UserExtManager implements UserExtManagerInterface
         return $user;
     }
 
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\UserExtManager::mapUSerAttributes()
+     */
+    public function mapUserAttributes(ExtSource $source, ExtUserResource $data)
+    {
+        $attrDefs = $this->getAttrDefs($source);
+
+        $result = array();
+        
+        foreach($data->toArray(null) as $name => $values) {
+            if (! array_key_exists($name, $attrDefs))
+                continue;
+                $attrDef = $attrDefs[$name];
+                if (! is_array($values)) {
+                    $values = [
+                        $values
+                    ];
+                }
+                foreach ($values as $value) {
+                    $value = trim($value);
+                    if (empty($value))
+                        continue;
+                    $result[$name] = [ 
+                        'name' => $name, 
+                        'display' => $attrDef->display_name, 
+                        'order' => $attrDef->display_order, 
+                        'value' => $value 
+                    ];
+                }
+        }
+        return collect($result);    
+    }
+
+    public function removeUser(ExtSource $source, UserExt $euser)
+    {
+        $user = $euser->user;
+        if(!is_null($user)) {
+            event(new UserExtRemovedEvent($user->id, $euser->extSource->id));
+        }
+        $euser->delete();
+    }
+    
     protected function getAttrDefs(ExtSource $source) {
         if(!is_array($this->attrDefs)) {
             $this->attrDefs = array();
