@@ -32,7 +32,7 @@ class UserExtController extends Controller
     {
         // $attributes = (new UserResource($user))->getExtAttributes($ext_source->attributes);
         $editable = $this->ext_source_mgr->getUpdatableAttributes($source);
-        return view('userext', [
+        return view('adduserext', [
             'action' => 'add', 
             'user' => $user, 
             'ext_source' => $source, 

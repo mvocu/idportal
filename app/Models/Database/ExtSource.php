@@ -10,7 +10,7 @@ class ExtSource extends Model
     
     protected $table = "ext_sources";
     
-    protected $fillable = ['name', 'type', 'configuration', 'trust_level', 'consent_required'];
+    protected $fillable = ['name', 'type', 'configuration', 'trust_level', 'consent_required', 'identity_provider'];
     
     protected $hidden = [ 'users', 'attributes' ];
     

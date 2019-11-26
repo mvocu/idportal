@@ -21,7 +21,7 @@
                         </div>
                     @endif
 
-                    <form class="form-horizontal" method="POST" action="{{ route('password.request') }}">
+                    <form class="form-horizontal" method="POST" action="{{ empty($client) ? route('password.request') : route('password.oidc.update', [ 'client' => $client ])}}">
                         {{ csrf_field() }}
 
 

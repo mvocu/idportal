@@ -8,6 +8,19 @@
                 <div class="panel-heading">{{ __('Logon') }}</div>
 
                 <div class="panel-body">
+
+                    @if (session('status'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('status') }}
+                        </div>
+                    @endif
+
+                    @if ($errors->has('failure'))
+                        <div class="alert alert-danger" role="alert">
+                            {{ $errors->first('failure') }}
+                        </div>
+                    @endif
+
                     <form class="form-horizontal" method="POST" action="{{ route('login') }}">
                         {{ csrf_field() }}
 
@@ -17,7 +30,7 @@
                             <div class="col-md-6">
                                 <input id="uid" type="text" class="form-control" name="uid" value="{{ old('uid') }}" required autofocus>
 
-                                @if ($errors->has('username'))
+                                @if ($errors->has('uid'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('uid') }}</strong>
                                     </span>

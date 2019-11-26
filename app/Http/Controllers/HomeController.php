@@ -31,16 +31,19 @@ class HomeController extends Controller
      */
     public function index()
     {
+
         $user = Auth::user()->getDatabaseUser();
         $accounts = array();
         foreach(ExtSource::all() as $source) {
             $name = $source->name;
             $tag = Str::kebab(Str::lower(Str::ascii($name)));
             $editable = $source->editable;
-            $accounts[$source->id] = [ 'name' => $name, 'tag' => $tag, 'editable' => $editable ];
+            $idp = $source->identity_provider;
+            $accounts[$source->id] = [ 'name' => $name, 'tag' => $tag, 'editable' => $editable , 'idp' => $idp];
         }
         if($user != null) {
             foreach($user->accounts as $account) {
+                $accounts[$account->extSource->id]['user_ext'] = $account;
                 $data = $this->user_ext_mgr->getUserResource($account)->toArray(null);
                 if(array_key_exists('phones', $data)) $accounts[$account->extSource->id]['phone'] = $data['phones'][0]['phone'];
                 if(array_key_exists('emails', $data)) $accounts[$account->extSource->id]['email'] = $data['emails'][0]['email'];
