@@ -10,6 +10,10 @@ interface ExtSourceManager
         
         public function getConnector(ExtSource $ext_source) : ExtSourceConnector;
         
+        public function getAuthenticator($name) : IdentityProvider;
+        
+        public function listAuthenticators();
+        
         public function getUpdatableAttributes(ExtSource $ext_source);
 }
 

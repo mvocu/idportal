@@ -9,7 +9,7 @@ class ExtSourceAttribute extends Model
     //
     protected $table = 'ext_sources_attributes';
     
-    protected $fillable = [ 'name', 'core_name', 'display_name' ];
+    protected $fillable = [ 'name', 'core_name', 'display_name', 'display_order' ];
     
     protected $hidden = [ 'extSource', 'values' ];
     

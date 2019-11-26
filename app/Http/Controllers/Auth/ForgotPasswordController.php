@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Interfaces\ExtSourceManager;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
@@ -22,14 +23,17 @@ class ForgotPasswordController extends Controller
 
     use SendsPasswordResetEmails;
 
+    protected $ext_source_mgr;
+    
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(ExtSourceManager $ext_source_mgr)
     {
         $this->middleware('guest');
+        $this->ext_source_mgr = $ext_source_mgr;
     }
     
     /**
@@ -39,7 +43,7 @@ class ForgotPasswordController extends Controller
      */
     public function showLinkRequestForm()
     {
-        return view('auth.passwords.send');
+        return view('auth.passwords.send', [ 'idp' => $this->ext_source_mgr->listAuthenticators()->pluck('name') ]);
     }
 
     public function sendResetCode(Request $request) {

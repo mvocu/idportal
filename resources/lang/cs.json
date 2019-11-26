@@ -52,8 +52,17 @@
   "Value": "Hodnota",
   "Submit": "Uložit",
   "Saved.": "Uloženo.",
-  
-  
+  "Register using": "Zaregistrovat pomocí",
+  "Registration of external identity": "Registrace uživatele z externího zdroje",
+  "User already registered. Please log in and add external identity to your account.": "Uživatel s těmito údaji je již registrován. Prosím přihlašte se ke svému účtu a přidejte externí identitu.",
+  "Reset password using": "Nastavit heslo pomocí",
+  "No user found for given external identity": "Nenalezli jsme účet odpovídající vašemu externímu přihlášení",
+  "Authenticated user does not match the target": "Přihlášený uživatel se neshoduje s cílovým",
+  "Add identity": "Přidat ověření",
+  "Identity already registered": "Tato externí identita je již registrována",
+  "Use another identity": "Použít jinou identitu",
+  "Failed to add external identity": "Externí identitu se nepodařilo vytvořit",
+   
   "Helios Energo" : "Vodné a stočné",
   "Ginis" : "Poplatky za odpad a psa",
   "GINIS" : "Poplatky za odpad a psa",
@@ -61,6 +70,8 @@
   "AD Uvaly" : "Databáze městského úřadu",
   "AD MěÚ Úvaly" : "Databáze městského úřadu",
   "SMS contacts" : "Informační SMS zprávy",
-  "Mail contacts" : "Odběr newsletteru"
+  "Mail contacts" : "Odběr newsletteru",
+  
+  "validation.phone" : "Telefonní číslo nemá správný formát"
 }
 
