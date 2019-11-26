@@ -94,7 +94,7 @@ class GinisConnector extends AbstractExtSourceConnector implements ExtSourceConn
      */
     public function listUsers(\App\Models\Database\ExtSource $source)
     {
-        return $this->findUser($source, [ "Uroven-pristupu" => '9000' ]);
+        return $this->findUser($source, [ "Zkratka" => '111', "Aktivita" => "aktivni" ]);
     }
 
     /**

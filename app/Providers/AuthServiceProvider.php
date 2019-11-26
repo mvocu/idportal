@@ -7,6 +7,10 @@ use Adldap\AdldapInterface;
 use Adldap\Laravel\Resolvers\ResolverInterface;
 use App\Auth\LdapUserResolver;
 use App\Auth\Passwords\PasswordBrokerManager;
+use App\Auth\ExternalIdPGuard;
+use Illuminate\Support\Facades\Auth;
+use App\Interfaces\ExtSourceManager;
+use Illuminate\Support\Facades\Request;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -46,6 +50,15 @@ class AuthServiceProvider extends ServiceProvider
             return $app->make('auth.password')
                 ->broker();
         });
+        
+        // register all external identity providers in DB as authentication guards
+        $esmgr = $this->app->make(ExtSourceManager::class);
+        foreach($esmgr->listAuthenticators() as $es) {
+            Auth::extend($es->name, function($app, $name, $config) use ($esmgr, $es) {
+                return new ExternalIdPGuard($name, $esmgr->getAuthenticator($es->name), Request::getSession());
+            });
+            $this->app['config']["auth.guards.{$es->name}"] = [ 'driver' => $es->name ];
+        }
     }
     
 

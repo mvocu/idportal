@@ -55,6 +55,27 @@
                         </div>
                     </form>
                 </div>
+
+				<div class="panel-heading">
+					{{ __('Reset password using') }}:
+				</div>
+				
+				<div class="panel-body">
+					<div class="form-group row">
+						@if (!empty($idp))
+						@foreach ($idp as $name) 
+							<div class="col-md-4">
+								<a class="btn btn-social" href="{{ route('password.oidc', ['client' => $name ]) }}">
+								   <span class="fa fa-openid"></span> 
+								   {{ $name }}
+								</a>
+							</div>
+						@endforeach
+						@endif
+					</div>
+				</div>
+				                
+                
             </div>
         </div>
     </div>

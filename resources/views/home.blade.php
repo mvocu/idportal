@@ -37,6 +37,7 @@
 
                 <div class="panel-body">
 					@foreach ($accounts as $account_id => $account)
+					@if (!$account['idp'])
                         <div class="row">
                                 <div class="col-xs-3 text-right">{{ __($account['name']) }}</div>
                                 <div class="col-xs-1">{{ empty($value = $user->getFirstAttribute('employeenumber;x-'.$account['tag'])) ? "ne" : "ano" }}</div>
@@ -47,15 +48,35 @@
 								<div class="col-xs-1"><a href="{{ route('ext.account.show', [ 'user' => $user->getDatabaseUser(), 'source' => $account_id ]) }}" class="pull-right btn btn-default btn-sm btn-small"><span class="fa fa-pencil">&nbsp;</span></a></div>
 						@endif
 					@else
-						@if (false && $account['editable'])
+						@if ($account['editable'])
 								<div class="col-xs-7"><a href="{{ route('ext.account.add', [ 'user' => $user->getDatabaseUser(), 'source' => $account_id ]) }}" class="pull-right btn btn-default btn-sm btn-small"><span class="fa fa-plus">&nbsp;</span></a></div>
 						@endif
 					@endif
                         </div>
-					@endforeach
                     @endif
+					@endforeach
                 </div>
                 
+                <div class="panel-body">
+					@foreach ($accounts as $account_id => $account)
+					@if ($account['idp'])
+                        <div class="row">
+                                <div class="col-xs-4 text-right">{{ __($account['name']) }}</div>
+                                <div class="col-xs-1">{{ empty($value = $user->getFirstAttribute('employeenumber;x-'.$account['tag'])) ? "" : "ano" }}</div>
+					@if (!empty($user->getFirstAttribute('employeenumber;x-'.$account['tag']))) 
+                                <div class="col-xs-3">tel. {{ empty($account['phone']) ? "" : $account['phone'] }}</div>
+                                <div class="col-xs-3">mail {{ empty($account['email']) ? "" : $account['email'] }}</div>
+								<div class="col-xs-1"><a href="{{ route('remove.oidc', [ 'user_ext' =>  $account['user_ext'] ] ) }}" class="pull-right btn btn-default"><span class="fa fa-cross">&nbsp;</span></a></div>
+					@else
+								<div class="col-xs-7"><a href="{{ route('register.oidc', [ 'client' => $account['name'] ] ) }}" class="btn btn-social"><span class="fa fa-openid fa-{{ $account['name'] }}">&nbsp;</span>{{ $account['name'] }} - {{ __("Add identity") }} </a></div>
+					@endif
+                        </div>
+                    @endif
+					@endforeach
+
+					@endif
+                </div>
+
             	<div class="panel-footer">
 					<div class="row">
 						<div class="col-xs-4"><a href="" class="btn btn-primary btn-block">{{ __('Change password') }}</a></div>
