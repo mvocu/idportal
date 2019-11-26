@@ -36,3 +36,15 @@ Route::get('/ext/account/add/{user}/{source}', 'UserExtController@showAddUserExt
 Route::get('/ext/account/show/{user}/{source}', 'UserExtController@showUserExtForm')->name('ext.account.show');
 
 Route::post('/ext/account/modify/{user_ext}/{action}', 'UserExtController@modifyUserExt')->name('ext.account.modify');
+
+Route::get('/mojeid/info', function() { return response()->json([
+  'https://cas.mestouvaly.cz/cas/login?client_name=OidcClient',
+  'https://cas.mestouvaly.cz/cas/login/MojeID', 
+  'https://cas.mestouvaly.cz/register/oidc/MojeID',
+  'https://cas.mestouvaly.cz/password/oidc/MojeID',
+  'https://cas.mestouvaly.cz/add/oidc/MojeID',
+  'https://localhost:8000/register/oidc/MojeID',
+  'https://localhost:8000/password/oidc/MojeID',
+  'https://localhost:8000/add/oidc/MojeID'
+]); 
+} );
