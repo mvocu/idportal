@@ -5,6 +5,7 @@ namespace App\Interfaces;
 use App\Models\Database\User;
 use App\Models\Ldap\LdapUser;
 use Illuminate\Support\Collection;
+use App\Models\Database\ExtSource;
 
 interface LdapConnector
 {
@@ -24,5 +25,7 @@ interface LdapConnector
     public function buildDN(User $user);
     
     public function changePassword(LdapUser $user, $password);
+    
+    public function findUserByExtSource(ExtSource $source, $id);
 }
 

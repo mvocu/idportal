@@ -13,6 +13,7 @@ use App\Models\Database\ExtSource;
 use App\Http\Resources\ExtUserResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Traits\SendsAccountActivationEmail;
+use App\Interfaces\ExtSourceManager;
 
 class RegisterController extends Controller
 {
@@ -40,6 +41,7 @@ class RegisterController extends Controller
      */
     protected $redirectTo = '/auth/activate';
 
+    protected $ext_source_mgr;
     protected $user_ext_mgr;
     
     /**
@@ -47,12 +49,23 @@ class RegisterController extends Controller
      *
      * @return void
      */
-    public function __construct(UserExtManager $user_ext_mgr)
+    public function __construct(ExtSourceManager $ext_source_mgr, UserExtManager $user_ext_mgr)
     {
         $this->middleware('guest');
+        $this->ext_source_mgr = $ext_source_mgr;
         $this->user_ext_mgr = $user_ext_mgr;
     }
 
+    /**
+     * Show the application registration form.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showRegistrationForm()
+    {
+        return view('auth.register', [ 'idp' => $this->ext_source_mgr->listAuthenticators()->pluck('name') ]);
+    }
+    
     /**
      * Handle a registration request for the application.
      *

@@ -75,6 +75,26 @@
                         </div>
                     </form>
                 </div>
+
+				<div class="card-header">
+					{{ __('Register using') }}:
+				</div>
+				
+				<div class="card-body">
+					<div class="form-group row">
+						@if (!empty($idp))
+						@foreach ($idp as $name) 
+							<div class="col-md-4">
+								<a class="btn btn-social" href="{{ route('register.oidc', ['client' => $name ]) }}">
+								   <span class="fa fa-openid"></span> 
+								   {{ $name }}
+								</a>
+							</div>
+						@endforeach
+						@endif
+					</div>
+				</div>
+				                
             </div>
         </div>
     </div>

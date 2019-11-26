@@ -127,6 +127,18 @@ class LdapConnector implements LdapConnectorInterface
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\LdapConnector::findUserByExtSource()
+     */
+    public function findUserByExtSource(ExtSource $source, $id)
+    {
+        $name = Str::kebab(Str::lower(Str::ascii($source->name)));
+        $query = $this->ldap->search()->rawFilter('(employeenumber;x-'.$name.'='.$id.')');
+        $result = $query->get()->first();
+        return $result;
+    }
+
     protected function _mapUser(User $user) {
         if(empty($user->last_name)) {
             $data = [
@@ -219,8 +231,8 @@ class LdapConnector implements LdapConnectorInterface
     }
     
     protected function _generateLogin(User $user) {
-        $last_name = Str::ascii($user->last_name);
-        $first_name = Str::ascii($user->first_name);
+        $last_name = Str::ascii(trim($user->last_name));
+        $first_name = Str::ascii(trim($user->first_name));
         $max = strlen($first_name);
         for($i = 1; $i <= $max; $i++) {
             $login = strtolower(substr($first_name, 0, $i) . $last_name);

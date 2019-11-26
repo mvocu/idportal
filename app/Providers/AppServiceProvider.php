@@ -29,6 +29,7 @@ use App\Services\ADConnector;
 use App\Services\PortalObcanaConnector;
 use App\Services\SynchronizationManager;
 use App\Services\ActivationManager;
+use App\Services\OpenIDConnector;
 use App\Utils\Names;
 use GuzzleHttp\Client;
 use Carbon\Carbon;
@@ -53,6 +54,7 @@ class AppServiceProvider extends ServiceProvider
         'AD' => ADConnector::class,
         'Helios' => HeliosConnector::class,
         'PortalObcana' => PortalObcanaConnector::class,
+        'OpenID' => OpenIDConnector::class,
         // other services
         ActivationManagerInterface::class => ActivationManager::class
     ];

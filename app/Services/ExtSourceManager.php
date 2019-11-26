@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Interfaces\ExtSourceConnector;
+use App\Interfaces\IdentityProvider;
 use App\Models\Database\ExtSource;
 use App\Models\Database\ExtSourceAttribute;
 use Illuminate\Support\Facades\DB;
@@ -58,6 +59,30 @@ class ExtSourceManager implements ExtSourceManagerInterface
     }
 
     
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\ExtSourceManager::getAuthenticator()
+     */
+    public function getAuthenticator($name): IdentityProvider
+    {
+        $idp_s = ExtSource::where([
+            ['name', '=', $name],
+            ['identity_provider', '=', 1]
+        ])->first();
+        $config = json_decode($idp_s->configuration, true);
+        $idp_c = $this->app->makeWith($idp_s->type, [ 'config' => $config]);
+        return $idp_c;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\ExtSourceManager::listAuthenticators()
+     */
+    public function listAuthenticators()
+    {
+        return ExtSource::where('identity_provider', 1)->get();        
+    }
+
     /**
      * {@inheritDoc}
      * @see \App\Interfaces\ExtSourceManager::getUpdatableAttributes()
