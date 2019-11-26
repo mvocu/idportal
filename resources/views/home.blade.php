@@ -67,7 +67,9 @@
 					@if (!empty($user->getFirstAttribute('employeenumber;x-'.$account['tag']))) 
                                 <div class="col-xs-3">tel. {{ empty($account['phone']) ? "" : $account['phone'] }}</div>
                                 <div class="col-xs-3">mail {{ empty($account['email']) ? "" : $account['email'] }}</div>
+					@if (isset($account['user_ext']))
 								<div class="col-xs-1"><a href="{{ route('remove.oidc', [ 'user_ext' =>  $account['user_ext'] ] ) }}" class="pull-right btn btn-default"><span class="fa fa-cross">&nbsp;</span></a></div>
+					@endif
 					@else
 								<div class="col-xs-7"><a href="{{ route('register.oidc', [ 'client' => $account['name'] ] ) }}" class="btn btn-social"><span class="fa fa-openid fa-{{ $account['name'] }}">&nbsp;</span>{{ $account['name'] }} - {{ __("Add identity") }} </a></div>
 					@endif
