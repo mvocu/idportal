@@ -112,6 +112,8 @@ return [
     'uploaded'             => 'Nahrávání :attribute se nezdařilo.',
     'url'                  => 'Formát :attribute je neplatný.',
 
+    'phone'                => ':attribute musí být telefonní číslo',
+    
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines
@@ -127,6 +129,7 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        
     ],
 
     /*
