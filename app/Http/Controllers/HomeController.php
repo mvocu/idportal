@@ -39,7 +39,10 @@ class HomeController extends Controller
             $tag = Str::kebab(Str::lower(Str::ascii($name)));
             $editable = $source->editable;
             $idp = $source->identity_provider;
-            $accounts[$source->id] = [ 'name' => $name, 'tag' => $tag, 'editable' => $editable , 'idp' => $idp];
+            $accounts[$source->id] = [ 
+                'name' => $name, 'tag' => $tag, 
+                'editable' => $editable , 'creatable' => $source->type != 'Internal', 
+                'idp' => $idp];
         }
         if($user != null) {
             foreach($user->accounts as $account) {
