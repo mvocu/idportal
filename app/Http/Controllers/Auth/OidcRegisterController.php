@@ -35,8 +35,8 @@ class OidcRegisterController extends Controller
         $euser = $this->user_ext_mgr->getUser($idp_s, $user->getResource());
         $attributes =  $this->user_ext_mgr->mapUserAttributes($idp_s, $user->getResource());
         $data = $user->getAttributes();
-        $validator = $this->validator($data);
         if(is_null($auth_user)) {
+            $validator = $this->validator($data);
             $validator->passes();
             if(!is_null($euser)) {
                 return view('auth.oidc', [ 'idp' => $client, 'attributes' => $attributes, 
@@ -51,7 +51,12 @@ class OidcRegisterController extends Controller
                 ]);
             }
         }
-        return view('auth.oidc', [ 'idp' => $client, 'attributes' => $attributes, 'invalid' => $validator->errors(), 'user' => $auth_user ]);   
+        return view('auth.oidc', [ 
+            'idp' => $client, 
+            'attributes' => $attributes, 
+            'invalid' => is_null($auth_user) ? $validator->errors() : new MessageBag(), 
+            'user' => $auth_user 
+        ]);   
     }
 
     public function register(Request $request, $client) {
