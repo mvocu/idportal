@@ -61,13 +61,13 @@
 					@foreach ($accounts as $account_id => $account)
 					@if ($account['idp'])
                         <div class="row">
-                                <div class="col-xs-4 text-right">{{ __($account['name']) }}</div>
+                                <div class="col-xs-3 text-right">{{ __($account['name']) }}</div>
                                 <div class="col-xs-1">{{ empty($value = $user->getFirstAttribute('employeenumber;x-'.$account['tag'])) ? "" : "ano" }}</div>
 					@if (!empty($user->getFirstAttribute('employeenumber;x-'.$account['tag']))) 
                                 <div class="col-xs-3">tel. {{ empty($account['phone']) ? "" : $account['phone'] }}</div>
-                                <div class="col-xs-3">mail {{ empty($account['email']) ? "" : $account['email'] }}</div>
+                                <div class="col-xs-4">mail: {{ empty($account['email']) ? "" : $account['email'] }}</div>
 					@if (isset($account['user_ext']))
-								<div class="col-xs-1"><a href="{{ route('remove.oidc', [ 'user_ext' =>  $account['user_ext'] ] ) }}" class="pull-right btn btn-default"><span class="fa fa-cross">X</span></a></div>
+								<div class="col-xs-1"><a href="{{ route('remove.oidc', [ 'user_ext' =>  $account['user_ext'] ] ) }}" class="pull-right btn btn-sm btn-small btn-danger"><span class="fa fa-remove">&nbsp;</span></a></div>
 					@endif
 					@else
 								<div class="col-xs-7"><a href="{{ route('register.oidc', [ 'client' => $account['name'] ] ) }}" class="btn btn-social"><span class="fa fa-openid fa-{{ $account['name'] }}">&nbsp;</span>{{ $account['name'] }} - {{ __("Add identity") }} </a></div>
