@@ -71,7 +71,7 @@ class ResetPasswordController extends Controller
         $user = $this->ldap_mgr->findUserByExtSource($idp_s, $oidc_user->getAuthIdentifier());
         if(is_null($user)) {
             return redirect()->route('password.request')
-                ->withErrors(['failure' => _('No user found for given external identity')]);
+                ->withErrors(['failure' => __('No user found for given external identity')]);
         }
         return view('auth.passwords.reset')->with(
             ['token' => $oidc_user->getRememberToken(), 'uid' => $user->getFirstAttribute('uid'), 'client' => $client]
