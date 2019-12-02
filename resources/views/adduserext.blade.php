@@ -20,13 +20,13 @@
                         </div>
                     @endif
 
-                    <form method="POST" action="" aria-label="{{ __('Add user') }}">
+                    <form method="POST" action="{{ route('ext.account.add', ['user' => $user, 'source' => $ext_source]) }}" aria-label="{{ __('Add user') }}">
                         @csrf
 
                         <div class="form-group row mb-0">
                             <div class="col-md-6 col-md-offset-4">
                                 <button type="submit" class="btn btn-primary">
-                                    {{ __('Submit') }} 
+                                    {{ __('Confirm') }} 
                                 </button>
                             </div>
                         </div>

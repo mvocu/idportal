@@ -65,6 +65,8 @@
   "Target user not found": "Cílový uživatel neexistuje",
   "External identity added": "Externí identita přidána",
   "External identity removed": "Externí identita odstraněna",
+  "Ask for new account": "Žádost o zřízení přístupu",
+  "Confirm": "Potvrdit",
   
   "Helios Energo" : "Vodné a stočné",
   "Ginis" : "Poplatky za odpad a psa",
@@ -75,6 +77,8 @@
   "SMS contacts" : "Informační SMS zprávy",
   "Mail contacts" : "Odběr newsletteru",
   
-  "validation.phone" : "Telefonní číslo nemá správný formát"
+  "validation.phone" : "Telefonní číslo nemá správný formát",
+  
+  "account.ext.info" : "Tato funkce ještě není implementována."
 }
 
