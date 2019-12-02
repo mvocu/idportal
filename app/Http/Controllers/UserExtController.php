@@ -92,6 +92,14 @@ class UserExtController extends Controller
         ->with('status', __('Saved.'));
     }
 
+    public function addUserExt(Request $request, User $user, ExtSource $source)
+    {
+        return view('extadd', [
+           'user' => $user,
+           'ext_source' => $source,
+        ]);
+    }
+    
     public function removeUserExt(Request $request, UserExt $user_ext)
     {
         $source = $user_ext->extSource;

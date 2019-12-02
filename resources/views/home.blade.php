@@ -48,7 +48,7 @@
 						@endif
 					@else
 						@if ($account['creatable'])
-								<div class="col-7"><a href="{{ route('ext.account.add', [ 'user' => $user->getDatabaseUser(), 'source' => $account_id ]) }}" class="pull-right btn btn-default btn-sm btn-small"><span class="fa fa-plus">&nbsp;</span></a></div>
+								<div class="col-7"><a href="{{ route('ext.account.ask', [ 'user' => $user->getDatabaseUser(), 'source' => $account_id ]) }}" class="pull-right btn btn-default btn-sm btn-small"><span class="fa fa-plus">&nbsp;</span></a></div>
 						@endif
 					
 					@endif
