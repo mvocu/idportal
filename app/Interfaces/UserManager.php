@@ -20,7 +20,7 @@ interface UserManager
     public function removeAccount(User $user, ExtSource $source);
     
     public function getRequiredTrustLevel(User $user);
-
+    
     public function validateUpdate(User $user, $user_ext_data) : bool;
     
     public function getValidData();

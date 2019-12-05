@@ -68,7 +68,7 @@ abstract class AbstractExtSourceConnector implements ExtSourceConnector
         return $source->editable;        
     }
 
-    protected function makeResource($data, $key, $parent_attr = null) {
+    protected function makeResource($data, $key, $parent_attr = null, $trust_level = null) {
         if(array_key_exists($key, $data)) {
             $id = $data[$key];
             //unset($data[$key]);
@@ -78,6 +78,7 @@ abstract class AbstractExtSourceConnector implements ExtSourceConnector
         return new ExtUserResource([ 
             'id' => $id, 
             'attributes' => $data, 
+            'trust_level' => $trust_level,
             'parent' => (is_null($parent_attr) || !array_key_exists($parent_attr, $data) ) ? null : $data[$parent_attr]]);
     }
 }
