@@ -29,9 +29,10 @@ class ExternalIdPAuthenticate
                 }
                 # we do not get back here unless oidc client succeeded
             }
+            $user = $this->auth->guard($client_name)->user();
         } else {
             throw new AuthenticationException(
-                'Unknown authentication provider.', [], $this->redirectTo($request)
+                'Unknown authentication provider', [], $this->redirectTo($request)
                 );
         }
         return $next($request);

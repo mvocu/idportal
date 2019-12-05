@@ -60,7 +60,15 @@ class ExternalUser implements Authenticatable
             'id' => $this->getAuthIdentifier(), 
             'parent' => null, 
             'active' => $active,
+            'trust_level' => (array_key_exists('mojeid_valid', $this->info) &&
+                              $this->info['mojeid_valid'] == 1) ?
+                                64 : 0,
             'attributes' => $this->getAttributes()]);
+    }
+    
+    public function __get($name)
+    {
+        return isset($this->info[$name]) ? $this->info[$name] : null; 
     }
 }
 

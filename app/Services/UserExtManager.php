@@ -44,7 +44,8 @@ class UserExtManager implements UserExtManagerInterface
         $user = new UserExt();
         $user->fill([ 'login' => $data->getId(), 'active' => $data->isActive() ]);
         $user->extSource()->associate($source);
-
+        $user->trust_level = $data->getTrustLevel($source);
+        
         $attrDefs = $this->getAttrDefs($source);
         
         DB::transaction(function() use ($source, $data, $user, $attrDefs) {
@@ -90,6 +91,10 @@ class UserExtManager implements UserExtManagerInterface
                 
         DB::transaction(function() use ($source, $user, $data, $attrDefs, &$modified) {
                 
+            if($user_ext->trust_level != $data->getTrustLevel($source)) {
+                $user_ext->trust_level = $data->getTrustLevel($source);
+                $modified = true;
+            }
             // remove all current attributes that are not in new data
             $present_attr_ids = array_values(array_map(function ($val) {
                                     return $val->id;
