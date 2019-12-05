@@ -75,7 +75,8 @@ class UserManager implements UserManagerInterface
         $user->fill($data);
         $user->createdBy()->associate($user_ext);
         $user->identifier = Uuid::uuid4();
-
+        $user->trust_level = $user_ext->trust_level;
+        
         DB::transaction(function() use ($user, $user_ext, $data) {
 
             $user->save();
@@ -120,6 +121,12 @@ class UserManager implements UserManagerInterface
         
         $user->updatedBy()->associate($user_ext);
         $user->fill($data);
+
+        if($user_ext->trust_level > $user->trust_level) {
+           $user->trust_level = $user_ext->trust_level;
+        }
+        
+        $user->save();
         
         // update contacts for explicit relations
         foreach(['birth_place', 'residency', 'address', 'address_tmp'] as $name) {
@@ -171,6 +178,15 @@ class UserManager implements UserManagerInterface
     public function removeAccount(User $user, ExtSource $source)
     {
         $this->contact_mgr->removeContacts($user, $source);
+        $trust_level = $user->accounts()
+            ->where('ext_source_id', '!=', $source->id)
+            ->max('trust_level');
+        # after removing external account, the resulting user trust level can not increase
+        if($user->trust_level > $trust_level) {
+            # we are removing account from source with higher trust than the current;
+            $user->trust_level = $trust_level; 
+            $user->save();
+        }
         event(new UserUpdatedEvent($user->id));
     }
 

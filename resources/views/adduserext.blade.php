@@ -21,7 +21,7 @@
                     @endif
 
                     <form method="POST" action="{{ route('ext.account.add', ['user' => $user, 'source' => $ext_source]) }}" aria-label="{{ __('Add user') }}">
-                        {{ csrf_token() }}
+                        {{ csrf_field() }}
 
                         <div class="form-group row mb-0">
                             <div class="col-md-6 col-md-offset-4">

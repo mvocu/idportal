@@ -124,7 +124,7 @@ class IdentityManager implements IdentityManagerInterface
             if($this->validateEqualIdentity($user, $data)) {
                 // check the required trust level
                 $user_trust = $this->user_mgr->getRequiredTrustLevel($user);
-                $candidate_trust = $user_ext->extSource->trust_level;
+                $candidate_trust = $user_ext->trust_level;
                 // if adding the candidate to the user identity would lead to identity with higher trust requirements,
                 // we should rather build separate identity and possibly merge later,
                 // or do not build identity at all 
