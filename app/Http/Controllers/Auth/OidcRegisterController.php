@@ -9,6 +9,7 @@ use Illuminate\Auth\Events\Registered;
 use App\Interfaces\UserExtManager;
 use App\Interfaces\ExtSourceManager;
 use App\Models\Database\ExtSource;
+use App\Models\Database\UserExt;
 use App\Http\Resources\ExtUserResource;
 use Illuminate\Support\MessageBag;
 
@@ -74,6 +75,16 @@ class OidcRegisterController extends Controller
         
         event(new Registered($user));
         
+        // wait for the async user creation
+        $ldap_user = null;
+        for($count = 0; $count < 5 && $ldap_user == null; $count++) {
+            sleep(1);
+            $new_user = $this->checkAccount($user->refresh());
+            if(!empty($new_user)) {
+                $ldap_user = $new_user;
+            }
+        }
+        
         return $this->registered($request, $user)
         ?: redirect($this->redirectTo);
         
@@ -105,6 +116,17 @@ class OidcRegisterController extends Controller
             return redirect()->route('home')
             ->withErrors(['failure' => __('Failed to activate external identity')]);
         }
+
+        // wait for the async user creation
+        $ldap_user = null;
+        for($count = 0; $count < 5 && $ldap_user == null; $count++) {
+            sleep(1);
+            $new_user = $this->checkAccount($euser->refresh());
+            if(!empty($new_user)) {
+                $ldap_user = $new_user;
+            }
+        }
+        
         return redirect()->route('home')
             ->with(['status' => __('External identity added')]);
     }
@@ -124,6 +146,11 @@ class OidcRegisterController extends Controller
         }
         $user = $this->user_ext_mgr->createUserWithAttributes($source, $resource);
         return $user;
+    }
+    
+    protected function checkAccount(UserExt $user)
+    {
+        return null;    
     }
     
     /**
