@@ -91,8 +91,8 @@ class UserExtManager implements UserExtManagerInterface
                 
         DB::transaction(function() use ($source, $user, $data, $attrDefs, &$modified) {
                 
-            if($user_ext->trust_level != $data->getTrustLevel($source)) {
-                $user_ext->trust_level = $data->getTrustLevel($source);
+            if($user->trust_level != $data->getTrustLevel($source)) {
+                $user->trust_level = $data->getTrustLevel($source);
                 $modified = true;
             }
             // remove all current attributes that are not in new data
