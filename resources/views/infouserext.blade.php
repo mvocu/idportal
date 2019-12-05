@@ -20,7 +20,7 @@
                         </div>
                     @endif
 
-					{{ __("account.ext.info") }}
+					{{ __("account.ext.info", [ 'source' => $ext_source->name ]) }}
               	</div>
               	
             	<div class="card-footer">

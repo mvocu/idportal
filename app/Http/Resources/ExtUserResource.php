@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Interfaces\ExtUserResourceInterface;
 use App\Models\Database\UserExt;
+use App\Models\Database\ExtSource;
 
 class ExtUserResource extends JsonResource implements ExtUserResourceInterface
 {
@@ -51,6 +52,23 @@ class ExtUserResource extends JsonResource implements ExtUserResourceInterface
         }
     }
     
+    public function getTrustLevel(ExtSource $source) 
+    {
+        if(is_array($this->resource)) {
+            if(array_key_exists('trust_level', $this->resource) && 
+                !is_null($this->resource['trust_level']) &&
+                $this->resource['trust_level'] <= $source->trust_level) {
+                return $this->resource['trust_level'];
+            } else {
+                return $source->trust_level;
+            }
+        } elseif ($this->resource instanceof UserExt) {
+            $this->resource->trust_level;
+        } else {
+            return null;
+        }
+    }
+
     public function isActive() 
     {
         if(is_array($this->resource)) {

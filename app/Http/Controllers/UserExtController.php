@@ -94,7 +94,7 @@ class UserExtController extends Controller
 
     public function addUserExt(Request $request, User $user, ExtSource $source)
     {
-        return view('extadd', [
+        return view('infouserext', [
            'user' => $user,
            'ext_source' => $source,
         ]);
