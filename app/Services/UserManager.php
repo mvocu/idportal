@@ -332,7 +332,11 @@ class UserManager implements UserManagerInterface
     
     public function getValidData() 
     {
-        return $this->validator->valid();    
+        $data = $this->validator->valid();
+        if(array_key_exists('confidence_level', $data)) {
+            unset($data['confidence_level']);
+        }
+        return $data;
     }
     
     public function getValidationErrors()
