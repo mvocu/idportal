@@ -30,7 +30,7 @@ class SynchronizeExtSources implements ShouldQueue
      */
     public function handle()
     {
-        foreach(ExtSource::all() as $source) {
+        foreach(ExtSource::where('identity_provider', 0)->get()->all() as $source) {
             SynchronizeExtSource::dispatch($source);
         }
     }
