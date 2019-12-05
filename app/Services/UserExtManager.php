@@ -189,7 +189,10 @@ class UserExtManager implements UserExtManagerInterface
         $attrdef = $source->attributes()->where('core_name', 'identifier')->first();
         $ext_data = $data->toArray(null);
         if(!empty($attrdef) && array_key_exists('identifier', $ext_data)) {
-            $user = $attrdef->values()->where('value', $ext_data['identifier'])->first()->user()->first();
+            $attr = $attrdef->values()->where('value', $ext_data['identifier'])->first();
+            if(!empty($attr)) {
+                $user = $attr->user()->first();
+            }
             if(!empty($user)) 
                 return $user;
         }
