@@ -55,7 +55,7 @@
 								</div>
 					@else
 						@if ($account['creatable'])
-								<div class="col-xs-7"><a href="{{ route('ext.account.ask', [ 'user' => $user->getDatabaseUser(), 'source' => $account_id ]) }}" class="pull-right btn btn-default btn-sm btn-small"><span class="fa fa-plus">&nbsp;</span></a></div>
+								<div class="col-xs-8"><a href="{{ route('ext.account.ask', [ 'user' => $user->getDatabaseUser(), 'source' => $account_id ]) }}" class="pull-right btn btn-default btn-sm btn-small"><span class="fa fa-plus">&nbsp;</span></a></div>
 						@endif
 					
 					@endif
@@ -80,7 +80,7 @@
 								</div>
 					@endif								
 					@else
-								<div class="col-xs-7"><a href="{{ route('register.oidc', [ 'client' => $account['name'] ] ) }}" class="btn btn-social"><span class="fa fa-openid fa-{{ $account['name'] }}">&nbsp;</span>{{ $account['name'] }} - {{ __("Add identity") }} </a></div>
+								<div class="col-xs-8"><a href="{{ route('register.oidc', [ 'client' => $account['name'] ] ) }}" class="btn btn-social"><span class="fa fa-openid fa-{{ $account['name'] }}">&nbsp;</span>{{ $account['name'] }} - {{ __("Add identity") }} </a></div>
 					@endif
                         </div>
                     @endif
