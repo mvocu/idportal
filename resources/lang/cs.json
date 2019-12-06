@@ -67,6 +67,7 @@
   "External identity removed": "Externí identita odstraněna",
   "Ask for new account": "Žádost o zřízení přístupu",
   "Confirm": "Potvrdit",
+  "Functionality not yet implemented": "Tato funkce zatím není implementována",
   
   "Helios Energo" : "Vodné a stočné",
   "Ginis" : "Poplatky za odpad a psa",
@@ -79,6 +80,7 @@
   
   "validation.phone" : "Telefonní číslo nemá správný formát",
   
-  "account.ext.info" : "Abychom vám mohli zřídit účet v systému :source, potřebujeme ověřit vaši totožnost. Prosíme, dostavte se za pověřeným pracovníkem MěÚ Úvaly."
+  "account.ext.submission": "Požadavek na zřízení přístupu v systému ':source' bude odeslán odpovědnému pracovníkovi MěÚ Úvaly. O jeho vyřízení budete informováni e-mailem.",
+  "account.ext.info" : "Abychom vám mohli zřídit účet v systému ':source', potřebujeme ověřit vaši totožnost. Prosíme, dostavte se za pověřeným pracovníkem MěÚ Úvaly."
 }
 
