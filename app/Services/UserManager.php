@@ -118,6 +118,10 @@ class UserManager implements UserManagerInterface
         if(!$this->validateUpdate($user, $data)) {
             $data = $this->getValidData();
         }
+
+        if(isset($user->confidence_level)) {
+            unset($user->confidence_level);
+        }
         
         $user->updatedBy()->associate($user_ext);
         $user->fill($data);
@@ -332,11 +336,7 @@ class UserManager implements UserManagerInterface
     
     public function getValidData() 
     {
-        $data = $this->validator->valid();
-        if(array_key_exists('confidence_level', $data)) {
-            unset($data['confidence_level']);
-        }
-        return $data;
+        return $this->validator->valid();
     }
     
     public function getValidationErrors()
