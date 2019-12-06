@@ -20,8 +20,32 @@
                         </div>
                     @endif
 
+					<div class="row mb-4">
+						<div class="col-12 col-md-12">
+							@if (!$ext_source->editable)
+							{{ __("account.ext.submission", [ 'source' => __($ext_source->name) ]) }}
+							@endif
+						</div>
+					</div>
+					
                     <form method="POST" action="{{ route('ext.account.add', ['user' => $user, 'source' => $ext_source]) }}" aria-label="{{ __('Add user') }}">
                         {{ csrf_field() }}
+
+						@foreach ($editable as $attrdef)
+                        <div class="form-group row">
+                            <label for="{{ $attrdef->name }}" class="col-md-4 col-form-label text-md-right">{{ $attrdef->display_name }}</label>
+
+                            <div class="col-md-6">
+                                <input id="{{ $attrdef->name }}" type="text" class="form-control{{ $errors->has($attrdef->name) ? ' is-invalid' : '' }}" name="{{ $attrdef->name }}" value="{{ old($attrdef->name) }}" required>
+
+                                @if ($errors->has($attrdef->name))
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->first($attrdef->name) }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                        @endforeach
 
                         <div class="form-group row mb-0">
                             <div class="col-md-6 col-md-offset-4">

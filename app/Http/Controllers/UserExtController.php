@@ -31,6 +31,13 @@ class UserExtController extends Controller
     public function showAddUserExtForm(Request $request, User $user, ExtSource $source)
     {
         // $attributes = (new UserResource($user))->getExtAttributes($ext_source->attributes);
+        if($user->trust_level < $source->trust_level) {
+            return view('infouserext', [
+                'user' => $user,
+                'ext_source' => $source,
+            ]);
+        }
+
         $editable = $this->ext_source_mgr->getUpdatableAttributes($source);
         return view('adduserext', [
             'action' => 'add', 
@@ -94,10 +101,8 @@ class UserExtController extends Controller
 
     public function addUserExt(Request $request, User $user, ExtSource $source)
     {
-        return view('infouserext', [
-           'user' => $user,
-           'ext_source' => $source,
-        ]);
+        return back()
+            ->withErrors(['failure' => __('Functionality not yet implemented') ]);
     }
     
     public function removeUserExt(Request $request, UserExt $user_ext)

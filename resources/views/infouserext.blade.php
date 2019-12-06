@@ -20,7 +20,7 @@
                         </div>
                     @endif
 
-					{{ __("account.ext.info", [ 'source' => $ext_source->name ]) }}
+					{{ __("account.ext.info", [ 'source' => __($ext_source->name) ]) }}
               	</div>
               	
             	<div class="panel-footer">
