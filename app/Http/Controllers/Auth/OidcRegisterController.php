@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Auth\Events\Registered;
 use App\Interfaces\UserExtManager;
@@ -19,6 +20,7 @@ class OidcRegisterController extends Controller
     protected $ext_source_mgr;
     
     protected $redirectTo = "/login";
+    protected $casLogoutUrl;
     
     public function __construct(ExtSourceManager $ext_source_mgr, UserExtManager $user_ext_mgr) {
         $this->middleware(['oidc'])->only('show');
@@ -26,6 +28,7 @@ class OidcRegisterController extends Controller
         $this->middleware(['oidc', 'auth'])->only('add');
         $this->ext_source_mgr = $ext_source_mgr;
         $this->user_ext_mgr = $user_ext_mgr;
+        $this->casLogoutUrl = Config::get('cas')['logout_url'];
     }
     
     public function show(Request $request, $client) {
@@ -127,7 +130,7 @@ class OidcRegisterController extends Controller
             }
         }
         
-        return redirect()->route('home')
+        return redirect($this->casLogoutUrl . '?service=' . route('home'))
             ->with(['status' => __('External identity added')]);
     }
     
@@ -162,7 +165,7 @@ class OidcRegisterController extends Controller
      */
     protected function registered(Request $request, $user)
     {
-        return redirect()->route('password.request');
+        return redirect($this->casLogoutUrl . '?service=' . route('password.request'));
     }
 
     /**
