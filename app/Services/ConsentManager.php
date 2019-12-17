@@ -8,6 +8,8 @@ use App\Interfaces\ConsentManager as ConsentManagerInterface;
 use App\Models\Database\ExtSourceAttribute;
 use App\Models\Database\UserExtAttribute;
 
+use Carbon\Carbon;
+
 class ConsentManager implements ConsentManagerInterface
 {
     /**
@@ -20,6 +22,21 @@ class ConsentManager implements ConsentManagerInterface
         if($object instanceof User) {
             return $this->isAllowedUserAttr($object, $attr, $value);
         }
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\ConsentManager::hasActiveConsent()
+     */
+    public function hasActiveConsent(User $user): bool
+    {
+        if(is_null($user->consent_at)) {
+            return false;
+        }
+        
+        $consent_date = new Carbon($user->consent_at);
+        return $consent_date->diff(Carbon::now(), true)->days < 365;
     }
 
     protected function isAllowedUserAttr(User $user, $attr, $value) {
