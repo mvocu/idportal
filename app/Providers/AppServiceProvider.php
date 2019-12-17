@@ -6,6 +6,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Validator;
+use App\Services\InternalConnector;
 use App\Interfaces\UserManager as UserManagerInterface;
 use App\Interfaces\UserExtManager as UserExtManagerInterface;
 use App\Interfaces\ExtSourceManager as ExtSourceManagerInterface;
@@ -55,6 +56,7 @@ class AppServiceProvider extends ServiceProvider
         'Helios' => HeliosConnector::class,
         'PortalObcana' => PortalObcanaConnector::class,
         'OpenID' => OpenIDConnector::class,
+        'Internal' => InternalConnector::class,
         // other services
         ActivationManagerInterface::class => ActivationManager::class
     ];
