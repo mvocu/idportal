@@ -37,7 +37,7 @@ class InternalConnector extends AbstractExtSourceConnector implements ExtSourceC
         return false;
     }
 
-    public function validateUpdate(ExtSource $source, $data, $validator)
+    public function validateUpdate(ExtSource $source, $data, &$validator)
     {
         $validator = Validator::make($data, [
             'email' => 'sometimes|required|email',
