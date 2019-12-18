@@ -5,6 +5,7 @@ use App\Interfaces\ExtSourceConnector;
 use App\Services\AbstractExtSourceConnector;
 use App\Models\Database\ExtSource;
 use App\Http\Resources\ExtUserResource;
+use Illuminate\Support\Facades\Validator;
 
 class InternalConnector extends AbstractExtSourceConnector implements ExtSourceConnector
 {
@@ -16,7 +17,9 @@ class InternalConnector extends AbstractExtSourceConnector implements ExtSourceC
 
     public function modifyUser(ExtUserResource $user_ext, $data)
     {
-        return $user_ext;
+        $old = $user_ext->toArray(null);
+        $new = array_replace($old, $data);
+        return $this->makeResource($new, 'email');
     }
 
     public function listUsers(ExtSource $source)
@@ -36,7 +39,11 @@ class InternalConnector extends AbstractExtSourceConnector implements ExtSourceC
 
     public function validateUpdate(ExtSource $source, $data, $validator)
     {
-        return true;
+        $validator = Validator::make($data, [
+            'email' => 'sometimes|required|email',
+            'phone_number' => 'sometimes|required|phone'
+        ]);
+        return $validator->passes();
     }
 
 }
