@@ -68,7 +68,15 @@
   "Ask for new account": "Žádost o zřízení přístupu",
   "Confirm": "Potvrdit",
   "Functionality not yet implemented": "Tato funkce zatím není implementována",
-  
+  "Terms of usage": "Všeobecné obchodní podmínky",
+  "Before using this website you are required to agree the terms of usage, which are available": "Před dalším využíváním tohoto webu musíte přečíst a přijmout všeobecné obchodní podmínky a podmínky zpracování osobních údajů, které jsou k dispozici",
+  "here": "zde",
+  "If you do not agree to the terms, your account will be disabled." : "Pokud nedáte souhlas s všeobecnými obchodními podmínkami a zpracováním osobních údajů, váš účet bude zablokován.",
+  "I have read the terms above and agree": "Seznámil jsem se s podmínkami použití služby a dávám souhlas se zpracováním osobních údajů",
+  "Your request has been sent to our personnel.": "Vaše žádost byla odeslána odpovědným pracovníkům, o jejím vyřízení budete informováni emailem.",
+  "New account requested": "Nová žádost o účet",
+  "User :user asks for account at :source": "Uživatel :user žádá o účet v :source", 
+	  
   "Helios Energo" : "Vodné a stočné",
   "Ginis" : "Poplatky za odpad a psa",
   "GINIS" : "Poplatky za odpad a psa",

@@ -124,5 +124,6 @@ return [
             resource_path('views/vendor/mail'),
         ],
     ],
-
+    
+    'support' => env('MAIL_SUPPORT_ADDRESS', 'nowhere@to.go'),
 ];

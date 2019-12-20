@@ -7,9 +7,11 @@ use App\Models\Database\ExtSource;
 use App\Models\Database\User;
 use App\Models\Database\UserExt;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Exception;
 use App\Http\Resources\UserResource;
 use App\Interfaces\ExtSourceManager;
+use App\Mail\AccountRequested;
 
 class UserExtController extends Controller
 {
@@ -101,8 +103,10 @@ class UserExtController extends Controller
 
     public function addUserExt(Request $request, User $user, ExtSource $source)
     {
-        return back()
-            ->withErrors(['failure' => __('Functionality not yet implemented') ]);
+        Mail::to(config('mail.support', ""))->send(new AccountRequested($user, $source));
+        return redirect()
+            ->route('home')
+            ->with(['status' => __('Your request has been sent to our personnel.') ]);
     }
     
     public function removeUserExt(Request $request, UserExt $user_ext)

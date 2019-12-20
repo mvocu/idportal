@@ -51,7 +51,31 @@ class LdapUser extends User
         return $this->addModification($mod);
     }
     
+    public function addRole($name) 
+    {
+        $current = $this->getAttribute('nsroledn');
+        if(!isset($current)) {
+            $current = [];
+        }
+        if(!in_array($name, $current)) {
+            $current[] = $name;
+            $this->setAttribute('nsroledn', $current);
+        }
+        return $this;
+    }
     
-
+    public function removeRole($name)
+    {
+        $current = $this->getAttribute('nsroledn');
+        if(!isset($current)) {
+            $current = [];
+        }
+        if(in_array($name, $current)) {
+            $current = array_diff($current, [ $name ]);
+            $this->setAttribute('nsroledn', $current);
+        }
+        return $this;
+    }
+    
 }
 
