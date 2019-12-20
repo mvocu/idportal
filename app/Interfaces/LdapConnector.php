@@ -20,6 +20,8 @@ interface LdapConnector
     
     public function deleteUser(User $user) : bool;
     
+    public function setUserLock(LdapUser $user, $locked);
+    
     public function syncUsers(Collection $users);
     
     public function buildDN(User $user);

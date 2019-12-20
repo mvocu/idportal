@@ -18,6 +18,8 @@ class LdapConnector implements LdapConnectorInterface
     protected $ldap;
     
     protected $consent_mgr;
+
+    protected $ACCOUNT_INACTIVATION_ROLE = "cn=nsmanageddisabledrole";
     
     private $ext_sources;
     
@@ -89,7 +91,29 @@ class LdapConnector implements LdapConnectorInterface
         $entry->fill($data);
         $entry->save();
         event(new LdapUserUpdatedEvent($entry->getDn()));
+        if($this->consent_mgr->hasDeniedConsent($user)) {
+            $this->setUserLock($entry, true);
+        }
         return $entry;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\LdapConnector::setUserLock()
+     */
+    public function setUserLock(LdapUser $user, $locked)
+    {
+        $rootdn = $this->ldap->getProvider('admin')->getConfiguration()->get('base_dn');
+        $entry = $this->ldap->getProvider('admin')->search()->select('nsroledn')->findByDn($user->getDn());
+        $role = $this->ACCOUNT_INACTIVATION_ROLE . "," . $rootdn;
+        if($locked) {
+            $entry->addRole($role);
+        } else {
+            $entry->removeRole($role);
+        }
+        $entry->save();
+        event(new LdapUserUpdatedEvent($user->getDn()));
+        return $user;
     }
 
     /**

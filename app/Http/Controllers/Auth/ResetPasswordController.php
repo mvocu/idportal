@@ -128,6 +128,8 @@ class ResetPasswordController extends Controller
      */
     protected function resetPassword($user, $password)
     {
+        $this->ldap_mgr->setUserLock($user, false);
+        
         $this->ldap_mgr->changePassword($user, $password);
         
         $user->rememberPassword($password);
