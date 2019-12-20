@@ -52,12 +52,14 @@ class AuthServiceProvider extends ServiceProvider
         });
         
         // register all external identity providers in DB as authentication guards
-        $esmgr = $this->app->make(ExtSourceManager::class);
-        foreach($esmgr->listAuthenticators() as $es) {
-            Auth::extend($es->name, function($app, $name, $config) use ($esmgr, $es) {
-                return new ExternalIdPGuard($name, $esmgr->getAuthenticator($es->name), Request::getSession());
-            });
-            $this->app['config']["auth.guards.{$es->name}"] = [ 'driver' => $es->name ];
+        if(!$this->app->runningInConsole()) {
+            $esmgr = $this->app->make(ExtSourceManager::class);
+            foreach($esmgr->listAuthenticators() as $es) {
+                Auth::extend($es->name, function($app, $name, $config) use ($esmgr, $es) {
+                    return new ExternalIdPGuard($name, $esmgr->getAuthenticator($es->name), Request::getSession());
+                });
+                $this->app['config']["auth.guards.{$es->name}"] = [ 'driver' => $es->name ];
+            }
         }
     }
     

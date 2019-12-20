@@ -7,6 +7,7 @@ use App\Models\Database\User;
 use App\Interfaces\ConsentManager as ConsentManagerInterface;
 use App\Models\Database\ExtSourceAttribute;
 use App\Models\Database\UserExtAttribute;
+use App\Events\UserUpdatedEvent;
 
 use Carbon\Carbon;
 
@@ -36,7 +37,53 @@ class ConsentManager implements ConsentManagerInterface
         }
         
         $consent_date = new Carbon($user->consent_at);
-        return $consent_date->diff(Carbon::now(), true)->days < 365;
+        return $consent_date->diffInDays(Carbon::now(), true) < 365;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\ConsentManager::hasDeniedConsent()
+     */
+    public function hasDeniedConsent(User $user): bool
+    {
+        if($this->hasActiveConsent($user)) {
+            return false;
+        }
+        if(is_null($user->consent_requested)) {
+            return false;
+        }
+        $request_date = new Carbon($user->consent_requested);
+        return $request_date->diffInRealMinutes(Carbon::now(), true) > 60;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\ConsentManager::setConsent()
+     */
+    public function setConsent(User $user, $active)
+    {
+        if($active) {
+            $user->consent_at = Carbon::now();
+        } else {
+            $user->consent_at = null;
+        }
+        $user->save();
+        event(new UserUpdatedEvent($user->id));
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\ConsentManager::setConsentRequested()
+     */
+    public function setConsentRequested(User $user, $active)
+    {
+        if($active) {
+            $user->consent_requested = Carbon::now();
+        } else {
+            $user->consent_requested = null;
+        }
+        $user->save();
+        event(new UserUpdatedEvent($user->id));
     }
 
     protected function isAllowedUserAttr(User $user, $attr, $value) {

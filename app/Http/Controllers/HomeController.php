@@ -8,19 +8,23 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use App\Interfaces\UserExtManager;
 use App\Models\Database\ExtSource;
+use App\Interfaces\ConsentManager;
 
 class HomeController extends Controller
 {
     protected $user_ext_mgr;
+    
+    protected $consent_mgr;
     
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(UserExtManager $user_ext_mgr)
+    public function __construct(UserExtManager $user_ext_mgr, ConsentManager $consent_mgr)
     {
         $this->user_ext_mgr = $user_ext_mgr;
+        $this->consent_mgr = $consent_mgr;
         $this->middleware('auth');
     }
 
@@ -33,6 +37,9 @@ class HomeController extends Controller
     {
 
         $user = Auth::user()->getDatabaseUser();
+        if(!$this->consent_mgr->hasActiveConsent($user)) {
+            return redirect()->route('consent.ask');
+        }
         $accounts = array();
         foreach(ExtSource::all() as $source) {
             $name = $source->name;

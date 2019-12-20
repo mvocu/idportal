@@ -56,6 +56,10 @@ Route::get('/logout/oidc/{client}', function($client) {
         return back();
 })->name('oidc.logout');
 
+Route::get('/consent/ask', 'ConsentController@showConsentForm')->name('consent.ask');
+
+Route::post('/consent/set', 'ConsentController@setConsent')->name('consent.set');
+
 Route::get('/mojeid/info', function() { return response()->json([
     'https://cas.mestouvaly.cz/cas/login?client_name=OidcClient',
     'https://cas.mestouvaly.cz/cas/login/MojeID', 

@@ -10,5 +10,10 @@ interface ConsentManager
     
     public function hasActiveConsent(User $user) : bool;
     
+    public function hasDeniedConsent(User $user) : bool;
+    
+    public function setConsent(User $user, $active);
+    
+    public function setConsentRequested(User $user, $active);
 }
 
