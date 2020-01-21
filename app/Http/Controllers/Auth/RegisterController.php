@@ -83,7 +83,7 @@ class RegisterController extends Controller
         if(false === $user) {
             return redirect('/register')
                 ->withInput($request->all())
-                ->withErrors(['email' => __('User already registered.')]);    
+                ->withErrors(['failure' => __('User already registered.')]);    
         }
         
         event(new Registered($user));
@@ -103,8 +103,8 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'firstname' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:contact,email',
-            'phone' => 'required|string|phone|max:255|unique:contact,phone',
+            'email' => 'sometimes|nullable|required_without:phone|string|email|max:255|unique:contact,email',
+            'phone' => 'sometimes|required_without:email|string|phone|max:255|unique:contact,phone',
         ]);
     }
 
