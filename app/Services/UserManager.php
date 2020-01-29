@@ -157,6 +157,8 @@ class UserManager implements UserManagerInterface
                 $this->contact_mgr->syncContacts($user, $user_ext, array(), $name);
             }
         }
+
+	$user->save();
         
         event(new UserUpdatedEvent($user->id));
         
