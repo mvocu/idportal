@@ -125,6 +125,15 @@ class ContactManager implements ContactManagerInterface
         if(!empty($current)) {
             foreach($current as $contact) {
                 $contact->userExt()->detach($ext_user);
+                // skip addresses that are referred to from user record directly
+                if($contact->type == Contact::TYPE_ADDRESS && (
+                    $contact->id == $user->residency_id ||
+                    $contact->id == $user->birth_place_id ||
+                    $contact->id == $user->address_id ||
+                    $contact->id == $user->address_tmp_id)) 
+                {
+                    continue;        
+                }
                 if($contact->user_ext_count == 1) {
                     $contact->delete();
                 }

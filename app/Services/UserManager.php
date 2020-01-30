@@ -130,35 +130,39 @@ class UserManager implements UserManagerInterface
            $user->trust_level = $user_ext->trust_level;
         }
         
-        $user->save();
+        DB::transaction(function() use ($user, $user_ext, $data) {
+            
+            $user->save();
         
-        // update contacts for explicit relations
-        foreach(['birth_place', 'residency', 'address', 'address_tmp'] as $name) {
-            if(array_key_exists($name, $data) && is_array($data[$name])) {
-                $relationName = Str::camel($name);
-                $contact = call_user_func([$user,$relationName])->first();
-                if(empty($contact)) {
-                    // no value yet
-                    // XXX - should fetch the model from relation, but...
-                    $contact = $this->contact_mgr->createContact($user, $user_ext, $data[$name], Address::class);
-                    call_user_func([$user, $relationName])->associate($contact);
-                } else {
-                    // update current value
-                    $this->contact_mgr->updateContact($contact, $user_ext, $data[$name]);
+            // update contacts for explicit relations
+            foreach(['birth_place', 'residency', 'address', 'address_tmp'] as $name) {
+                if(array_key_exists($name, $data) && is_array($data[$name])) {
+                    $relationName = Str::camel($name);
+                    $contact = call_user_func([$user,$relationName])->first();
+                    if(empty($contact)) {
+                        // no value yet
+                        // XXX - should fetch the model from relation, but...
+                        $contact = $this->contact_mgr->createContact($user, $user_ext, $data[$name], Address::class);
+                        call_user_func([$user, $relationName])->associate($contact);
+                        $user->save(); // neccessary here to correctly sync the contacts later on
+                    } else {
+                        // update current value
+                        $this->contact_mgr->updateContact($contact, $user_ext, $data[$name]);
+                    }
                 }
             }
-        }
         
-        // update contacts for contact types
-        foreach(Contact::$contactModels as $name => $class) {
-            if(array_key_exists($name, $data) && is_array($data[$name])) {
-                $this->contact_mgr->syncContacts($user, $user_ext, $data[$name], $name);
-            } else {
-                $this->contact_mgr->syncContacts($user, $user_ext, array(), $name);
+            // update contacts for contact types
+            foreach(Contact::$contactModels as $name => $class) {
+                if(array_key_exists($name, $data) && is_array($data[$name])) {
+                    $this->contact_mgr->syncContacts($user, $user_ext, $data[$name], $name);
+                } else {
+                    $this->contact_mgr->syncContacts($user, $user_ext, array(), $name);
+                }
             }
-        }
 
-	$user->save();
+            $user->save();
+        });
         
         event(new UserUpdatedEvent($user->id));
         
