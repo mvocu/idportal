@@ -22,7 +22,9 @@ interface UserExtManager
     
     public function getUser(ExtSource $source, ExtUserResource $data) : ?UserExt ;
     
-    public function activateUser(ExtSource $source, ExtUserResource $data) : ?UserExt;
+    public function activateUser(UserExt $user_ext): ?UserExt;
+    
+    public function activateUserByData(ExtSource $source, ExtUserResource $data) : ?UserExt;
     
     public function mapUserAttributes(ExtSource $source, ExtUserResource $data);
     

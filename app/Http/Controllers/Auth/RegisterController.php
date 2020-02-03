@@ -10,10 +10,13 @@ use Illuminate\Http\Request;
 use App\Traits\AuthorizesBySMS;
 use App\Interfaces\UserExtManager;
 use App\Models\Database\ExtSource;
+use App\Models\Database\Contact;
+use App\Models\Database\UserExt;
 use App\Http\Resources\ExtUserResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Traits\SendsAccountActivationEmail;
 use App\Interfaces\ExtSourceManager;
+use App\Interfaces\LdapConnector;
 
 class RegisterController extends Controller
 {
@@ -43,17 +46,19 @@ class RegisterController extends Controller
 
     protected $ext_source_mgr;
     protected $user_ext_mgr;
+    protected $ldap_mgr;
     
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(ExtSourceManager $ext_source_mgr, UserExtManager $user_ext_mgr)
+    public function __construct(ExtSourceManager $ext_source_mgr, UserExtManager $user_ext_mgr, LdapConnector $ldap_mgr)
     {
         $this->middleware('guest');
         $this->ext_source_mgr = $ext_source_mgr;
         $this->user_ext_mgr = $user_ext_mgr;
+        $this->ldap_mgr = $ldap_mgr;
     }
 
     /**
@@ -74,12 +79,16 @@ class RegisterController extends Controller
      */
     public function register(Request $request)
     {
-        $this->validator($request->all())->validate();
+        $data = $request->all();
+        $contact = new Contact();
+        $contact->setAttribute('phone', $data['phone']);
+        $data['phone'] = $contact->phone;
+        $this->validator($data)->validate();
         
         // check token
         $this->validateToken($request);
         
-        $user = $this->create($request->all());
+        $user = $this->create($data);
         if(false === $user) {
             return redirect('/register')
                 ->withInput($request->all())
@@ -116,6 +125,10 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        if(empty($data['email'])) {
+            $default_mail = config('registration.default_email');
+            $data['email'] = $data['phone'] . '@' . $default_mail;
+        }
         $source = ExtSource::where('type', 'Internal')->get()->first();
         if($source == null) throw new ModelNotFoundException();
         $resource = new ExtUserResource([ 'id' => $data['email'], 'active' => false, 'attributes' => $data ]);
@@ -141,11 +154,35 @@ class RegisterController extends Controller
      */
     protected function registered(Request $request, $user)
     {
+
+        if(empty($request->input('email'))) {
+            // user is registering without email, activate now and proceed to password reset
+            $this->user_ext_mgr->activateUser($user);
+            // wait for the async user creation
+            $ldap_user = null;
+            for($count = 0; $count < 30 && $ldap_user == null; $count++) {
+                sleep(1);
+                $new_user = $this->checkAccount($user->refresh());
+                if(!empty($new_user)) {
+                    $ldap_user = $new_user;
+                }
+            }
+            
+            return redirect()->route('password.request', [ 'phone' => $request->input('phone'), 'auto' => 1 ]);
+        }
+
         // send activation challenge
         $this->sendActivationLink($request);
         
         return redirect()->route('activate.token', [ 'id' => $user->login ])
             ->with('status', __('Activation code was sent to :address', [ 'address' => $request->input('email') ]));
+    }
+
+    protected function checkAccount(UserExt $user_ext)
+    {
+        $user = $user_ext->user;
+        if(empty($user)) return null;
+        return $this->ldap_mgr->findUser($user);
     }
     
 }

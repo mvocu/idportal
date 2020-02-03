@@ -12,6 +12,7 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
+	@stack(config('tableView.dataTable.js.stack_name'))
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
@@ -20,6 +21,8 @@
     
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+	@stack(config('tableView.dataTable.css.stack_name'))
+	
 </head>
 <body>
     <div id="app">

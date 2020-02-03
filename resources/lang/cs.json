@@ -75,17 +75,23 @@
   "I have read the terms above and agree": "Seznámil jsem se s podmínkami použití služby a dávám souhlas se zpracováním osobních údajů",
   "Your request has been sent to our personnel.": "Vaše žádost byla odeslána odpovědným pracovníkům, o jejím vyřízení budete informováni emailem.",
   "New account requested": "Nová žádost o účet",
-  "User :user asks for account at :source": "Uživatel :user žádá o účet v :source", 
+  "User :user asks for account at :source": "Uživatel :user žádá o účet v :source",
+  "List of users": "Seznam uživatelů",
+  "User detail - :user": "Podrobnosti o uživateli - :user", 
 	  
   "Helios Energo" : "Vodné a stočné",
   "Ginis" : "Poplatky za odpad a psa",
   "GINIS" : "Poplatky za odpad a psa",
-  "Clavius" : "Knihovní systém",
+  "Tritius" : "Knihovní systém",
   "AD Uvaly" : "Databáze městského úřadu",
   "AD MěÚ Úvaly" : "Databáze městského úřadu",
   "SMS contacts" : "Informační SMS zprávy",
   "Mail contacts" : "Odběr newsletteru",
-  
+
+  "Identifier": "Identifikátor",
+  "Date of birth": "Datum narození",
+  "Birth code": "Rodné číslo",
+    
   "validation.phone" : "Telefonní číslo nemá správný formát",
   
   "account.ext.submission": "Požadavek na zřízení přístupu v systému ':source' bude odeslán odpovědnému pracovníkovi MěÚ Úvaly. O jeho vyřízení budete informováni e-mailem.",

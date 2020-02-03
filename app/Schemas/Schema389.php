@@ -62,7 +62,7 @@ class Schema389 extends BaseSchema
      */
     public function objectClassGroup()
     {
-        return 'groupofnames';
+        return 'groupofuniquenames';
     }
     
     /**
@@ -70,7 +70,7 @@ class Schema389 extends BaseSchema
      */
     public function objectClassOu()
     {
-        return 'groupofuniquenames';
+        return 'organizationalunit';
     }
     
     /**

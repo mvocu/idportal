@@ -56,6 +56,16 @@ Route::get('/consent/ask', 'ConsentController@showConsentForm')->name('consent.a
 
 Route::post('/consent/set', 'ConsentController@setConsent')->name('consent.set');
 
+Route::name('admin.')
+    ->prefix('admin')
+    ->namespace('Admin')
+    ->group(function() {
+        Route::get('/user/list', 'UserController@listUsers')->name('user.list');
+        Route::get('/user/show/{user}', 'UserController@showUser')->name('user.show');
+        Route::get('/userext/list', 'UserExtController@listUsers')->name('userext.list'); 
+        Route::get('/userext/show/{user}', 'UserExtController@showUser')->name('userext.show');
+    });
+    
 Route::get('/mojeid/info', function() { return response()->json([
     'https://cas.mestouvaly.cz/cas/login?client_name=OidcClient',
     'https://cas.mestouvaly.cz/cas/login/MojeID', 

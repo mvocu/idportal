@@ -57,7 +57,7 @@ class ActivationManager implements ActivationManagerInterface
         if($source == null) throw new ModelNotFoundException();
         $resource = new ExtUserResource([ 'id' => $user->getEmailForPasswordReset(), 'active' => false, 'attributes' => null ]);
         // this triggers async process of identity build
-        $user_ext = $this->user_ext_mgr->activateUser($source, $resource);
+        $user_ext = $this->user_ext_mgr->activateUserByData($source, $resource);
         return $user_ext; 
     }
 

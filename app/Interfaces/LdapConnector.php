@@ -22,6 +22,8 @@ interface LdapConnector
     
     public function setUserLock(LdapUser $user, $locked);
     
+    public function isUserLocked(LdapUser $user);
+    
     public function syncUsers(Collection $users);
     
     public function buildDN(User $user);

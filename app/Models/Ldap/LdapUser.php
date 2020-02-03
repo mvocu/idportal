@@ -77,5 +77,27 @@ class LdapUser extends User
         return $this;
     }
     
+    public function getAttributesAndTags($attr = null) 
+    {
+        $result = [];
+        $attrs = $this->getAttributes();
+        foreach($attrs as $key => $value) {
+            if(is_numeric($key)) {
+                continue;
+            }
+            if(strpos($key, ';') === false) {
+                $name = $key;
+                $tag = "";
+            } else {
+                $keys = explode(';', $key);
+                $name = $keys[0];
+                $tag = $keys[1];
+            }
+            if($attr == null || $name == $attr) {
+                $result[$name][$tag] = $value;
+            }
+        }
+        return ($attr == null) ? $result : $result[$attr];
+    }
 }
 
