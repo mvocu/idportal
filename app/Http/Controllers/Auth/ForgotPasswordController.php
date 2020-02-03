@@ -41,8 +41,11 @@ class ForgotPasswordController extends Controller
      * 
      * @return \Illuminate\View\View|\Illuminate\Contracts\View\Factory
      */
-    public function showLinkRequestForm()
+    public function showLinkRequestForm(Request $request)
     {
+        if($request->input('auto')) {
+            return view('auth.passwords.autosend', $request->only('phone'));
+        }
         return view('auth.passwords.send', [ 'idp' => $this->ext_source_mgr->listAuthenticators()->pluck('name') ]);
     }
 

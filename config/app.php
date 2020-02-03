@@ -168,6 +168,7 @@ return [
         /*
          * Package Service Providers...
          */
+        KABBOUCHI\TableView\TableViewServiceProvider::class,
 
         /*
          * Application Service Providers...

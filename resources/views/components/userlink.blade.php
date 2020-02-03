@@ -1,0 +1,1 @@
+<a href="{{ route('admin.user.show', ['user' => $user ]) }}">{{$name}}</a>

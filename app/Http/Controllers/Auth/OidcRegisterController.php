@@ -115,7 +115,7 @@ class OidcRegisterController extends Controller
         }
         $euser->user()->associate($auth_user);
         $euser->save();
-        if(null == $this->user_ext_mgr->activateUser($idp_s, $eresource)) {
+        if(null == $this->user_ext_mgr->activateUserByData($idp_s, $eresource)) {
             return redirect()->route('home')
             ->withErrors(['failure' => __('Failed to activate external identity')]);
         }
