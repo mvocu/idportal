@@ -48,7 +48,7 @@ class UserController extends Controller
     {
         $ldapuser = $this->ldapc->findUser($user);
         return view('admin.userdetail', ['id' => $user->id, 'user' => $user, 'ldapuser' => $ldapuser,
-            'lock' => $this->ldapc->isUserLocked($ldapuser),
+            'lock' => $ldapuser ? $this->ldapc->isUserLocked($ldapuser) : false,
         ]);
     }
     

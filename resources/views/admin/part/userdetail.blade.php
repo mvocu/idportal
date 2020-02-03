@@ -101,6 +101,7 @@
 		</div>
 	</div>
 	<div class="tab-pane fade" id="ldap-{{$id}}" role="tabpanel" aria-labelledby="ldap-tab">
+		@if (isset($ldapuser))
 		@foreach(['uniqueidentifier', 'uid', 'cn', 'givenname', 'sn', 'c', 'telephonenumber', 'mail', 
 			'street', 'l', 'st', 'postalCode', 'houseIdentifier', 'postalAddress'] as $attr)
 		<div class="row mt-2">
@@ -144,6 +145,9 @@
 				{{ empty($ldapuser->getFirstAttribute('userpassword')) ? "UNSET": "SET" }}
 			</div>
 		</div>
+		@else 
+			No LDAP record.
+		@endif
 	</div>
 	<div class="tab-pane fade" id="status-{{$id}}" role="tabpanel" aria-labelledby="status-tab">
 		<div class="row mt-2">
