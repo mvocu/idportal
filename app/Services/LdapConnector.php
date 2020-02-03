@@ -118,6 +118,16 @@ class LdapConnector implements LdapConnectorInterface
 
     /**
      * {@inheritDoc}
+     * @see \App\Interfaces\LdapConnector::isUserLocked()
+     */
+    public function isUserLocked(\App\Models\Ldap\LdapUser $user)
+    {
+        $nsrole = $user->getAttribute('nsrole');
+        return is_array($nsrole) && in_array($this->ACCOUNT_INACTIVATION_ROLE, $nsrole);
+    }
+
+    /**
+     * {@inheritDoc}
      * @see \App\Interfaces\LdapConnector::syncUsers()
      */
     public function syncUsers(\Illuminate\Support\Collection $users)

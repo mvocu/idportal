@@ -204,16 +204,26 @@ class UserExtManager implements UserExtManagerInterface
      * {@inheritDoc}
      * @see \App\Interfaces\UserExtManager::activateUser()
      */
-    public function activateUser(ExtSource $source, ExtUserResource $data): ?UserExt
+    public function activateUser(UserExt $user_ext): UserExt
+    {
+        $user_ext->active = true;
+        $user_ext->save();
+        
+        event(new UserExtUpdatedEvent($user_ext->id));
+        
+        return $user_ext;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\UserExtManager::activateUser()
+     */
+    public function activateUserByData(ExtSource $source, ExtUserResource $data): ?UserExt
     {
         $user = $this->getUser($source, $data);
         if($user == null) return null;
-        $user->active = true;
-        $user->save();
-
-        event(new UserExtUpdatedEvent($user->id));
         
-        return $user;
+        return $this->activateUser($user);
     }
 
     /**
