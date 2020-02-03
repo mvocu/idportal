@@ -4,9 +4,9 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-12">
-            <div class="card">
-				<div class="card-header">{{ __('List of users') }}</div>
-				<div class="card-body">
+            <div class="panel">
+				<div class="panel-heading">{{ __('List of users') }}</div>
+				<div class="panel-body">
 					{{ $table->render() }}
 				</div>
 			</div>
