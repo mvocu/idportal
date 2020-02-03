@@ -132,6 +132,9 @@ class LdapConnector implements LdapConnectorInterface
      */
     public function syncUsers(\Illuminate\Support\Collection $users)
     {
+        foreach($this->ldap->getProviders() as $provider) {
+            $provider->connect();
+        }
         $this->ext_sources = ExtSource::all();
         foreach($users as $user) {
             $entry = $this->findUser($user);
