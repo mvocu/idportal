@@ -1,22 +1,22 @@
-<ul class="nav nav-tabs">
-	<li class="nav-item">
-		<a class="nav-link active" id="personal-tab" data-toggle="tab" href="#personal-{{$id}}" role="tab" aria-controls="personal" aria-selected="true">{{ __("Personal information") }}</a>
+<ul class="nav nav-tabs" role="tablist">
+	<li class="nav-item active" role="presentation">
+		<a class="nav-link" id="personal-tab" data-toggle="tab" href="#personal-{{$id}}" role="tab" aria-controls="personal" aria-selected="true">{{ __("Personal information") }}</a>
 	</li>				
-	<li class="nav-item">
+	<li class="nav-item" role="presentation">
 		<a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact-{{$id}}" role="tab" aria-controls="contact" aria-selected="false">{{ __("Contacts") }}</a>
 	</li>				
-	<li class="nav-item">
+	<li class="nav-item" role="presentation">
 		<a class="nav-link" id="account-tab" data-toggle="tab" href="#account-{{$id}}" role="tab" aria-controls="account" aria-selected="false">{{ __("Accounts") }}</a>
 	</li>
-	<li class="nav-item">
+	<li class="nav-item" role="presentation">
 		<a class="nav-link" id="ldap-tab" data-toggle="tab" href="#ldap-{{$id}}" role="tab" aria-controls="ldap" aria-selected="false">{{ __("LDAP entry") }}</a>
 	</li>
-	<li class="nav-item">
+	<li class="nav-item" role="presentation">
 		<a class="nav-link" id="status-tab" data-toggle="tab" href="#status-{{$id}}" role="tab" aria-controls="status" aria-selected="false">{{ __("Status") }}</a>
 	</li>
 </ul>
 <div class="tab-content">
-	<div class="tab-pane fade show active" id="personal-{{$id}}" role="tabpanel" aria-labelledby="personal-tab">
+	<div role="tabpanel" class="tab-pane fade in active" id="personal-{{$id}}" role="tabpanel" aria-labelledby="personal-tab">
 		<div class="row mt-2">
 			<div class="col-xs-11">
 				@foreach([
@@ -32,11 +32,11 @@
 				</div>
 				@endforeach
 			</div>
-			<div class="col-1">
+			<div class="col-xs-1">
 			</div>
 		</div>
 	</div>
-	<div class="tab-pane fade" id="contact-{{$id}}" role="tabpanel" aria-labelledby="contact-tab">
+	<div role="tabpanel" class="tab-pane fade" id="contact-{{$id}}" role="tabpanel" aria-labelledby="contact-tab">
 		<div class="row mt-2 mb-1">
 			<div class="col-xs-2">
 				{{ __('Phone') }}
@@ -71,7 +71,7 @@
 		</div>
 		@endforeach
 		<div class="row mt-1">
-			<div class="col-2">
+			<div class="col-xs-2">
 						{{ __('Addresses') }}
 			</div>
 			<div class="col-xs-10">
@@ -84,7 +84,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="tab-pane fade" id="account-{{$id}}" role="tabpanel" aria-labelledby="account-tab">
+	<div role="tabpanel" class="tab-pane fade" id="account-{{$id}}" role="tabpanel" aria-labelledby="account-tab">
 		<div class="row mt-3">
 			<div class="col-xs-12">
 				{{ tableView($user->accounts)
@@ -100,11 +100,11 @@
 			</div>
 		</div>
 	</div>
-	<div class="tab-pane fade" id="ldap-{{$id}}" role="tabpanel" aria-labelledby="ldap-tab">
+	<div role="tabpanel" class="tab-pane fade" id="ldap-{{$id}}" role="tabpanel" aria-labelledby="ldap-tab">
 		@foreach(['uniqueidentifier', 'uid', 'cn', 'givenname', 'sn', 'c', 'telephonenumber', 'mail', 
 			'street', 'l', 'st', 'postalCode', 'houseIdentifier', 'postalAddress'] as $attr)
 		<div class="row mt-2">
-			<div class="col-4">
+			<div class="col-xs-4">
 				{{ __($attr) }}
 			</div>
 			<div class="col-xs-8">
@@ -145,7 +145,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="tab-pane fade" id="status-{{$id}}" role="tabpanel" aria-labelledby="status-tab">
+	<div role="tabpanel" class="tab-pane fade" id="status-{{$id}}" role="tabpanel" aria-labelledby="status-tab">
 		<div class="row mt-2">
 			<div class="col-xs-11">
 				@foreach(['trust_level', 'consent_requested', 'consent_at', 'created_at', 'updated_at'] as $attr)
@@ -159,9 +159,8 @@
 				</div>
 				@endforeach
 			</div>
-			<div class="col-1">
+			<div class="col-xs-1">
 			</div>
-		</div>
 		</div>
 	</div>
 </div>
