@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Validator;
 use App\Services\InternalConnector;
@@ -69,7 +70,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Validator::extend('similar', function ($attribute, $value, $parameters, $validator) {
-            $other = Arr::get($validator->getData(), $parameters[0]);
+            $value = Str::lower($value);
+            $other = Str::lower(Arr::get($validator->getData(), $parameters[0]));
             $limit = count($parameters) > 1 ? $parameters[1] : 3;
             return empty($other) || Names::damlev($value, $other) < $limit;
         });
