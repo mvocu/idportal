@@ -51,7 +51,14 @@ class ExternalUser implements Authenticatable
     
     public function getAttributes()
     {
-        return $this->info;
+        $data = $this->info;
+        if(array_key_exists('address_street_address', $data) &&
+            preg_match('/(.*)\s+(\d+)\/(\d+)/', $data['address_street_address'], $matches)) {
+            $data['address_street'] = $matches[1];
+            $data['address_org_number'] = $matches[2];
+            $data['address_ev_number'] = $matches[3];
+        }
+        return $data;
     }
     
     public function getResource($active = true)

@@ -18,6 +18,8 @@ class LdapConnector implements LdapConnectorInterface
     protected $ldap;
     
     protected $consent_mgr;
+    
+    protected $default_mail;
 
     protected $ACCOUNT_INACTIVATION_ROLE = "cn=nsmanageddisabledrole";
     
@@ -26,6 +28,7 @@ class LdapConnector implements LdapConnectorInterface
     public function __construct(AdldapInterface $ldap, ConsentManager $cmgr) {
         $this->ldap = $ldap;
         $this->consent_mgr = $cmgr;
+        $this->default_mail = config('registration.default_email');
     }
     
     /**
@@ -209,8 +212,16 @@ class LdapConnector implements LdapConnectorInterface
             $data['telephoneNumber'] = array();
         }
         $emails = $user->emails;
+        $default_mail = '@' . $this->default_mail;
         if($emails->isNotEmpty()) {
-            $data['mail'] = $emails->pluck('email')->unique()->all();
+            $data['mail'] = $emails->pluck('email')
+                ->unique()
+                ->filter(function ($value, $key) use($default_mail) { 
+                    return strpos($value, $default_mail) === false;
+                })->all();  
+            if(empty($data['mail'])) {
+                $data['mail'] = $emails->pluck('email')->unique()->all();
+            }
         } else {
             $data['mail'] = array();
         }
