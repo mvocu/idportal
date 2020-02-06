@@ -18,7 +18,6 @@ use App\Models\Database\ExtSource;
 use App\Models\Database\Phone;
 use App\Models\Database\Email;
 use App\Models\Database\UserExt;
-use App\Http\Resources\UserResource;
 use App\Events\UserCreatedEvent;
 use App\Events\UserUpdatedEvent;
 
