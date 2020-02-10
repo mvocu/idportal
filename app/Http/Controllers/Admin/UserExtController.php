@@ -17,7 +17,16 @@ class UserExtController extends Controller
     
     public function listUsers(Request $request)
     {
-        $users = UserExt::with(['attributes', 'attributes.attrDesc', 'extSource', 'user'])->get();
+        if($request->has('search')) {
+            $value = $request->input('search');
+            $users = UserExt::with(['attributes', 'attributes.attrDesc', 'extSource', 'user'])
+            ->whereHas('attributes', function($query) use ($value) {
+                $query->where('value', $value);
+            })
+            ->get();
+        } else {
+            $users = UserExt::with(['attributes', 'attributes.attrDesc', 'extSource', 'user'])->get();
+        }
         
         $table = tableView($users)
         ->column('Id', 'id')
