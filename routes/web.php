@@ -63,6 +63,7 @@ Route::name('admin.')
         Route::get('/user/list', 'UserController@listUsers')->name('user.list');
         Route::get('/user/show/{user}', 'UserController@showUser')->name('user.show');
         Route::get('/userext/list', 'UserExtController@listUsers')->name('userext.list'); 
+        Route::post('/userext/list', 'UserExtController@listUsers')->name('userext.list.search');
         Route::get('/userext/show/{user}', 'UserExtController@showUser')->name('userext.show');
     });
     
