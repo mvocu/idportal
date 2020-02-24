@@ -16,3 +16,19 @@
 	</div>
 </div>
 @endforeach
+<div class="row mt-1">
+	<div class="col-4">
+		Created
+	</div>
+	<div class="col-8">
+		{{ $user->created_at }}
+	</div>
+</div>
+<div class="row mt-1">
+	<div class="col-4">
+		Modified
+	</div>
+	<div class="col-8">
+		{{ $user->updated_at }}
+	</div>
+</div>
