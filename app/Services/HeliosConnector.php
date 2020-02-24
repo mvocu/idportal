@@ -34,12 +34,12 @@ class HeliosConnector extends AbstractExtSourceConnector implements ExtSourceCon
     {
         $response = $this->client->get('ucty/vse');
         $result = $this->parseResponse($response);
-        return collect($result)->map(function($item, $key) { return $this->makeResource($item, "oid"); });
+        return collect($result)->map(function($item, $key) { return $this->makeResource($item, "id_kos_is"); });
     }
 
     public function getUser(ExtSource $source, $id)
     {
-        return $this->makeResource($this->parseResponse($this->client->get('ucty/detail/o' . $id)), "oid");
+        return $this->makeResource($this->parseResponse($this->client->get('ucty/detail/o' . $id)), "id_kos_is");
     }
 
     public function supportsUserListing(ExtSource $source)
