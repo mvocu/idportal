@@ -27,7 +27,7 @@ class UserExtController extends Controller
     {
         $this->user_ext_mgr = $user_ext_mgr;
         $this->ext_source_mgr = $ext_source_mgr;
-        $this->middleware('auth');
+        $this->middleware(['auth.oidc:MojeID', 'auth']);
     }
     
     public function showAddUserExtForm(Request $request, User $user, ExtSource $source)

@@ -17,6 +17,7 @@ Route::get('/', function () {
 
 Auth::routes();
 
+
 Route::post('/password/send', 'Auth\ForgotPasswordController@sendResetCode')->name('password.send');
 // ...redirects to...
 Route::get('/password/token', 'Auth\ResetPasswordController@showResetForm')->name('password.token');
@@ -31,21 +32,23 @@ Route::post('/activate/activate', 'Auth\ActivateController@activate')->name('act
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('/ext/account/ask/{user}/{source}', 'UserExtController@showAddUserExtForm')->name('ext.account.ask');
-
-Route::post('/ext/account/add/{user}/{source}', 'UserExtController@addUserExt')->name('ext.account.add');
-
-Route::get('/ext/account/show/{user}/{source}', 'UserExtController@showUserExtForm')->name('ext.account.show');
-
-Route::post('/ext/account/modify/{user_ext}/{action}', 'UserExtController@modifyUserExt')->name('ext.account.modify');
-
-Route::get('/ext/account/remove/{user_ext}', 'UserExtController@removeUserExt')->name('remove.oidc');
+Route::name('ext.account.')
+    ->prefix('ext/account')
+    ->group(function() {
+        Route::get('/ask/{user}/{source}', 'UserExtController@showAddUserExtForm')->name('ask');
+        Route::post('/add/{user}/{source}', 'UserExtController@addUserExt')->name('add');
+        Route::get('/show/{user}/{source}', 'UserExtController@showUserExtForm')->name('show');
+        Route::post('/modify/{user_ext}/{action}', 'UserExtController@modifyUserExt')->name('modify');
+        Route::get('/remove/{user_ext}', 'UserExtController@removeUserExt')->name('remove');
+    });
 
 Route::get('/register/oidc/{client}', 'Auth\OidcRegisterController@show')->name('register.oidc');
 
 Route::post('/register/oidc/{client}', 'Auth\OidcRegisterController@register')->name('register.oidc.create');
 
 Route::post('/add/oidc/{client}', 'Auth\OidcRegisterController@add')->name('register.oidc.add');
+
+Route::get('/login/oidc/{client}', 'Auth\LoginController@loginOidc')->name('login.oidc');
 
 Route::get('/logout/oidc/{client}', function($client) { 
         Auth::guard($client)->logout();
@@ -73,7 +76,9 @@ Route::get('/mojeid/info', function() { return response()->json([
     'https://cas.mestouvaly.cz/register/oidc/MojeID',
     'https://cas.mestouvaly.cz/password/oidc/MojeID',
     'https://cas.mestouvaly.cz/add/oidc/MojeID',
+    'https://cas.mestouvaly.cz/login/oidc/MojeID',
     'https://localhost:8000/register/oidc/MojeID',
     'https://localhost:8000/password/oidc/MojeID',
-    'https://localhost:8000/add/oidc/MojeID'
+    'https://localhost:8000/add/oidc/MojeID',
+    'https://localhost:8000/login/oidc/MojeID'
 ]); } );
