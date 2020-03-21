@@ -75,7 +75,7 @@
                                 <div class="col-xs-3">mail {{ empty($account['email']) ? "" : $account['email'] }}</div>
 					@if (isset($account['user_ext']))
 								<div class="col-xs-1">
-									<a href="{{ route('remove.oidc', [ 'user_ext' =>  $account['user_ext'] ] ) }}" class="pull-right btn btn-sm btn-small btn-danger"><span class="fa fa-remove">&nbsp;</span></a>
+									<a href="{{ route('ext.account.remove', [ 'user_ext' =>  $account['user_ext'] ] ) }}" class="pull-right btn btn-sm btn-small btn-danger"><span class="fa fa-remove">&nbsp;</span></a>
 									<a href="{{ route('ext.account.show', [ 'user' => $user->getDatabaseUser(), 'source' => $account_id ] ) }}" class="pull-right btn btn-sm btn-small btn-default"><span class="fa fa-search-plus">&nbsp;</span></a>
 								</div>
 					@endif								

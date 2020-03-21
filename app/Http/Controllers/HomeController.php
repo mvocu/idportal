@@ -25,7 +25,7 @@ class HomeController extends Controller
     {
         $this->user_ext_mgr = $user_ext_mgr;
         $this->consent_mgr = $consent_mgr;
-        $this->middleware('auth');
+        $this->middleware(['auth.oidc:MojeID', 'auth']);
     }
 
     /**
