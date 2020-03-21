@@ -75,5 +75,6 @@ Route::get('/mojeid/info', function() { return response()->json([
     'https://cas.mestouvaly.cz/add/oidc/MojeID',
     'https://localhost:8000/register/oidc/MojeID',
     'https://localhost:8000/password/oidc/MojeID',
-    'https://localhost:8000/add/oidc/MojeID'
+    'https://localhost:8000/add/oidc/MojeID',
+    'https://localhost:8000/login/oidc/MojeID'
 ]); } );
