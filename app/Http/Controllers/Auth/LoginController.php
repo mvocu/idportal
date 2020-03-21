@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Interfaces\ExtSourceManager;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-
+use Illuminate\Http\Request;
+use App\Interfaces\LdapConnector;
 
 class LoginController extends Controller
 {
@@ -21,6 +23,9 @@ class LoginController extends Controller
 
     use AuthenticatesUsers;
 
+    protected $ext_source_mgr;
+    protected $ldap_mgr;
+    
     /**
      * Where to redirect users after login.
      *
@@ -33,11 +38,28 @@ class LoginController extends Controller
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(ExtSourceManager $ext_source_mgr, LdapConnector $ldap_mgr)
     {
-        $this->middleware('guest')->except('logout');
+        $this->middleware('guest')->except(['logout', 'loginOidc']);
+        $this->middleware('oidc')->only('loginOidc');
+        $this->ext_source_mgr = $ext_source_mgr;
+        $this->ldap_mgr = $ldap_mgr;
     }
 
+    /**
+     * @Override
+     *
+     */
+    public function showLoginForm()
+    {
+        return view('auth.login', [ 'idp' => $this->ext_source_mgr->listAuthenticators()->pluck('name') ]);
+    }
+    
+    public function loginOidc(Request $request, $client)
+    {
+        return redirect()->intended($this->redirectPath());
+    }
+    
     /**
      * @Override
      *
@@ -45,4 +67,5 @@ class LoginController extends Controller
     public function username() {
 	    return 'uid';
     }
+
 }
