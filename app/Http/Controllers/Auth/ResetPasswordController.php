@@ -44,8 +44,9 @@ class ResetPasswordController extends Controller
     {
         $this->ldap_mgr = $ldap_mgr;
         
-        $this->middleware('guest');
+        $this->middleware('guest')->except('resetOidc');
         $this->middleware('oidc')->only(['showOidcForm']);
+        $this->middleware('auth.oidc')->only('resetOidc');
     }
     
     /**
@@ -80,9 +81,10 @@ class ResetPasswordController extends Controller
     
     public function resetOidc(Request $request, $client)
     {
-        $oidc_user = Auth::guard($client)->user();
-        $idp_s = $this->getExtSource($client);
-        $auth_user = $this->ldap_mgr->findUserByExtSource($idp_s, $oidc_user->getAuthIdentifier());
+        // $oidc_user = Auth::guard($client)->user();
+        // $idp_s = $this->getExtSource($client);
+        // $auth_user = $this->ldap_mgr->findUserByExtSource($idp_s, $oidc_user->getAuthIdentifier());
+        $auth_user = Auth::user();
         $this->validate($request, $this->rules(), $this->validationErrorMessages());
         $credentials = $this->credentials($request);
         try {

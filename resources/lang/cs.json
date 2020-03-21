@@ -77,7 +77,8 @@
   "New account requested": "Nová žádost o účet",
   "User :user asks for account at :source": "Uživatel :user žádá o účet v :source",
   "List of users": "Seznam uživatelů",
-  "User detail - :user": "Podrobnosti o uživateli - :user", 
+  "User detail - :user": "Podrobnosti o uživateli - :user",
+  "Login using": "Přihlášení pomocí",
 	  
   "Helios Energo" : "Vodné a stočné",
   "Ginis" : "Poplatky za odpad a psa",
