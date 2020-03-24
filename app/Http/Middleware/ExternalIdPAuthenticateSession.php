@@ -34,8 +34,7 @@ class ExternalIdPAuthenticateSession
         if(!empty($client_name)) {
             # if there is a user token stored in session, get the user
             if(!is_null($user = $this->auth->guard($client_name)->user())) {
-                $auth_user = $this->findExternalAccount($user, $client);
-                $idp_s = $this->getExtSource($client_name);
+                $auth_user = $this->findExternalAccount($user, $client_name);
                 if(is_null($auth_user)) {
                     $this->auth->guard($client_name)->logout();
                 } else {
