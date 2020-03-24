@@ -16,14 +16,8 @@
                     @endif
 
 					@if ($invalid->has('failure'))
-					    <div class="alert alert-info" role="alert">
-    						{{ $invalid->first('failure') }}
-    					</div>
-					@endif
-
-					@if (!$invalid->isEmpty())
 					    <div class="alert alert-danger" role="alert">
-    						{{ $invalid->first() }}
+    						{{ $invalid->first('failure') }}
     					</div>
 					@endif
 
