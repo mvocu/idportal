@@ -40,12 +40,24 @@ class OidcRegisterController extends Controller
         $attributes =  $this->user_ext_mgr->mapUserAttributes($idp_s, $user->getResource());
         $data = $user->getAttributes();
         if(is_null($auth_user)) {
-            $validator = $this->validator($data);
-            $validator->passes();
             if(!is_null($euser)) {
+                # this external identity already has been registered, redirect home 
+                return redirect()->route('home')
+                        ->with('status', __('Your external account has already been registered.'));
+            }
+            $validator = $this->validator($data);
+            if(!$validator->passes()) {
+                $failed = $validator->failed();
+                if(array_key_exists('email', $failed) && array_key_exists('Unique', $failed['email']) ||
+                    array_key_exists('phone_number', $failed) &&  array_key_exists('Unique', $failed['phone_number'])) {
+                        return view('auth.oidc', [ 'idp' => $client, 'attributes' => $attributes,
+                            'invalid' => $validator->errors()
+                            ->add('failure', __("There already is an account using these contacts. Please login and add external identity."))
+                        ]);
+                }
                 return view('auth.oidc', [ 'idp' => $client, 'attributes' => $attributes, 
                     'invalid' => $validator->errors()
-                        ->add('failure', __("User already registered. Please log in and add external identity to your account."))
+                        ->add('failure', __("External account can not be registered, it contains invalid data."))
                 ]);
             }
         } else {
@@ -58,7 +70,7 @@ class OidcRegisterController extends Controller
         return view('auth.oidc', [ 
             'idp' => $client, 
             'attributes' => $attributes, 
-            'invalid' => is_null($auth_user) ? $validator->errors() : new MessageBag(), 
+            'invalid' => new MessageBag(), 
             'user' => $auth_user 
         ]);   
     }
