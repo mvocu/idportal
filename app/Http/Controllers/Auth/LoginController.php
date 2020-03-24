@@ -7,6 +7,9 @@ use App\Interfaces\ExtSourceManager;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use App\Interfaces\LdapConnector;
+use Illuminate\Support\MessageBag;
+use Illuminate\Support\Facades\Auth;
+use App\Traits\FindsExternalAccount;
 
 class LoginController extends Controller
 {
@@ -21,10 +24,9 @@ class LoginController extends Controller
     |
     */
 
-    use AuthenticatesUsers;
+    use AuthenticatesUsers, FindsExternalAccount;
 
     protected $ext_source_mgr;
-    protected $ldap_mgr;
     
     /**
      * Where to redirect users after login.
@@ -57,6 +59,11 @@ class LoginController extends Controller
     
     public function loginOidc(Request $request, $client)
     {
+        $auth_user = $this->findExternalAccount(Auth::guard($client)->user(), $client);
+        if(is_null($auth_user)) {
+            return redirect()->back()
+                ->withErrors(['failure' => __('External identity is not registered.')]);
+        }
         return redirect()->intended($this->redirectPath());
     }
     
@@ -67,5 +74,5 @@ class LoginController extends Controller
     public function username() {
 	    return 'uid';
     }
-
+    
 }
