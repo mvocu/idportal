@@ -56,6 +56,12 @@ class LdapConnector implements LdapConnectorInterface
         }
         $ndata = array_filter($data, function($el) { return !empty($el); });
         $ldapuser = $this->ldap->getProvider('admin')->make()->user($ndata);
+        $schema = $this->ldap->getProvider('admin')->getSchema();
+        $objclass = $ldapuser->getAttribute($schema->objectClass());
+        if(!in_array('eduperson', $objclass)) {
+            array_push($objclass, 'eduperson');
+            $ldapuser->setAttribute($schema->objectClass(), $objclass);
+        }
         $ldapuser->save();
         event(new LdapUserCreatedEvent($ldapuser->getDn()));
         return $ldapuser;
@@ -89,7 +95,13 @@ class LdapConnector implements LdapConnectorInterface
     {
         $this->ext_sources = ExtSource::all();
         $entry = $this->ldap->getProvider('admin')->search()->findByDn($this->buildDN($user));
+        $schema = $this->ldap->getProvider('admin')->getSchema();
         if($entry == null) return null;
+        $objclass = $entry->getAttribute($schema->objectClass());
+        if(!in_array('eduperson', $objclass)) {
+            array_push($objclass, 'eduperson');
+            $entry->setAttribute($schema->objectClass(), $objclass);
+        }
         $data = $this->_mapUser($user);
         $entry->fill($data);
         $entry->save();
