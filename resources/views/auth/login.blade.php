@@ -76,7 +76,7 @@
                     </form>
                 </div>
                 
-				<div class="panel-header">
+				<div class="panel-heading">
 					{{ __('Login using') }}:
 				</div>
 
