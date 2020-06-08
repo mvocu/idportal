@@ -5,6 +5,8 @@ use App\Interfaces\ExtSourceConnector;
 use App\Models\Database\ExtSource;
 use Adldap\Adldap;
 use Adldap\AdldapException;
+use Adldap\Utilities;
+use Illuminate\Support\Str;
 
 class ADConnector extends AbstractExtSourceConnector implements ExtSourceConnector
 {
@@ -45,6 +47,7 @@ class ADConnector extends AbstractExtSourceConnector implements ExtSourceConnect
     public function listUsers(\App\Models\Database\ExtSource $source)
     {
         try {
+            $groups = $this->listGroups($source);
             $results = $this->ad->search()->select('*')
                 ->where([
                     ['objectclass', '=', 'person'  ],
@@ -57,7 +60,33 @@ class ADConnector extends AbstractExtSourceConnector implements ExtSourceConnect
             return null;
         }
         $this->lastStatus = null;
-        return $results->map(function($item, $key) { return $this->mapResult($item->getAttributes()); });
+        return $results->map(function($item, $key) use ($groups) { 
+            $attrs = $item->getAttributes();
+            $attrs['dn'] = $item->getDn();
+            return $this->mapResult($attrs, $groups); 
+        });
+    }
+    
+    public function listGroups(ExtSource $source)
+    {
+        try {
+            $results = $this->ad->search()->select('*')
+                ->where('objectclass', '=', 'group')
+                ->get();
+        } catch (AdldapException $e) {
+            $this->lastStatus = $e->getMessage();
+            return null;
+        }
+        $this->lastStatus = null;
+        return $results->map(function($item, $key) { 
+            $members = $item->getAttribute('member');
+            if(is_array($members)) {
+                $members = array_map(function($val) { return Str::lower($val); } , $members);
+            } else {
+                $members = [];
+            }
+            return [ $item->getFirstAttribute('cn') => $members ];
+        });
     }
 
     /**
@@ -69,7 +98,13 @@ class ADConnector extends AbstractExtSourceConnector implements ExtSourceConnect
         return true;
     }
 
-    protected function mapResult($entry) {
+    public function supportsGroupListing(ExtSource $source)
+    {
+        return true;    
+    }
+    
+    
+    protected function mapResult($entry, $groups) {
         $result = [];
         foreach($this->attribute_names as $name) {
             if(empty($entry[$name])) continue;
@@ -90,6 +125,12 @@ class ADConnector extends AbstractExtSourceConnector implements ExtSourceConnect
                 $result['proxyaddresses'][] = $parts[1];
             }
         }
+        $dn = Str::lower($entry['dn']);
+        $u_groups = $groups
+            ->filter(function($item, $key) use($dn) { return array_search($dn, array_values($item)[0]); })
+            ->map(function($item, $key) { return array_keys($item)[0]; })
+            ->toArray();
+        $result['groups'] = $u_groups;
         return $this->makeResource($result, 'samaccountname');
     }
 }
