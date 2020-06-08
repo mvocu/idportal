@@ -260,6 +260,7 @@ class LdapConnector implements LdapConnectorInterface
         }
 
         $accounts = $user->accounts;
+        $data['edupersonentitlement'] = array();
         if($accounts->isNotEmpty()) {
             foreach($accounts as $account) {
                 $login = $account->login;
@@ -268,6 +269,15 @@ class LdapConnector implements LdapConnectorInterface
                     $data['employeeNumber;x-'.$name] = $login;
                 } else {
                     $data['employeeNumber;x-'.$name] = null;
+                }
+            }
+            if($account->ext_source_id == 2) {
+                $groups = $account->attributes()
+                        ->where('ext_source_attribute_id', 96)
+                        ->get()
+                        ->pluck('value');
+                if($groups->contains('webtsu')) {
+                    $data['edupersonentitlement'] = 'urn:mestouvaly.cz:groups:webtsu';
                 }
             }
         }
