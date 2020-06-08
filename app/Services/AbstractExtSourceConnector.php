@@ -68,6 +68,17 @@ abstract class AbstractExtSourceConnector implements ExtSourceConnector
         return $source->editable;        
     }
 
+
+    public function listGroups(ExtSource $source)
+    {
+        return;    
+    }
+    
+    public function supportsGroupListing(ExtSource $source)
+    {
+        return false;
+    }
+    
     protected function makeResource($data, $key, $parent_attr = null, $trust_level = null) {
         if(array_key_exists($key, $data)) {
             $id = $data[$key];

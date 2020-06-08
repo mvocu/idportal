@@ -13,7 +13,11 @@ interface ExtSourceConnector
     
     public function listUsers(ExtSource $source);
     
+    public function listGroups(ExtSource $source);
+    
     public function supportsUserListing(ExtSource $source);
+    
+    public function supportsGroupListing(ExtSource $source);
     
     public function validateUpdate(ExtSource $source, $data, &$validator);
     
