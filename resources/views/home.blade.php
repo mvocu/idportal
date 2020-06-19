@@ -34,6 +34,7 @@
                     		<div class="col-8">{{ empty($user->getTelephoneNumber()) ? "" : implode(",", $user->telephonenumber) }}</div>
                     	</div>
               	</div>
+
                 <div class="card-body">
 					@foreach ($accounts as $account_id => $account)
 					@if (!$account['idp'])
@@ -97,5 +98,28 @@
             </div>
         </div>
     </div>
+    
+	@if (isset($children))
+    <div class="row justify-content-center mt-2">
+		<div class="col-md-8">
+			<div class="card">
+				<div class="card-header">{{ __('Managed accounts') }}</div>
+				
+				<div class="card-body">
+				@foreach ($children as $child)
+					<div class="row">
+						<div class="col-2">{{ $child->getFirstAttribute('uid') }}</div>
+						<div class="col-3">{{ $child->getCommonName() }}</div>
+						<div class="col-3"></div>
+						<div class="col-3"></div>
+					</div>
+				@endforeach
+				</div>
+				
+			</div>
+		</div>
+    </div>
+    @endif
+    
 </div>
 @endsection

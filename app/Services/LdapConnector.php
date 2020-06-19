@@ -43,6 +43,7 @@ class LdapConnector implements LdapConnectorInterface
         return null;
     }
 
+    
     /**
      * {@inheritDoc}
      * @see \App\Interfaces\LdapConnector::createUser()
@@ -189,6 +190,15 @@ class LdapConnector implements LdapConnectorInterface
         $query = $this->ldap->search()->rawFilter('(employeenumber;x-'.$name.'='.$id.')');
         $result = $query->get()->first();
         return $result;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\LdapConnector::listChildren()
+     */
+    public function listChildren(LdapUser $user)
+    {
+        return $this->ldap->search()->where('manager', $user->getDn())->get();
     }
 
     protected function _mapUser(User $user) {
