@@ -98,5 +98,28 @@
             </div>
         </div>
     </div>
+    
+	@if (isset($children))
+    <div class="row justify-content-center mt-2">
+		<div class="col-md-8">
+			<div class="panel panel-default">
+				<div class="panel-heading">{{ __('Managed accounts') }}</div>
+				
+				<div class="panel-body">
+				@foreach ($children as $child)
+					<div class="row">
+						<div class="col-xs-2">{{ $child->getFirstAttribute('uid') }}</div>
+						<div class="col-xs-3">{{ $child->getCommonName() }}</div>
+						<div class="col-xs-3"></div>
+						<div class="col-xs-3"></div>
+					</div>
+				@endforeach
+				</div>
+				
+			</div>
+		</div>
+    </div>
+    @endif
+    
 </div>
 @endsection

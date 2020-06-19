@@ -42,7 +42,7 @@ class UserExtManager implements UserExtManagerInterface
     public function createUserWithAttributes(ExtSource $source, ExtUserResource $data): UserExt
     {
         $user = new UserExt();
-        $user->fill([ 'login' => $data->getId(), 'active' => $data->isActive() ]);
+        $user->fill([ 'login' => $data->getId(), 'active' => $data->isActive(), 'parent' => $data->getParent() ]);
         $user->extSource()->associate($source);
         $user->trust_level = $data->getTrustLevel($source);
         
