@@ -270,16 +270,16 @@ class LdapConnector implements LdapConnectorInterface
                 } else {
                     $data['employeeNumber;x-'.$name] = null;
                 }
-            }
-            if($account->ext_source_id == 2) {
-                $groups = $account->attributes()
+                if($account->ext_source_id == 2) {
+                   $groups = $account->attributes()
                         ->where('ext_source_attribute_id', 96)
                         ->get()
                         ->pluck('value');
-                if($groups->contains('webtsu')) {
-                    $data['edupersonentitlement'] = 'urn:mestouvaly.cz:groups:webtsu';
+                   if($groups->contains('webtsu')) {
+                       $data['edupersonentitlement'] = 'urn:mestouvaly.cz:groups:webtsu';
+                   }
                 }
-            }
+	    }
         }
         if(!empty($this->ext_sources)) {
             foreach($this->ext_sources as $source) {
