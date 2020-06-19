@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Interfaces\UserExtManager;
 use App\Models\Database\ExtSource;
 use App\Interfaces\ConsentManager;
+use Adldap\AdldapInterface;
+use App\Interfaces\LdapConnector;
 
 class HomeController extends Controller
 {
@@ -16,15 +18,18 @@ class HomeController extends Controller
     
     protected $consent_mgr;
     
+    protected $ldap_mgr; 
+    
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(UserExtManager $user_ext_mgr, ConsentManager $consent_mgr)
+    public function __construct(UserExtManager $user_ext_mgr, ConsentManager $consent_mgr, LdapConnector $ldap_mgr)
     {
         $this->user_ext_mgr = $user_ext_mgr;
         $this->consent_mgr = $consent_mgr;
+        $this->ldap_mgr = $ldap_mgr;
         $this->middleware(['auth.oidc:MojeID', 'auth']);
     }
 
@@ -59,6 +64,7 @@ class HomeController extends Controller
                 if(array_key_exists('emails', $data)) $accounts[$account->extSource->id]['email'] = $data['emails'][0]['email'];
             }
         }
-        return view('home', ['user' => Auth::user(), 'accounts' => $accounts ]);
+        return view('home', ['user' => Auth::user(), 'accounts' => $accounts, 
+            'children' => $this->ldap_mgr->listChildren(Auth::user()) ]);
     }
 }

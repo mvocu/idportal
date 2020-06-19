@@ -46,7 +46,7 @@ class ExtUserResource extends Resource implements ExtUserResourceInterface
         if(is_array($this->resource)) {
             return $this->resource['parent']; 
         } elseif ($this->resource instanceof UserExt) {
-            $this->resource->parent_id;
+            $this->resource->parent;
         } else {
             return null;
         }
