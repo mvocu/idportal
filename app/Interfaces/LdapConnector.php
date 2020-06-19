@@ -31,5 +31,7 @@ interface LdapConnector
     public function changePassword(LdapUser $user, $password);
     
     public function findUserByExtSource(ExtSource $source, $id);
+    
+    public function listChildren(LdapUser $user);
 }
 

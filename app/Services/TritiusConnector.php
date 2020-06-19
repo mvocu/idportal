@@ -40,12 +40,8 @@ class TritiusConnector extends AbstractExtSourceConnector implements ExtSourceCo
             $users = is_null($users) ? collect($result['results']) : $users->concat($result['results']);
         }
         $valid_users = $users->filter(function($item, $key) { return !empty($item['username']) && !empty($item['note']); });
-        $readercode_map = $valid_users->mapWithKeys(function($item) { return [ $item['readerNumber'] => $item['username']]; });
-        return $valid_users->map(function($item, $key) use ($readercode_map) { 
-            if(array_key_exists('parent_code', $item)) {
-                $item['parent_username'] = $readercode_map->get($item['parent_code']);
-            }
-            return $this->makeResource($item, "username", "parent_username"); 
+        return $valid_users->map(function($item, $key) { 
+            return $this->makeResource($item, "username", "parent"); 
         });
     }
 
@@ -93,7 +89,7 @@ class TritiusConnector extends AbstractExtSourceConnector implements ExtSourceCo
                 $note = explode(';', $item['note']);
                 $item['note'] = $note[0];
                 if(count($note) > 1) { 
-                    $item['parent_code'] = $note[1];
+                    $item['parent'] = $note[1];
                 }
             }
         }

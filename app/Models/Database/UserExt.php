@@ -10,7 +10,7 @@ class UserExt extends Model
 
     protected $table = 'user_ext';
     
-    protected $fillable = ['login', 'active'];
+    protected $fillable = ['login', 'active', 'parent'];
     
     protected $hidden = ['user', 'extSource'];
     
@@ -26,8 +26,4 @@ class UserExt extends Model
         return $this->belongsTo('App\Models\Database\User', 'user_id');
     }
 
-    public function parent() {
-        return $this->belongsTo('App\Models\Database\UserExt', 'parent_id');
-    }
-    
 }
