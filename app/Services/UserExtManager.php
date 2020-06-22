@@ -142,6 +142,13 @@ class UserExtManager implements UserExtManagerInterface
                 $modified = true;
             }
             
+            // check for modified parent
+            if($user->parent != $data->getParent()) {
+                $user->parent = $data->getParent();
+                $user->save();
+                $modified = true;
+            }
+            
         });
 
         if ($modified) {
