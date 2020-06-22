@@ -70,6 +70,10 @@ class UserManager implements UserManagerInterface
     
     public function createUserWithContacts(UserExt $user_ext, array $data): User 
     {
+        if(!$this->validateCreate($user, $data)) {
+            $data = $this->getValidData();
+        }
+        
         $user = new User();
         $user->fill($data);
         $user->createdBy()->associate($user_ext);
@@ -276,6 +280,67 @@ class UserManager implements UserManagerInterface
         ->join('ext_sources', 'ext_sources.id', '=', 'user_ext.ext_source_id')
         ->max('ext_sources.trust_level');
         return $trust_level;
+    }
+
+    public function validateCreate(User $user, $user_ext_data) : bool {
+        $requirements = $this->updateRequirements;
+        //'phones.*.phone' => 'required|phone|unique:contact,phone',
+        $requirements['phones.*.phone'] = [
+            'required',
+            'phone',
+            Rule::unique('contact', 'phone')
+        ];
+        //'emails.*.email' => 'required|email|unique:contact,email',
+        $requirements['emails.*.email'] = [
+            'required',
+            'email',
+            Rule::unique('contact', 'email')
+        ];
+        //'dataBox' => 'sometimes|required|unique:contact,databox',
+        $requirements['dataBox'] = [
+            'sometimes',
+            'required',
+            Rule::unique('contact', 'databox')
+        ];
+        //'birth_code' => [ 'sometimes', 'required', 'regex:/\d{9,10}/', 'unique:user,birth_code' ],
+        $requirements['birth_code'] =  [
+            'sometimes',
+            'required',
+            'regex:/\d{9,10}',
+            Rule::unique('user', 'birth_code')
+        ];
+        if(array_key_exists('residency', $user_ext_data)) {
+            $requirements['residency.org_number'] = [
+                'required_without:residency.ev_number',
+                'integer'
+            ];
+            $requirements['residency.ev_number'] = [
+                'required_without:residency.org_number',
+                'string'
+            ];
+        }
+        if(array_key_exists('address', $user_ext_data)) {
+            $requirements['address.org_number'] = [
+                'required_without:address.ev_number',
+                'integer'
+            ];
+            $requirements['address.ev_number'] = [
+                'required_without:address.org_number',
+                'string'
+            ];
+        }
+        if(array_key_exists('addressTmp', $user_ext_data)) {
+            $requirements['addressTmp.org_number']  = [
+                'required_without:addressTmp.ev_number',
+                'integer'
+            ];
+            $requirements['addressTmp.ev_number'] = [
+                'required_without:addressTmp.org_number',
+                'string'
+            ];
+        }
+        $this->validator = Validator::make($user_ext_data, $requirements);
+        return $this->validator->passes();
     }
 
     public function validateUpdate(User $user, $user_ext_data) : bool {
