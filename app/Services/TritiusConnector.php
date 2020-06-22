@@ -87,9 +87,9 @@ class TritiusConnector extends AbstractExtSourceConnector implements ExtSourceCo
         foreach($result['results'] as $key => $item) {
             if(!empty($item['note'])) {
                 $note = explode(';', $item['note']);
-                $item['note'] = $note[0];
+                $result['results'][$key]['note'] = $note[0];
                 if(count($note) > 1) { 
-                    $item['parent'] = $note[1];
+                    $result['results'][$key]['parent'] = $note[1];
                 }
             }
         }
