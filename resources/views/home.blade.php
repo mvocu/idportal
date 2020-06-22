@@ -102,7 +102,7 @@
     
 	@if (isset($children))
     <div class="row justify-content-center mt-2">
-		<div class="col-md-8">
+		<div class="col-md-10 col-md-offset-1">
 			<div class="panel panel-default">
 				<div class="panel-heading">{{ __('Managed accounts') }}</div>
 				

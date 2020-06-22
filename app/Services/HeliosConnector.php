@@ -44,7 +44,7 @@ class HeliosConnector extends AbstractExtSourceConnector implements ExtSourceCon
 
     public function supportsUserListing(ExtSource $source)
     {
-        return false;
+        return true;
     }
 
     protected function parseResponse($response) {
