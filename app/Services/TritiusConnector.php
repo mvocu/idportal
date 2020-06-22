@@ -89,7 +89,7 @@ class TritiusConnector extends AbstractExtSourceConnector implements ExtSourceCo
                 $note = explode(';', $item['note']);
                 $result['results'][$key]['note'] = $note[0];
                 if(count($note) > 1) { 
-                    $result['results'][$key]['parent'] = $note[1];
+                    $result['results'][$key]['parent'] = json_encode(['email' => $note[1]]);
                 }
             }
         }
