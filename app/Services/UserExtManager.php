@@ -23,7 +23,12 @@ class UserExtManager implements UserExtManagerInterface
      */
     public function getUserResource(UserExt $user_ext): UserResource
     {
-        return new UserResource($user_ext);
+        $euser_r = new UserResource($user_ext);
+        if(!empty($user_ext->parent)) {
+            $parent_data = $this->mapUserAttributes($user_ext->extSource, json_decode($user_ext->parent));
+            $euser_r->setParent($parent_data);
+        }
+        return $euser_r;
     }
 
     /**
@@ -237,13 +242,17 @@ class UserExtManager implements UserExtManagerInterface
      * {@inheritDoc}
      * @see \App\Interfaces\UserExtManager::mapUSerAttributes()
      */
-    public function mapUserAttributes(ExtSource $source, ExtUserResource $data)
+    public function mapUserAttributes(ExtSource $source, $data)
     {
         $attrDefs = $this->getAttrDefs($source);
 
         $result = array();
+    
+        if($data instanceof ExtUserResource) {
+            $data = $data->toArray(null);    
+        }
         
-        foreach($data->toArray(null) as $name => $values) {
+        foreach($data as $name => $values) {
             if (! array_key_exists($name, $attrDefs))
                 continue;
                 $attrDef = $attrDefs[$name];
@@ -258,6 +267,7 @@ class UserExtManager implements UserExtManagerInterface
                         continue;
                     $result[$name] = [ 
                         'name' => $name, 
+                        'core_name' => $attrDef->core_name,
                         'display' => $attrDef->display_name, 
                         'order' => $attrDef->display_order, 
                         'value' => $value 
