@@ -9,11 +9,11 @@ use App\Models\Database\ExtSource;
 
 interface UserManager
 {
-    public function createUserWithContacts(UserExt $user_ext, array $data): User;
+    public function createUserWithContacts(UserExt $user_ext, array $data, User $parent): User;
    
     public function findUser(array $data): Collection;
     
-    public function updateUserWithContacts(User $user, UserExt $user_ext, array $data): User;
+    public function updateUserWithContacts(User $user, UserExt $user_ext, array $data, User $parent): User;
     
     public function mergeUserWithContacts(User $source, User $dest);
     

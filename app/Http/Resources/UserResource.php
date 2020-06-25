@@ -10,6 +10,8 @@ use App\Models\Database\User;
 
 class UserResource extends JsonResource
 {
+    protected $parent;
+    
     /**
      * Transform the resource into an array:
      *  - keys are names of the core attributes (as per ext_sources_attributes.core_name)
@@ -31,39 +33,9 @@ class UserResource extends JsonResource
                 $value = trim($attr->value);
                 if(empty($name) || empty($value))
                     continue;
-                $names = explode(".", $name);
-                if (count($names) == 1) {
-                    // single top-level attribute
-                    $result[$name] = $value;
-                } else {
-                    if($names[1] == 'phone')
-                        $value = $this->_normalizePhone($value);
-                    // attribute of some relation in the form: relation[index].name
-                    if (preg_match("/([_a-zA-Z]*)\[(\d+)\]/", $names[0], $matches)) {
-                        // hasMany relation: get relation name and index
-                        $attr_name = $matches[1];
-                        $index = $matches[2];
-                        if (in_array($attr_name, Contact::$contactTypes)) {
-                            // if it is a known contact relation, store the value in sub-subarray
-                            $result[$attr_name][$index][$names[1]] = $value;
-                        }
-                    // attribute of some relation in the form: relation[].name
-                    } elseif (preg_match("/([_a-zA-Z]*)\[\]/", $names[0], $matches)) {
-                        // hasMany relation with one multivalued attribute
-                        $attr_name = $matches[1];
-                        if(in_array($attr_name, Contact::$contactTypes)) {
-                            // known contact relation, add the value into sub-subarray
-                            if(empty($result[$attr_name])) {
-                                $result[$attr_name] = array();
-                            }
-                            $result[$attr_name][] = [ $names[1] => $value ];
-                        }
-                    } else {
-                        // hasOne relation: store the value in subarray
-                        $result[$names[0]][$names[1]] = $value;
-                    }
-                }
+                $this->_mapAttribute($name, $value, $result);
             }
+            $result['parent'] = $this->parent;
             return $result;
         } elseif ($this->resource instanceof User) {
             $this->resource->load('phones', 'emails', 'addresses', 'birthPlace', 'residency', 'address', 'addressTmp', 
@@ -109,6 +81,51 @@ class UserResource extends JsonResource
         return $attributes;
     }
 
+    public function setParent($data) 
+    {
+        $result = [];
+        foreach($data as $attr) {
+            $this->_mapAttribute($attr['core_name'], $attr['value'], $result);
+        }
+        $this->parent = $result;
+    }
+    
+    protected function _mapAttribute($name, $value, &$result)
+    {
+        $names = explode(".", $name);
+        if (count($names) == 1) {
+            // single top-level attribute
+            $result[$name] = $value;
+        } else {
+            if($names[1] == 'phone')
+                $value = $this->_normalizePhone($value);
+                // attribute of some relation in the form: relation[index].name
+                if (preg_match("/([_a-zA-Z]*)\[(\d+)\]/", $names[0], $matches)) {
+                    // hasMany relation: get relation name and index
+                    $attr_name = $matches[1];
+                    $index = $matches[2];
+                    if (in_array($attr_name, Contact::$contactTypes)) {
+                        // if it is a known contact relation, store the value in sub-subarray
+                        $result[$attr_name][$index][$names[1]] = $value;
+                    }
+                    // attribute of some relation in the form: relation[].name
+                } elseif (preg_match("/([_a-zA-Z]*)\[\]/", $names[0], $matches)) {
+                    // hasMany relation with one multivalued attribute
+                    $attr_name = $matches[1];
+                    if(in_array($attr_name, Contact::$contactTypes)) {
+                        // known contact relation, add the value into sub-subarray
+                        if(empty($result[$attr_name])) {
+                            $result[$attr_name] = array();
+                        }
+                        $result[$attr_name][] = [ $names[1] => $value ];
+                    }
+                } else {
+                    // hasOne relation: store the value in subarray
+                    $result[$names[0]][$names[1]] = $value;
+                }
+        }
+    }
+    
     protected function _normalizePhone($value) 
     {
         $contact = new Contact();

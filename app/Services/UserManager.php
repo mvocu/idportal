@@ -68,7 +68,7 @@ class UserManager implements UserManagerInterface
         $this->contact_mgr = $contact_mgr;
     }
     
-    public function createUserWithContacts(UserExt $user_ext, array $data): User 
+    public function createUserWithContacts(UserExt $user_ext, array $data, User $parent): User 
     {
         if(!$this->validateCreate($user, $data)) {
             $data = $this->getValidData();
@@ -79,6 +79,9 @@ class UserManager implements UserManagerInterface
         $user->createdBy()->associate($user_ext);
         $user->identifier = Uuid::uuid4();
         $user->trust_level = $user_ext->trust_level;
+        if(!empty($parent)) {
+            $user->parent()->associate($parent);
+        }
         
         DB::transaction(function() use ($user, $user_ext, $data) {
 
@@ -116,7 +119,7 @@ class UserManager implements UserManagerInterface
      * {@inheritDoc}
      * @see \App\Interfaces\UserManager::updateUserWithContacts()
      */
-    public function updateUserWithContacts(User $user, UserExt $user_ext, array $data): User
+    public function updateUserWithContacts(User $user, UserExt $user_ext, array $data, User $parent): User
     {
         if(!$this->validateUpdate($user, $data)) {
             $data = $this->getValidData();
@@ -131,6 +134,12 @@ class UserManager implements UserManagerInterface
 
         if($user_ext->trust_level > $user->trust_level) {
            $user->trust_level = $user_ext->trust_level;
+        }
+
+        if(!empty($parent)) {
+            $user->parent()->associate($parent);
+        } else {
+            $user->parent_id = null;
         }
         
         DB::transaction(function() use ($user, $user_ext, $data) {

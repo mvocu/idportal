@@ -103,14 +103,22 @@ class IdentityManager implements IdentityManagerInterface
         $user = null;
         $this->validator = null;
         if($users->isEmpty()) {
+            $parent = null;
+            // check and try to find parent
+            if(!empty($user_ext->parent)) {
+                $parent_candidates = $this->user_mgr->findUser($user_ext_data['parent']);
+                if($parent_candidates->count() == 1) {
+                    $parent = $parent_candidates->first();
+                }
+            }
             // no known identity was found for this record, try to build one 
             if($this->validateIdentity($user_ext_data)) {
-                $user = $this->user_mgr->createUserWithContacts($user_ext, $user_ext_data);
+                $user = $this->user_mgr->createUserWithContacts($user_ext, $user_ext_data, $parent);
             } else {
                 // try to build identity of data that remained after validation
                 $data = $this->validator->valid();
-                if($this->validateIdentity($data)) {
-                    $user = $this->user_mgr->createUserWithContacts($user_ext, $data);
+                if(!empty($parent) || $this->validateIdentity($data)) {
+                    $user = $this->user_mgr->createUserWithContacts($user_ext, $data, $parent);
                 }
             }
         } else {
@@ -120,6 +128,17 @@ class IdentityManager implements IdentityManagerInterface
                 $data = $user_ext_data;
             } else {
                 $data = $this->user_mgr->getValidData();
+            }
+            $parent = null;
+            // check and try to find parent
+            if(!empty($user_ext->parent)) {
+                $parent_candidates = $this->user_mgr->findUser($user_ext_data['parent']);
+                $parent_candidates = $parent_candidates->filter(function($item, $key) {
+                    return $item->id != $user->id;
+                });
+                if($parent_candidates->count() == 1) {
+                    $parent = $parent_candidates->first();
+                }
             }
             if($this->validateEqualIdentity($user, $data)) {
                 // check the required trust level
@@ -136,13 +155,13 @@ class IdentityManager implements IdentityManagerInterface
 
                     if($user->confidence_level > 1) {
                         // we are pretty sure this is the same user
-                        $this->user_mgr->updateUserWithContacts($user, $user_ext, $data);
+                        $this->user_mgr->updateUserWithContacts($user, $user_ext, $data, $parent);
                     } else {
                         // the currently found identity is less trusted, create a new one 
                         if($this->validateIdentity($user_ext_data)) {
                             // this should never happen - we have found identity using this data, so the uniqueness requirement
                             // should not be fulfilled
-                            $user = $this->user_mgr->createUserWithContacts($user_ext, $user_ext_data);
+                            $user = $this->user_mgr->createUserWithContacts($user_ext, $user_ext_data, $parent);
                         } else {
                             // try to build identity of data that remained after validation
                             $data = $this->validator->valid();
