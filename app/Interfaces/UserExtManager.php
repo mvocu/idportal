@@ -26,7 +26,7 @@ interface UserExtManager
     
     public function activateUserByData(ExtSource $source, ExtUserResource $data) : ?UserExt;
     
-    public function mapUserAttributes(ExtSource $source, ExtUserResource $data);
+    public function mapUserAttributes(ExtSource $source, $data);
     
     public function removeUser(ExtSource $source, UserExt $user);
 }

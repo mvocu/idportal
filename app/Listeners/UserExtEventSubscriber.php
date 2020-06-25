@@ -45,9 +45,21 @@ class UserExtEventSubscriber implements ShouldQueue
         } else {
             // has identity, find and update user
             $data = $this->user_ext_mgr->getUserResource($user_ext)->toArray(null);
+            $parent = null;
+            // check and try to find parent
+            if(!empty($user_ext->parent) and empty($user_ext->user->parent_id)) {
+                $parent_candidates = $this->user_mgr->findUser($user_ext_data['parent']);
+                $parent_candidates = $parent_candidates->filter(function($item, $key) {
+                    return $item->id != $user_ext->user_id;
+                });
+                if($parent_candidates->count() == 1) {
+                        $parent = $parent_candidates->first();
+                }
+            }
             $this->user_mgr->updateUserWithContacts($user_ext->user, 
                                                     $user_ext, 
-                                                    $data);
+                                                    $data,
+                                                    $parent);
         }
         return true;
     }
