@@ -166,7 +166,7 @@ class IdentityManager implements IdentityManagerInterface
                             // try to build identity of data that remained after validation
                             $data = $this->validator->valid();
                             if($this->validateIdentity($data)) {
-                                $user = $this->user_mgr->createUserWithContacts($user_ext, $data);
+                                $user = $this->user_mgr->createUserWithContacts($user_ext, $data, $parent);
                             } else {
                                 $user = null;
                             }
@@ -177,7 +177,10 @@ class IdentityManager implements IdentityManagerInterface
                     // update user with new data
                     $this->user_mgr->updateUserWithContacts($user, $user_ext, $data);
                 }
-                
+            } elseif (!empty($parent) and $user->id == $parent->id) {
+                // child record contains the same contact data as parent
+                // they will be filtered out by UserManager
+                $user = $this->user_mgr->createUserWithContacts($user_ext, $user_ext_data, $parent);
             } else {
                 $user = null;
             }

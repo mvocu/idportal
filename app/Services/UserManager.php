@@ -68,7 +68,7 @@ class UserManager implements UserManagerInterface
         $this->contact_mgr = $contact_mgr;
     }
     
-    public function createUserWithContacts(UserExt $user_ext, array $data, User $parent): User 
+    public function createUserWithContacts(UserExt $user_ext, array $data, $parent): User 
     {
         if(!$this->validateCreate($user, $data)) {
             $data = $this->getValidData();
@@ -119,7 +119,7 @@ class UserManager implements UserManagerInterface
      * {@inheritDoc}
      * @see \App\Interfaces\UserManager::updateUserWithContacts()
      */
-    public function updateUserWithContacts(User $user, UserExt $user_ext, array $data, User $parent): User
+    public function updateUserWithContacts(User $user, UserExt $user_ext, array $data, $parent): User
     {
         if(!$this->validateUpdate($user, $data)) {
             $data = $this->getValidData();
