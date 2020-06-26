@@ -48,13 +48,15 @@ class UserExtEventSubscriber implements ShouldQueue
             $parent = null;
             // check and try to find parent
             if(!empty($user_ext->parent) and empty($user_ext->user->parent_id)) {
-                $parent_candidates = $this->user_mgr->findUser($user_ext_data['parent']);
+                $parent_candidates = $this->user_mgr->findUser($data['parent']);
                 $parent_candidates = $parent_candidates->filter(function($item, $key) use ($user_ext) {
                     return $item->id != $user_ext->user_id;
                 });
                 if($parent_candidates->count() == 1) {
                         $parent = $parent_candidates->first();
                 }
+            } else if (!empty($user_ext->user->parent_id)) {
+                $parent = $user_ext->user->parent;
             }
             $this->user_mgr->updateUserWithContacts($user_ext->user, 
                                                     $user_ext, 
