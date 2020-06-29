@@ -133,14 +133,14 @@ class IdentityManager implements IdentityManagerInterface
             // check and try to find parent
             if(!empty($user_ext->parent)) {
                 $parent_candidates = $this->user_mgr->findUser($user_ext_data['parent']);
-                $parent_candidates = $parent_candidates->filter(function($item, $key) use($user) {
-                    return $item->id != $user->id;
-                });
                 if($parent_candidates->count() == 1) {
                     $parent = $parent_candidates->first();
                 }
             }
             if($this->validateEqualIdentity($user, $data)) {
+                if(!empty($parent) and $user->id == $parent->id) {
+                    $parent = null;
+                }
                 // check the required trust level
                 $user_trust = $this->user_mgr->getRequiredTrustLevel($user);
                 $candidate_trust = $user_ext->trust_level;
