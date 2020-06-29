@@ -21,7 +21,7 @@ interface UserManager
     
     public function getRequiredTrustLevel(User $user);
         
-    public function validateCreate(User $user, $user_ext_data) : bool;
+    public function validateCreate($user_ext_data) : bool;
     
     public function validateUpdate(User $user, $user_ext_data) : bool;
     
