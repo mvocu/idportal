@@ -70,7 +70,7 @@ class UserManager implements UserManagerInterface
     
     public function createUserWithContacts(UserExt $user_ext, array $data, $parent): User 
     {
-        if(!$this->validateCreate($user, $data)) {
+        if(!$this->validateCreate($data)) {
             $data = $this->getValidData();
         }
         
@@ -291,7 +291,7 @@ class UserManager implements UserManagerInterface
         return $trust_level;
     }
 
-    public function validateCreate(User $user, $user_ext_data) : bool {
+    public function validateCreate($user_ext_data) : bool {
         $requirements = $this->updateRequirements;
         //'phones.*.phone' => 'required|phone|unique:contact,phone',
         $requirements['phones.*.phone'] = [
