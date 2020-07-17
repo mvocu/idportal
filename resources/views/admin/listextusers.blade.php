@@ -10,9 +10,16 @@
 						@csrf
 						
 						<div class="row form-group">
-							<label for="search"  class="col-md-2 col-form-label text-md-right">{{ __('Attribute value') }}</label>
+							<label for="missing"  class="col-md-2 col-form-label text-md-right">{{ __('Only missing') }}:</label>
+
+							<div class="col-md-1">
+                                <input id="missing" type="checkbox" class="" name="missing" value="missing" />
+							</div>
+
 							
-							<div class="col-md-6">
+							<label for="search"  class="col-md-2 col-form-label text-md-right">{{ __('Attribute value') }}:</label>
+							
+							<div class="col-md-5">
                                 <input id="search" type="text" class="form-control" name="search" value="{{ old('search') }}" />
 							</div>
 							
