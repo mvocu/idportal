@@ -2,17 +2,19 @@
 
 namespace App\Events;
 
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Support\MessageBag;
 
-class UserIdentityFailedEvent
+class UserIdentityDuplicateEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-
+    
     protected $user_id;
+    protected $duplicate1_id;
+    protected $duplicate2_id;
     protected $errors;
     
     /**
@@ -20,12 +22,14 @@ class UserIdentityFailedEvent
      *
      * @return void
      */
-    public function __construct($user_id, MessageBag $errors)
+    public function __construct($user_id, $duplicate1_id, $duplicate2_id, MessageBag $errors)
     {
         $this->user_id = $user_id;
+        $this->duplicate1_id = $duplicate1_id;
+        $this->duplicate2_id = $duplicate2_id;
         $this->errors = $errors;
     }
-
+    
     /**
      * Get the channels the event should broadcast on.
      *
@@ -35,4 +39,6 @@ class UserIdentityFailedEvent
     {
         return new PrivateChannel('channel-name');
     }
+    
 }
+
