@@ -14,6 +14,7 @@ use App\Models\Database\Contact;
 use App\Events\UserIdentityFailedEvent;
 use App\Events\UserUpdatedEvent;
 use Illuminate\Support\MessageBag;
+use App\Events\UserIdentityDuplicateEvent;
 
 class IdentityManager implements IdentityManagerInterface
 {
@@ -157,6 +158,7 @@ class IdentityManager implements IdentityManagerInterface
                         // we are pretty sure this is the same user
                         $this->user_mgr->updateUserWithContacts($user, $user_ext, $data, $parent);
                     } else {
+                        $duplicate = $user;
                         // the currently found identity is less trusted, create a new one 
                         if($this->validateIdentity($user_ext_data)) {
                             // this should never happen - we have found identity using this data, so the uniqueness requirement
@@ -170,6 +172,10 @@ class IdentityManager implements IdentityManagerInterface
                             } else {
                                 $user = null;
                             }
+                        }
+                        if($user != null) {
+                            event(new UserIdentityDuplicateEvent($user_ext->id, $user->id, $duplicate->id, 
+                                new MessageBag(['failure' => "Less trusted identity found, created new one"])));
                         }
                     }
                 } else {
