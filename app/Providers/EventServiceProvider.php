@@ -20,11 +20,14 @@ class EventServiceProvider extends ServiceProvider
         // 'App\Events\UserCreatedEvent' => [],
         // 'App\Events\LdapUserCreatedEvent' => [],
         // 'App\Events\LdapUserUpdatedEvent' => [],
+        // 'App\Events\UserIdentityFailedEvent' => [],
+        // 'App\Events\UserIdentityDuplicateEvent' => [],
     ];
 
     protected $subscribe = [
         'App\Listeners\UserExtEventSubscriber',
         'App\Listeners\UserEventSubscriber',
+        'App\Listeners\IdentityEventSubscriber',
         'App\Listeners\LoggingSubscriber'
     ];
     
