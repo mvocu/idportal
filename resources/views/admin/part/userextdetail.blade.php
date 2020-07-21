@@ -6,6 +6,14 @@
 		{{ $user->id }}
 	</div>
 </div>
+<div class="row mt-1">
+	<div class="col-4">
+		Parent
+	</div>
+	<div class="col-8">
+		{{ $user->parent }}
+	</div>
+</div>
 @foreach($user->attributes as $attr)
 <div class="row mt-1">
 	<div class="col-4">
