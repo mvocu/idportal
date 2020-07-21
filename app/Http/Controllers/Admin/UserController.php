@@ -47,7 +47,8 @@ class UserController extends Controller
     public function showUser(Request $request, User $user)
     {
         $ldapuser = $this->ldapc->findUser($user);
-        return view('admin.userdetail', ['id' => $user->id, 'user' => $user, 'ldapuser' => $ldapuser,
+        return view('admin.userdetail', ['id' => $user->id, 'user' => $user, 'ldapuser' => $ldapuser, 
+            'haspw' => $ldapuser ? $this->ldapc->hasPassword($ldapuser) : false,
             'lock' => $ldapuser ? $this->ldapc->isUserLocked($ldapuser) : false,
         ]);
     }

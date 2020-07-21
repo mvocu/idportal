@@ -12,7 +12,7 @@ class UserExtController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('group:administrators');
+        $this->middleware('group:administrators,observers');
     }
     
     public function listUsers(Request $request)
@@ -30,7 +30,13 @@ class UserExtController extends Controller
         } else {
             $users = $query->get();
         }
-        
+
+        # filter only records the user has permission to view
+        $user = $request->user();
+        $users = $users->filter(function ($value, $key) use($user) {
+           return $user->can('view', $value); 
+        });
+
         $table = tableView($users)
         ->column('Id', 'id')
         ->column(__('User'), function(UserExt $user) {
