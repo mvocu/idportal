@@ -7,10 +7,10 @@
 	</div>
 </div>
 <div class="row mt-1">
-	<div class="col-4">
+	<div class="col-xs-4">
 		Parent
 	</div>
-	<div class="col-8">
+	<div class="col-xs-8">
 		{{ $user->parent }}
 	</div>
 </div>
