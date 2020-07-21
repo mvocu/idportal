@@ -28,6 +28,8 @@ interface LdapConnector
     
     public function buildDN(User $user);
     
+    public function hasPassword(LdapUser $user);
+    
     public function changePassword(LdapUser $user, $password);
     
     public function findUserByExtSource(ExtSource $source, $id);
