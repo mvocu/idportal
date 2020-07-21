@@ -19,6 +19,16 @@
 	<div class="tab-pane fade show active" id="personal-{{$id}}" role="tabpanel" aria-labelledby="personal-tab">
 		<div class="row mt-2">
 			<div class="col-11">
+				@if (!empty($user->parent))
+				<div class="row">
+					<div class="col-4">
+						{{ __("parent") }}
+					</div>
+					<div class="col-8">
+						@include('components.userlink', ['user' => $user->parent, 'name' => $user->parent_id])
+					</div>
+				</div>
+				@endif
 				@foreach([
 					'identifier', 'first_name', 'last_name', 'middle_name', 'title_before', 
 					'title_after', 'birth_date', 'birth_code', 'gender', 'country'] as $attr)
@@ -142,7 +152,7 @@
 				{{ __("Password status") }}
 			</div>
 			<div class="col-8">
-				{{ empty($ldapuser->getFirstAttribute('userpassword')) ? "UNSET": "SET" }}
+				{{ $haspw ? "SET": "UNSET" }}
 			</div>
 		</div>
 		@else 

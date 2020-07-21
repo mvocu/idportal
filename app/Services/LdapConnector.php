@@ -169,6 +169,19 @@ class LdapConnector implements LdapConnectorInterface
     
     /**
      * {@inheritDoc}
+     * @see \App\Interfaces\LdapConnector::hasPassword()
+     */
+    public function hasPassword(LdapUser $user)
+    {
+        $search = $this->ldap->getProvider('admin')->search();
+        $nuser = $search->select('userpassword')->findByDN($user->getDn());
+        if($nuser == null) return false;
+        $pw = $nuser->getFirstAttribute('userpassword');
+        return !empty($pw);
+    }
+
+    /**
+     * {@inheritDoc}
      * @see \App\Interfaces\LdapConnector::changePassword()
      */
     public function changePassword(LdapUser $user, $password)
