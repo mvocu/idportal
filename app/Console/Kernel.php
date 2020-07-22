@@ -29,7 +29,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->job(new SynchronizeExtSources())->everyTenMinutes();
         $schedule->job(new SynchronizeLdap())->everyThirtyMinutes();
-        $schedule->job(new BuildIdentities())->cron('0 0,3,6,9,12,15,18,21');
+        $schedule->job(new BuildIdentities())->cron('0 0,3,6,9,12,15,18,21 * * *');
     }
 
     /**
