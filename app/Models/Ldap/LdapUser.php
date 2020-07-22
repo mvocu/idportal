@@ -97,7 +97,7 @@ class LdapUser extends User
                 $result[$name][$tag] = $value;
             }
         }
-        return ($attr == null) ? $result : $result[$attr];
+        return ($attr == null) ? $result : (array_key_exists($attr, $result) ? $result[$attr] : [] );
     }
 }
 
