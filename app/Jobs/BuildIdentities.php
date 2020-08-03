@@ -20,7 +20,7 @@ class BuildIdentities implements ShouldQueue
             $idmgr = resolve('App\Interfaces\IdentityManager');
             $eusers = UserExt::with('attributes')->whereDoesntHave('user')->get();
             foreach($eusers as $euser) {
-                $result = $idmgr->buildIdentity($euser);
+                $result = $idmgr->buildIdentityForUser($euser);
             }
         } catch (\Exception $e) {
             Log::error('Error building identities', ['exception' => $e ]);
