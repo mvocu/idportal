@@ -203,6 +203,9 @@ class UserManager implements UserManagerInterface
         $trust_level = $user->accounts()
             ->where('ext_source_id', '!=', $source->id)
             ->max('trust_level');
+        if(empty($trust_level)) {
+            $trust_level = 0;            
+        }
         # after removing external account, the resulting user trust level can not increase
         if($user->trust_level > $trust_level) {
             # we are removing account from source with higher trust than the current;
