@@ -25,7 +25,7 @@ const app = new Vue({
     	extensionObject: {}
     },
     mounted: function() {
-   		appMountedHooks.forEach(item => item(this));
+   		appMountedHooks ? appMountedHooks.forEach(item => item(this)) : false;
     }
 });
 
