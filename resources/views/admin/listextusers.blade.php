@@ -8,7 +8,7 @@ appMountedHooks = [
 		}
 ];
 if(vmApp) {
-	vmApp.extensionObject.source = '{{ empty($source) ? (empty(old('source')) ? 'all' : old('source')) : $source }}';
+   appMountedHooks.forEach(item => item(vmApp));
 }
 </script>
 @endpush

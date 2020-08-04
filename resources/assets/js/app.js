@@ -25,7 +25,7 @@ const app = new Vue({
     	extensionObject: {}
     },
     mounted: function() {
-   		appMountedHooks ? appMountedHooks.forEach(item => item(this)) : false;
+   		typeof(appMountedHooks) != 'undefined' ? appMountedHooks.forEach(item => item(this)) : false;
     }
 });
 
