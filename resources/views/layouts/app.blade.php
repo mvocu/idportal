@@ -82,6 +82,7 @@
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
 	@stack(config('tableView.dataTable.js.stack_name'))
+	@stack('app.scripts')
 
 </body>
 </html>
