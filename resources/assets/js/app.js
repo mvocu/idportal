@@ -20,5 +20,13 @@ window.Vue = require('vue');
 Vue.component('sms-authorization', require('./components/SMSAuthorizationComponent.vue'));
 
 const app = new Vue({
-    el: '#app'
+    el: '#app',
+    data: {
+    	extensionObject: {}
+    },
+    mounted: function() {
+   		appMountedHooks.forEach(item => item(this));
+    }
 });
+
+window.vmApp = app;

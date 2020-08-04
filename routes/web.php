@@ -66,8 +66,11 @@ Route::name('admin.')
         Route::get('/user/list', 'UserController@listUsers')->name('user.list');
         Route::get('/user/show/{user}', 'UserController@showUser')->name('user.show');
         Route::get('/userext/list', 'UserExtController@listUsers')->name('userext.list'); 
+        Route::get('/userext/list/{id}', 'UserExtController@listUsers')->name('userext.list.source');
         Route::post('/userext/list', 'UserExtController@listUsers')->name('userext.list.search');
+        Route::post('/userext/list/{id}', 'UserExtController@listUsers')->name('userext.list.search.source');
         Route::get('/userext/show/{user}', 'UserExtController@showUser')->name('userext.show');
+        Route::post('/userext/synchronize/', 'UserExtController@synchronize')->name('userext.synchronize');
     });
     
 Route::get('/mojeid/info', function() { return response()->json([

@@ -4,31 +4,46 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Database\ExtSource;
 use App\Models\Database\UserExt;
 use Illuminate\Support\HtmlString;
+use App\Interfaces\SynchronizationManager;
 
 class UserExtController extends Controller
 {
-    public function __construct()
+    protected $sync_mgr;
+    
+    public function __construct(SynchronizationManager $sync_mgr)
     {
         $this->middleware('auth');
         $this->middleware('group:administrators,observers');
+        $this->sync_mgr = $sync_mgr;
     }
     
-    public function listUsers(Request $request)
+    public function listUsers(Request $request, $source = null)
     {
+        $request->flash();
+        
+        if(empty($source) && $request->has('source')) {
+            $source = $request->input('source', null);
+        }
+        
         $query = UserExt::with(['attributes', 'attributes.attrDesc', 'extSource', 'user']);
         if($request->has('missing')) {
             $query = $query->doesntHave('user');
+        }
+        if(!empty($source) && $source != 'all') {
+            $query = $query->where('ext_source_id', $source);
         }
         if($request->has('search') && !empty($value = $request->input('search'))) {
             #$value = $request->input('search');
             $users = $query->whereHas('attributes', function($query) use ($value) {
                 $query->where('value', $value);
             })
+            ->latest()
             ->get();
         } else {
-            $users = $query->get();
+            $users = $query->latest()->get();
         }
 
         # filter only records the user has permission to view
@@ -51,11 +66,37 @@ class UserExtController extends Controller
         ->setTableClass('table table-striped')
         ->useDataTable();
         
-        return view('admin.listextusers', ['table' => $table ]);
+        $sources = ExtSource::all();
+        
+        return view('admin.listextusers', ['table' => $table, 'sources' => $sources, 'source' => $source ]);
     }
     
     public function showUser(Request $request, UserExt $user)
     {
         return view('admin.userextdetail', ['embed' => false, 'user' => $user]);
+    }
+    
+    public function synchronize(Request $request, $source = null)
+    {
+        if(empty($source) && $request->has('source')) {
+            $source = $request->input('source', null);
+        }
+        $source = ExtSource::find($source);
+        if(empty($source)) {
+            return back()
+                ->withInput()
+                ->withErrors(['failure' => 'Invalid external source']);
+        }
+
+        $result = $this->sync_mgr->synchronizeExtSource($source);
+        if(empty($result)) {
+            return back()
+            ->withInput()
+            ->withErrors(['failure' => __('Error synchronizing :source', ['source' => $source->name ])]);
+        }
+        
+        return redirect()->route('admin.userext.list.search.source', ['source' => $source])
+            ->with('status', __('Successfully synchronized :items items from :name', 
+                ['items' => $result->count(), 'name' => $source->name ]));
     }
 }
