@@ -80,12 +80,17 @@ class User extends LdapUser implements AuthenticatableContract, AuthorizableCont
      */
     public function sendPasswordResetNotification($token)
     {
-        if($this->getPasswordResetContactType() == Contact::TYPE_PHONE) {
-            $this->notify(new SmsPasswordReset($token));
-            return "sms";
-        } else {
-            $this->sendPasswordResetNotificationMail($token);
-            return "mail";
+        switch ($this->getPasswordResetContactType()) {
+            case Contact::TYPE_PHONE: 
+                $this->notify(new SmsPasswordReset($token));
+                return "sms";
+
+            case Contact::TYPE_EMAIL:
+                $this->sendPasswordResetNotificationMail($token);
+                return "mail";
+                
+            default:
+                return null;
         }
     }
     
@@ -122,17 +127,25 @@ class User extends LdapUser implements AuthenticatableContract, AuthorizableCont
     }
     
     public function getPasswordResetContactType() {
-        $contact = $this->getTrustedContact(Contact::TYPE_PHONE);
-        if(!empty($contact) && $this->getPreferredPasswordResetMethod() != 'email') {
-            return Contact::TYPE_PHONE;
-        } else {
-            return Contact::TYPE_EMAIL;
+        switch($this->getPreferredPasswordResetMethod()) {
+            case 'sms':
+                return Contact::TYPE_PHONE;
+                
+            case 'email':
+                return Contact::TYPE_EMAIL;
+                
+            default:
+                $contact = $this->getTrustedContact(Contact::TYPE_PHONE);
+                if(!empty($contact)) {
+                    return Contact::TYPE_PHONE;
+                }
+                return Contact::TYPE_EMAIL;
         }
     }
     
     public function getPreferredPasswordResetMethod() 
     {
-       return empty($this->_preferred_reset_method) ? 'sms' : $this->_preferred_reset_method;
+       return $this->_preferred_reset_method;
     }
     
     public function setPreferredPasswordResetMethod($method)
