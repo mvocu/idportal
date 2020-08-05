@@ -19,6 +19,8 @@ if(vmApp) {
         <div class="col-md-12">
 
             <div class="card">
+				<div class="card-header">{{ __('List of external accounts') }}</div>
+
 				<div class="card-body shadow-sm">
 
                     @if (session('status'))
