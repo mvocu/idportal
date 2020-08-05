@@ -64,6 +64,7 @@ Route::name('admin.')
     ->namespace('Admin')
     ->group(function() {
         Route::get('/user/list', 'UserController@listUsers')->name('user.list');
+        Route::post('/user/list', 'UserController@listUsers')->name('user.list.search');
         Route::get('/user/show/{user}', 'UserController@showUser')->name('user.show');
         Route::get('/userext/list', 'UserExtController@listUsers')->name('userext.list'); 
         Route::get('/userext/list/{id}', 'UserExtController@listUsers')->name('userext.list.source');
