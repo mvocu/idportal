@@ -11,7 +11,7 @@ use App\Interfaces\LdapConnector;
 class UserController extends Controller
 {
     protected $ldapc;
-    
+
     public function __construct(LdapConnector $ldapc)
     {
         $this->ldapc = $ldapc;
@@ -21,7 +21,24 @@ class UserController extends Controller
     
     public function listUsers(Request $request)
     {
-        $users = User::with(['phones', 'emails', 'accounts', 'accounts.attributes', 'accounts.extSource'])->get();
+        if($request->isMethod('POST')) {
+            $search = $request->input('search', '%');
+            $query = User::with(['phones', 'emails', 'accounts', 'accounts.attributes', 'accounts.extSource'])
+                ->where('identifier', 'like', $search);
+            foreach(['first_name', 'last_name', 'birth_date'] as $column) {
+                $query = $query->orWhere($column, 'like', $search);
+            }
+            foreach(['street', 'email', 'phone', 'databox', 'bank_account'] as $column) {
+                $query = $query->orWhereHas('contacts', function($subquery) use ($column, $search) {
+                   $subquery->where($column, 'like', $search); 
+                });
+            }
+            $users = $query->latest()->get();
+        } else {
+            $users = User::with(['phones', 'emails', 'accounts', 'accounts.attributes', 'accounts.extSource'])
+            ->latest()
+            ->get();
+        }
         
         $table = tableView($users)
             ->column('Id', function(User $user) {
@@ -41,7 +58,7 @@ class UserController extends Controller
             ->setTableClass('table table-striped')
             ->useDataTable();
         
-        return view('admin.listusers', ['table' => $table ]);
+        return view('admin.listusers', ['table' => $table]);
     }
     
     public function showUser(Request $request, User $user)
