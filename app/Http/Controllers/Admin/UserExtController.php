@@ -38,7 +38,7 @@ class UserExtController extends Controller
         if($request->has('search') && !empty($value = $request->input('search'))) {
             #$value = $request->input('search');
             $users = $query->whereHas('attributes', function($query) use ($value) {
-                $query->where('value', $value);
+                $query->where('value', 'like', $value);
             })
             ->latest()
             ->get();
