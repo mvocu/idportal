@@ -7,7 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Database\ExtSource;
 use App\Models\Database\UserExt;
 use Illuminate\Support\HtmlString;
+use Illuminate\Support\Facades\Mail;
 use App\Interfaces\SynchronizationManager;
+use App\Mail\IdentityMissing;
 
 class UserExtController extends Controller
 {
@@ -60,6 +62,9 @@ class UserExtController extends Controller
         })
         ->column(__('Identificator'), 'login')
         ->column(__('External source'), 'extSource.name') 
+        ->column(__('Action'), function($model) {
+            return view('admin.part.userextactions', ['user' => $model ]);
+        })
         ->childDetails(function (UserExt $user) {
             return view('admin.part.userextdetail', ['embed' => true, 'id' => $user->id, 'user' => $user]);
         })
@@ -98,5 +103,13 @@ class UserExtController extends Controller
         return redirect()->route('admin.userext.list.search.source', ['source' => $source])
             ->with('status', __('Successfully synchronized :items items from :name', 
                 ['items' => $result->count(), 'name' => $source->name ]));
+    }
+    
+    public function notify(Request $request, UserExt $user) 
+    {
+        Mail::to(config('mail.support', ""))->send(new IdentityMissing($user));
+        return back()
+        ->with(['status' => __('Your request has been sent to our personnel.') ]);
+        
     }
 }
