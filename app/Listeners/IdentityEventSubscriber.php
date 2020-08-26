@@ -4,6 +4,10 @@ namespace App\Listeners;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\IdentityDuplicate;
+use App\Models\Database\User;
+use App\Models\Database\UserExt;
 
 class IdentityEventSubscriber implements ShouldQueue
 {
@@ -14,6 +18,11 @@ class IdentityEventSubscriber implements ShouldQueue
 
     public function onIdentityDuplicate($event)
     {
+        Mail::to(config('mail.support', ""))->send(new IdentityDuplicate(
+            UserExt::find($event->user_id), 
+            User::find($event->duplicate1_id),
+            User::find($event->duplicate2_id),
+            $event->errors));
         return true;
     }
     
