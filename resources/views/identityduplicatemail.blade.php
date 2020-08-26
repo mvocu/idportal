@@ -1,0 +1,2 @@
+{{ __('Duplicate identity :duplicate for already existing :user when processing external account :euser, reason: :message', 
+	['duplicate' => $duplicate1, 'user' => $duplicate2, 'euser' => $user, 'reason' => $errors->first() ] ) }}
