@@ -84,11 +84,11 @@ if(vmApp) {
 						
 						<input type="hidden" name="source" v-bind:value="extensionObject.source" />
 
-						<div class="row form-group" v-if="extensionObject.source != 'all'">
+						<div class="row form-group">
 							<div class="col-md-10">
 								<div class="row">
 									<div class="col-md-9 offset-md-3 col-md-offset-3">
-										<button type="submit" class="btn btn-primary">{{ __('Synchronize') }}</button>
+										<button type="submit" class="btn btn-primary" disabled :disabled="extensionObject.source == 'all'">{{ __('Synchronize') }}</button>
 									</div>
 								</div>
 							</div>
