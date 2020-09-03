@@ -127,8 +127,8 @@ class ADConnector extends AbstractExtSourceConnector implements ExtSourceConnect
         }
         $dn = Str::lower($entry['dn']);
         $u_groups = $groups
-            ->filter(function($item, $key) use($dn) { return array_search($dn, array_values($item)[0]); })
-            ->map(function($item, $key) { return array_keys($item)[0]; })
+        ->filter(function($item, $key) use($dn) { return false !== array_search($dn, array_values($item)[0]); })
+            ->map(function($item, $key) {  return array_keys($item)[0]; })
             ->toArray();
         $result['groups'] = $u_groups;
         return $this->makeResource($result, 'samaccountname');
