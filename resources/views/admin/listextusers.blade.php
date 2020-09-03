@@ -88,7 +88,7 @@ if(vmApp) {
 							<div class="col-md-10">
 								<div class="row">
 									<div class="col-md-9 offset-md-3 col-md-offset-3">
-										<button type="submit" class="btn btn-primary" :disabled="extensionObject.source == 'all'">{{ __('Synchronize') }}</button>
+										<button type="submit" class="btn btn-primary" disabled :disabled="extensionObject.source == 'all'">{{ __('Synchronize') }}</button>
 									</div>
 								</div>
 							</div>
