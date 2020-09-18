@@ -91,7 +91,7 @@
             	<div class="panel-footer">
 <!--
 					<div class="row">
-						<div class="col-xs-4"><a href="" class="btn btn-primary btn-block">{{ __('Change password') }}</a></div>
+						<div class="col-xs-4"><a href="{{ route('password.change') }}" class="btn btn-primary btn-block">{{ __('Change password') }}</a></div>
 					</div>
 -->
             	</div>
@@ -108,11 +108,13 @@
 				
 				<div class="panel-body">
 				@foreach ($children as $child)
-					<div class="row">
+					<div class="row form-group">
 						<div class="col-xs-2">{{ $child->getFirstAttribute('uid') }}</div>
 						<div class="col-xs-3">{{ $child->getCommonName() }}</div>
 						<div class="col-xs-3"></div>
-						<div class="col-xs-3"></div>
+						<div class="col-xs-3">
+							<a href="{{ route('password.change', ['target' => $child ]) }}" class="btn btn-primary btn-block">{{ __('Change password') }}</a>
+						</div>
 					</div>
 				@endforeach
 				</div>

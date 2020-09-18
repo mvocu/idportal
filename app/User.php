@@ -16,7 +16,10 @@ use App\Notifications\SmsPasswordReset;
 use Illuminate\Auth\Notifications\ResetPassword;
 use App\Models\Database\User as DbUser;
 
-class User extends LdapUser implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
+class User extends LdapUser implements 
+AuthenticatableContract, 
+AuthorizableContract, 
+CanResetPasswordContract
 {
     use Authorizable, Notifiable, RemembersPassword;
     use CanResetPassword { sendPasswordResetNotification as sendPasswordResetNotificationMail; }
@@ -152,4 +155,5 @@ class User extends LdapUser implements AuthenticatableContract, AuthorizableCont
     {
         $this->_preferred_reset_method = $method;
     }
+    
 }
