@@ -30,6 +30,10 @@ Route::get('/activate/token/{id}/{token?}', 'Auth\ActivateController@showActivat
 // posts to
 Route::post('/activate/activate', 'Auth\ActivateController@activate')->name('activate.activate');
 
+Route::get('/password/change/{target?}', 'Auth\PasswordController@showPasswordForm')->name('password.change');
+// posts to
+Route::post('/password/change/{target?}', 'Auth\PasswordController@changePassword')->name('password.change.update');
+
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::name('ext.account.')
