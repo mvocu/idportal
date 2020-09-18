@@ -27,7 +27,14 @@ class UserPolicy
     
     public function changepw(User $current, User $subject)
     {
-        
+        if($current->getAuthIdentifier() == $subject->getAuthIdentifier()) {
+            return true;
+        }
+        $manager = $subject->manager;
+        if(in_array($current->getAuthIdentifier(), $manager)) {
+            return true;
+        }
+        return false;
     }
 
 }

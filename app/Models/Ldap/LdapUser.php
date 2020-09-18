@@ -3,9 +3,23 @@
 namespace App\Models\Ldap;
 
 use Adldap\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Adldap\Laravel\Facades\Adldap;
+use Illuminate\Contracts\Routing\UrlRoutable;
 
-class LdapUser extends User
+class LdapUser extends User implements UrlRoutable
 {
+    /*
+     * This is neccessary when resolving objects from URL parameters, as resolution first creates empty object and 
+     * then calls resolveRouteBinding on it.  
+     */
+    public function __construct($attrs = [], $builder = null) {
+        if(empty($builder)) {
+            $builder = Adldap::getFacadeRoot()->search()->select('*');
+        }
+        parent::__construct($attrs, $builder);
+    }
+    
     /**
      * {@inheritDoc}
      * @see \Adldap\Models\User::getAuthIdentifier()
@@ -99,5 +113,21 @@ class LdapUser extends User
         }
         return ($attr == null) ? $result : (array_key_exists($attr, $result) ? $result[$attr] : [] );
     }
+
+    public function getRouteKey()
+    {
+        return base64_encode($this->getDn());
+    }
+    
+    public function getRouteKeyName()
+    {
+        return 'dn';
+    }
+    
+    public function resolveRouteBinding($value)
+    {
+        return Auth::guard()->getProvider()->retrieveById(base64_decode($value));
+    }
+    
 }
 

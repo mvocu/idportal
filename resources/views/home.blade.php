@@ -91,7 +91,7 @@
 
             	<div class="card-footer">
 					<div class="row">
-						<div class="col-4"><a href="" class="btn btn-primary btn-block">{{ __('Change password') }}</a></div>
+						<div class="col-4"><a href="{{ route('password.change') }}" class="btn btn-primary btn-block">{{ __('Change password') }}</a></div>
 					</div>
             	</div>
 
@@ -107,11 +107,13 @@
 				
 				<div class="card-body">
 				@foreach ($children as $child)
-					<div class="row">
+					<div class="row form-group">
 						<div class="col-2">{{ $child->getFirstAttribute('uid') }}</div>
 						<div class="col-3">{{ $child->getCommonName() }}</div>
 						<div class="col-3"></div>
-						<div class="col-3"></div>
+						<div class="col-3">
+							<a href="{{ route('password.change', ['target' => $child ]) }}" class="btn btn-primary btn-block">{{ __('Change password') }}</a>
+						</div>
 					</div>
 				@endforeach
 				</div>
