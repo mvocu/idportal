@@ -4,10 +4,10 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Change password for :user', ['user' => $target->name]) }}</div>
+            <div class="panel">
+                <div class="panel-heading">{{ __('Change password for :user', ['user' => $target->name]) }}</div>
 
-                <div class="card-body">
+                <div class="panel-body">
 
                     @if ($errors->has('failure'))
                         <div class="alert alert-danger" role="alert">
@@ -16,7 +16,7 @@
                     @endif
 
                     <form method="POST" action="{{ empty($target) ? route('password.change') : route('password.change', [ 'target' => $target ]) }}" aria-label="{{ __('Change Password') }}">
-                        @csrf
+                        {{ csrf_field() }}
 
                         <div class="form-group row">
                             <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
@@ -50,9 +50,9 @@
                     </form>
                 </div>
                 
-				<div class="card-footer">
+				<div class="panel-footer">
 					<div class="row">
-						<div class="col-2"><a href="{{ url()->previous() }}" class="btn btn-default btn-block"><span class="fa fa-long-arrow-left">&nbsp;</span>{{ __('Back') }}</a></div>
+						<div class="col-md-2"><a href="{{ url()->previous() }}" class="btn btn-default btn-block"><span class="fa fa-long-arrow-left">&nbsp;</span>{{ __('Back') }}</a></div>
 					</div>
 				</div>
                 
