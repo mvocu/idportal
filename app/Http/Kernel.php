@@ -58,8 +58,8 @@ class Kernel extends HttpKernel
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'oidc' => \App\Http\Middleware\ExternalIdPAuthenticate::class,
-        'auth.oidc' => \App\Http\Middleware\ExternalIdPAuthenticateSession::class,
+        'eidp' => \App\Http\Middleware\ExternalIdPAuthenticate::class,
+        'auth.eidp' => \App\Http\Middleware\ExternalIdPAuthenticateSession::class,
         'group' => \App\Http\Middleware\CheckGroup::class,
     ];
     

@@ -21,10 +21,15 @@
                         </div>
                     @endif
 
+<<<<<<< HEAD
                     <form class="form-horizontal" method="POST" action="{{ empty($client) ? route('password.request') : route('password.oidc.update', [ 'client' => $client ])}}">
                         {{ csrf_field() }}
 
 
+=======
+                    <form method="POST" action="{{ empty($client) ? route('password.update') : route('password.eidp.update', [ 'client' => $client ]) }}" aria-label="{{ __('Reset Password') }}">
+                        @csrf
+>>>>>>> master
 
 						@if (empty($token)) 
 
