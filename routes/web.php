@@ -18,13 +18,14 @@ Route::get('/', function () {
 Auth::routes();
 
 
+
 Route::post('/password/send', 'Auth\ForgotPasswordController@sendResetCode')->name('password.send');
 // ...redirects to...
 Route::get('/password/token', 'Auth\ResetPasswordController@showResetForm')->name('password.token');
 
-Route::get('/password/oidc/{client}', 'Auth\ResetPasswordController@showOidcForm')->name('password.oidc');
+Route::get('/password/eidp/{client}', 'Auth\ResetPasswordController@showExtIdpForm')->name('password.eidp');
 // posts to
-Route::post('/password/oidc/{client}', 'Auth\ResetPasswordController@resetOidc')->name('password.oidc.update');
+Route::post('/password/eidp/{client}', 'Auth\ResetPasswordController@resetExtIdp')->name('password.eidp.update');
 
 Route::get('/activate/token/{id}/{token?}', 'Auth\ActivateController@showActivateForm')->name('activate.token');
 // posts to
@@ -46,18 +47,18 @@ Route::name('ext.account.')
         Route::get('/remove/{user_ext}', 'UserExtController@removeUserExt')->name('remove');
     });
 
-Route::get('/register/oidc/{client}', 'Auth\OidcRegisterController@show')->name('register.oidc');
+Route::get('/register/eidp/{client}', 'Auth\ExtIdpRegisterController@show')->name('register.eidp');
 
-Route::post('/register/oidc/{client}', 'Auth\OidcRegisterController@register')->name('register.oidc.create');
+Route::post('/register/eidp/{client}', 'Auth\ExtIdpRegisterController@register')->name('register.eidp.create');
 
-Route::post('/add/oidc/{client}', 'Auth\OidcRegisterController@add')->name('register.oidc.add');
+Route::post('/add/eidp/{client}', 'Auth\ExtIdpRegisterController@add')->name('register.eidp.add');
 
-Route::get('/login/oidc/{client}', 'Auth\LoginController@loginOidc')->name('login.oidc');
+Route::get('/login/eidp/{client}', 'Auth\LoginController@loginExtIdp')->name('login.eidp');
 
-Route::get('/logout/oidc/{client}', function($client) { 
+Route::get('/logout/eidp/{client}', function($client) { 
         Auth::guard($client)->logout();
         return back();
-})->name('oidc.logout');
+})->name('eidp.logout');
 
 Route::get('/consent/ask', 'ConsentController@showConsentForm')->name('consent.ask');
 
@@ -80,14 +81,14 @@ Route::name('admin.')
     });
     
 Route::get('/mojeid/info', function() { return response()->json([
-    'https://cas.mestouvaly.cz/cas/login?client_name=OidcClient',
+    'https://cas.mestouvaly.cz/cas/login?client_name=oidcClient',
     'https://cas.mestouvaly.cz/cas/login/MojeID', 
-    'https://cas.mestouvaly.cz/register/oidc/MojeID',
-    'https://cas.mestouvaly.cz/password/oidc/MojeID',
-    'https://cas.mestouvaly.cz/add/oidc/MojeID',
-    'https://cas.mestouvaly.cz/login/oidc/MojeID',
-    'https://localhost:8000/register/oidc/MojeID',
-    'https://localhost:8000/password/oidc/MojeID',
-    'https://localhost:8000/add/oidc/MojeID',
-    'https://localhost:8000/login/oidc/MojeID'
+    'https://cas.mestouvaly.cz/register/eidp/MojeID',
+    'https://cas.mestouvaly.cz/password/eidp/MojeID',
+    'https://cas.mestouvaly.cz/add/eidp/MojeID',
+    'https://cas.mestouvaly.cz/login/eidp/MojeID',
+    'https://localhost:8000/register/eidp/MojeID',
+    'https://localhost:8000/password/eidp/MojeID',
+    'https://localhost:8000/add/eidp/MojeID',
+    'https://localhost:8000/login/eidp/MojeID'
 ]); } );

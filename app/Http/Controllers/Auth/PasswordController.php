@@ -14,7 +14,7 @@ class PasswordController extends Controller
     public function __construct(LdapConnector $ldap_mgr)
     {
         $this->ldap_mgr = $ldap_mgr;
-        $this->middleware(['auth.oidc:MojeID', 'auth']);
+        $this->middleware(['auth.eidp:MojeID', 'auth']);
     }
 
     public function showPasswordForm(Request $request, User $target = null) 

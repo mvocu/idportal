@@ -96,11 +96,11 @@ class ExternalIdPGuard implements Guard
     }
 
 
-    protected function updateSession($id, $ac)
+    protected function updateSession($id_token, $ac_token)
     {
         $key = $this->getName();
-        $this->session->put($key . "_id", $id);
-        $this->session->put($key . "_ac", $ac);
+        $this->session->put($key . "_id", $id_token);
+        $this->session->put($key . "_ac", $ac_token);
         $this->session->migrate(true);
     }
 

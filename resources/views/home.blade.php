@@ -80,7 +80,7 @@
 								</div>
 					@endif								
 					@else
-								<div class="col-7"><a href="{{ route('register.oidc', [ 'client' => $account['name'] ] ) }}" class="btn btn-social"><span class="fa fa-openid fa-{{ $account['name'] }}">&nbsp;</span>{{ $account['name'] }} - {{ __("Add identity") }} </a></div>
+								<div class="col-7"><a href="{{ route('register.eidp', [ 'client' => $account['name'] ] ) }}" class="btn btn-social"><span class="fa fa-openid fa-{{ $account['name'] }}">&nbsp;</span>{{ $account['name'] }} - {{ __("Add identity") }} </a></div>
 					@endif
                         </div>
                     @endif

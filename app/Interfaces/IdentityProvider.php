@@ -8,5 +8,6 @@ interface IdentityProvider
         public function authenticate() : Authenticatable;
         
         public function validate($id_token, $ac_token);
+
 }
 
