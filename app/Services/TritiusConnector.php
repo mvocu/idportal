@@ -22,7 +22,7 @@ class TritiusConnector extends AbstractExtSourceConnector implements ExtSourceCo
                 'X-Library' => 1, 
                 'Accept' => 'application/vnd.tritius-v1.0+json'
             ],
-            'debug' => true,
+            'debug' => false,
         ]);
     }
     
