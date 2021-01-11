@@ -81,7 +81,7 @@ Route::name('admin.')
     });
     
 Route::get('/mojeid/info', function() { return response()->json([
-    'https://cas.mestouvaly.cz/cas/login?client_name=oidcClient',
+    'https://cas.mestouvaly.cz/cas/login?client_name=OidcClient',
     'https://cas.mestouvaly.cz/cas/login/MojeID', 
     'https://cas.mestouvaly.cz/register/eidp/MojeID',
     'https://cas.mestouvaly.cz/password/eidp/MojeID',
