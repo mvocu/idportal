@@ -22,9 +22,9 @@
 					@endif
 
 					@if (isset($user))
-                    <form method="POST" action="{{ route('register.oidc.add', [ 'client' => $idp ]) }}" aria-label="{{ __('Add identity') }}">
+                    <form method="POST" action="{{ route('register.eidp.add', [ 'client' => $idp ]) }}" aria-label="{{ __('Add identity') }}">
 					@else
-                    <form method="POST" action="{{ route('register.oidc.create', [ 'client' => $idp ]) }}" aria-label="{{ __('Register') }}">
+                    <form method="POST" action="{{ route('register.eidp.create', [ 'client' => $idp ]) }}" aria-label="{{ __('Register') }}">
                     @endif
                         {{ csrf_field() }}
 
@@ -60,7 +60,7 @@
             	<div class="panel-footer">
 					<div class="row">
 						<div class="col-xs-2"><a href="{{ route('register') }}" class="btn btn-default btn-block"><span class="fa fa-long-arrow-left">&nbsp;</span>{{ __('Back') }}</a></div>
-						<div class="col-xs-2"><a href="{{ route('oidc.logout', [ 'client' => $idp ]) }}" class="btn btn-secondary" aria-label="{{ __('Use another identity') }}">{{ __('Use another identity') }}</a></div>
+						<div class="col-xs-2"><a href="{{ route('eidp.logout', [ 'client' => $idp ]) }}" class="btn btn-secondary" aria-label="{{ __('Use another identity') }}">{{ __('Use another identity') }}</a></div>
 					</div>
             	</div>
 				

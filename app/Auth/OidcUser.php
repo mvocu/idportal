@@ -4,7 +4,7 @@ namespace App\Auth;
 use Illuminate\Contracts\Auth\Authenticatable;
 use App\Http\Resources\ExtUserResource;
 
-class ExternalUser implements Authenticatable
+class OidcUser implements Authenticatable
 {
     protected $idToken;
     protected $accessToken;

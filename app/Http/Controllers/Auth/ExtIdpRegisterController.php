@@ -14,7 +14,7 @@ use App\Models\Database\UserExt;
 use App\Http\Resources\ExtUserResource;
 use Illuminate\Support\MessageBag;
 
-class OidcRegisterController extends Controller
+class ExtIdpRegisterController extends Controller
 {
     protected $user_ext_mgr;
     protected $ext_source_mgr;
@@ -23,9 +23,9 @@ class OidcRegisterController extends Controller
     protected $casLogoutUrl;
     
     public function __construct(ExtSourceManager $ext_source_mgr, UserExtManager $user_ext_mgr) {
-        $this->middleware(['oidc'])->only('show');
-        $this->middleware(['guest','oidc'])->only('register');
-        $this->middleware(['oidc', 'auth'])->only('add');
+        $this->middleware(['eidp'])->only('show');
+        $this->middleware(['guest','eidp'])->only('register');
+        $this->middleware(['eidp', 'auth'])->only('add');
         $this->ext_source_mgr = $ext_source_mgr;
         $this->user_ext_mgr = $user_ext_mgr;
         $this->casLogoutUrl = Config::get('cas')['logout_url'];
@@ -50,24 +50,24 @@ class OidcRegisterController extends Controller
                 $failed = $validator->failed();
                 if(array_key_exists('email', $failed) && array_key_exists('Unique', $failed['email']) ||
                     array_key_exists('phone_number', $failed) &&  array_key_exists('Unique', $failed['phone_number'])) {
-                        return view('auth.oidc', [ 'idp' => $client, 'attributes' => $attributes,
+                        return view('auth.eidp', [ 'idp' => $client, 'attributes' => $attributes,
                             'invalid' => $validator->errors()
                             ->add('failure', __("There already is an account using these contacts. Please login and add external identity."))
                         ]);
                 }
-                return view('auth.oidc', [ 'idp' => $client, 'attributes' => $attributes, 
+                return view('auth.eidp', [ 'idp' => $client, 'attributes' => $attributes, 
                     'invalid' => $validator->errors()
                         ->add('failure', __("External account can not be registered, it contains invalid data."))
                 ]);
             }
         } else {
             if(!is_null($euser)) {
-                return view('auth.oidc', [ 'idp' => $client, 'attributes' => $attributes,
+                return view('auth.eidp', [ 'idp' => $client, 'attributes' => $attributes,
                     'invalid' => new MessageBag(['failure' => __("Identity already registered")])
                 ]);
             }
         }
-        return view('auth.oidc', [ 
+        return view('auth.eidp', [ 
             'idp' => $client, 
             'attributes' => $attributes, 
             'invalid' => new MessageBag(), 

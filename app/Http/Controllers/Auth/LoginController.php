@@ -42,8 +42,8 @@ class LoginController extends Controller
      */
     public function __construct(ExtSourceManager $ext_source_mgr, LdapConnector $ldap_mgr)
     {
-        $this->middleware('guest')->except(['logout', 'loginOidc']);
-        $this->middleware('oidc')->only('loginOidc');
+        $this->middleware('guest')->except(['logout', 'loginExtIdp']);
+        $this->middleware('eidp')->only('loginExtIdp');
         $this->ext_source_mgr = $ext_source_mgr;
         $this->ldap_mgr = $ldap_mgr;
     }
@@ -57,7 +57,7 @@ class LoginController extends Controller
         return view('auth.login', [ 'idp' => $this->ext_source_mgr->listAuthenticators()->pluck('name') ]);
     }
     
-    public function loginOidc(Request $request, $client)
+    public function loginExtIdp(Request $request, $client)
     {
         $auth_user = $this->findExternalAccount(Auth::guard($client)->user(), $client);
         if(is_null($auth_user)) {
