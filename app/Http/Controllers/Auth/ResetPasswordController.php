@@ -44,9 +44,9 @@ class ResetPasswordController extends Controller
     {
         $this->ldap_mgr = $ldap_mgr;
         
-        $this->middleware('guest')->except('resetOidc');
-        $this->middleware('oidc')->only(['showOidcForm']);
-        $this->middleware('auth.oidc')->only('resetOidc');
+        $this->middleware('guest')->except('resetExtIdp');
+        $this->middleware('eidp')->only(['showExtIdpForm']);
+        $this->middleware('auth.eidp')->only('resetExtIdp');
     }
     
     /**
@@ -65,21 +65,21 @@ class ResetPasswordController extends Controller
             );
     }
     
-    public function showOidcForm(Request $request, $client)
+    public function showExtIdpForm(Request $request, $client)
     {
-        $oidc_user = Auth::guard($client)->user();
+        $eidp_user = Auth::guard($client)->user();
         $idp_s = $this->getExtSource($client);
-        $user = $this->ldap_mgr->findUserByExtSource($idp_s, $oidc_user->getAuthIdentifier());
+        $user = $this->ldap_mgr->findUserByExtSource($idp_s, $eidp_user->getAuthIdentifier());
         if(is_null($user)) {
             return redirect()->route('password.request')
                 ->withErrors(['failure' => __('No user found for given external identity')]);
         }
         return view('auth.passwords.reset')->with(
-            ['token' => $oidc_user->getRememberToken(), 'uid' => $user->getFirstAttribute('uid'), 'client' => $client]
+            ['token' => $eidp_user->getRememberToken(), 'uid' => $user->getFirstAttribute('uid'), 'client' => $client]
             );
     }
     
-    public function resetOidc(Request $request, $client)
+    public function resetExtIdp(Request $request, $client)
     {
         // $oidc_user = Auth::guard($client)->user();
         // $idp_s = $this->getExtSource($client);

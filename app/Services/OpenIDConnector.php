@@ -3,7 +3,7 @@ namespace App\Services;
 
 use App\Interfaces\IdentityProvider;
 use App\Auth\OpenIdConnectClient;
-use App\Auth\ExternalUser;
+use App\Auth\OidcUser;
 use Illuminate\Contracts\Auth\Authenticatable;
 
 class OpenIDConnector implements IdentityProvider
@@ -30,7 +30,7 @@ class OpenIDConnector implements IdentityProvider
             $this->parseInfo($this->oidc->requestUserInfo(), $info, "");
             $accessToken = $this->oidc->getAccessToken();
             $idToken = $this->oidc->getIdToken();
-            return new ExternalUser($idToken, $accessToken, $claims, $info);
+            return new OidcUser($idToken, $accessToken, $claims, $info);
         }
         return null;
     }
@@ -50,7 +50,7 @@ class OpenIDConnector implements IdentityProvider
                 unset($_REQUEST['code']);
             return null;
         }
-        return new ExternalUser($id_token, $ac_token, $claims, $info);
+        return new OidcUser($id_token, $ac_token, $claims, $info);
     }
     
     protected function parseInfo($info, &$result, $prefix) {

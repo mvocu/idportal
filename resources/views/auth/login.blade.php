@@ -85,7 +85,7 @@
 						@if (!empty($idp))
 						@foreach ($idp as $name) 
 							<div class="col-md-4">
-								<a class="btn btn-social" href="{{ route('login.oidc', ['client' => $name ]) }}">
+								<a class="btn btn-social" href="{{ route('login.eidp', ['client' => $name ]) }}">
 								   <span class="fa fa-openid"></span> 
 								   {{ $name }}
 								</a>
