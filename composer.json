@@ -6,10 +6,11 @@
     "type": "project",
     "require": {
         "php": ">=7.0.0",
+        "aacotroneo/laravel-saml2": "^2.1",
         "adldap2/adldap2-laravel": "^4.0",
         "caouecs/laravel-lang": "~3.0",
         "fideloper/proxy": "~3.3",
-	"guzzlehttp/guzzle": "^6.3",
+        "guzzlehttp/guzzle": "^6.3",
         "jumbojett/openid-connect-php": "^0.8.0",
         "kabbouchi/laravel-table-view": "^0.2.1",
         "laravel/framework": "5.5.*",
