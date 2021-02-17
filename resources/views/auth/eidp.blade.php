@@ -17,7 +17,7 @@
 
 					@if ($invalid->has('failure'))
 					    <div class="alert alert-danger" role="alert">
-    						{{ $invalid->first('failure') }}
+    						<div>{{ $invalid->first('failure') }}</div>
     					</div>
 					@endif
 
@@ -27,6 +27,11 @@
                     <form method="POST" action="{{ route('register.eidp.create', [ 'client' => $idp ]) }}" aria-label="{{ __('Register') }}">
                     @endif
                         @csrf
+
+                        <div class="form-group row mb-0">
+                                <div class="col-4 text-right">{{ __('Identifier') }}</div>
+								<div class="col-8">{{ $resource->getId() }}</div>
+						</div>
 
 						@foreach ($attributes->sortBy('order') as $name => $value) 
 						@if (!empty($value['display']))

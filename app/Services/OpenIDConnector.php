@@ -11,7 +11,7 @@ class OpenIDConnector implements IdentityProvider
     protected $config;
     protected $oidc;
     
-    public function __construct($config) {
+    public function __construct($name, $config) {
         $this->config = $config;
         $this->oidc = new OpenIDConnectClient(
             $this->config['url'],
@@ -51,6 +51,9 @@ class OpenIDConnector implements IdentityProvider
             return null;
         }
         return new OidcUser($id_token, $ac_token, $claims, $info);
+    }
+    
+    public function logout() {
     }
     
     protected function parseInfo($info, &$result, $prefix) {

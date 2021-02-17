@@ -54,7 +54,7 @@ class LoginController extends Controller
      */
     public function showLoginForm()
     {
-        return view('auth.login', [ 'idp' => $this->ext_source_mgr->listAuthenticators()->pluck('name') ]);
+        return view('auth.login', [ 'idp' => $this->ext_source_mgr->listAuthenticators()->pluck('type', 'name') ]);
     }
     
     public function loginExtIdp(Request $request, $client)

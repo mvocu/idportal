@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-10">
             <div class="card">
                 <div class="card-header">Dashboard @if (isset($user)) - {{ $user->name }} @endif</div>
 
@@ -72,7 +72,7 @@
                                 <div class="col-1">{{ empty($value = $user->getFirstAttribute('employeenumber;x-'.$account['tag'])) ? "" : "ano" }}</div>
 					@if (!empty($user->getFirstAttribute('employeenumber;x-'.$account['tag']))) 
                                 <div class="col-3">tel. {{ empty($account['phone']) ? "" : $account['phone'] }}</div>
-                                <div class="col-3">mail {{ empty($account['email']) ? "" : $account['email'] }}</div>
+   		                        <div class="col-3">mail {{ empty($account['email']) ? "" : $account['email'] }}</div>
 					@if (isset($account['user_ext']))
 								<div class="col-1">
 									<a href="{{ route('ext.account.remove', [ 'user_ext' =>  $account['user_ext'] ] ) }}" class="pull-right btn btn-sm btn-small btn-danger"><span class="fa fa-remove">&nbsp;</span></a>
@@ -101,7 +101,7 @@
     
 	@if (isset($children))
     <div class="row justify-content-center mt-2">
-		<div class="col-md-8">
+		<div class="col-md-10">
 			<div class="card">
 				<div class="card-header">{{ __('Managed accounts') }}</div>
 				
