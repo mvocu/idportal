@@ -83,6 +83,7 @@ class ExternalIdPGuard implements Guard
         $this->user = null;
         $this->loggedOut = true;
         $this->updateSession("", "");
+        $this->authenticator->logout();
     }
     
     /**

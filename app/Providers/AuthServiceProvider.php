@@ -3,9 +3,11 @@
 namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Aacotroneo\Saml2\Saml2Auth as Saml2AuthBase;
 use Adldap\AdldapInterface;
 use Adldap\Laravel\Resolvers\ResolverInterface;
 use App\Auth\LdapUserResolver;
+use App\Auth\Saml2Auth;
 use App\Auth\Passwords\PasswordBrokerManager;
 use App\Auth\ExternalIdPGuard;
 use Illuminate\Support\Facades\Auth;
@@ -50,6 +52,12 @@ class AuthServiceProvider extends ServiceProvider
         $this->app->bind('auth.password.broker', function ($app) {
             return $app->make('auth.password')
                 ->broker();
+        });
+
+        // replace Saml2Auth with our version
+        $this->app->singleton(Saml2Auth::class, function($app, $name = null, $config = array()) {
+            $idpName = empty($name) ? $app->request->route('idpName') : $name;
+            return new Saml2Auth($app, $idpName, $config);  
         });
         
         // register all external identity providers in DB as authentication guards

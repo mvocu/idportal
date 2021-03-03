@@ -22,13 +22,16 @@ class EventServiceProvider extends ServiceProvider
         // 'App\Events\LdapUserUpdatedEvent' => [],
         // 'App\Events\UserIdentityFailedEvent' => [],
         // 'App\Events\UserIdentityDuplicateEvent' => [],
+        // 'Aacotroneo\Saml2\Events\Saml2LoginEvent' => [],
+        // 'Aacotroneo\Saml2\Events\Saml2LogoutEvent' => [],
     ];
 
     protected $subscribe = [
         'App\Listeners\UserExtEventSubscriber',
         'App\Listeners\UserEventSubscriber',
         'App\Listeners\IdentityEventSubscriber',
-        'App\Listeners\LoggingSubscriber'
+        'App\Listeners\LoggingSubscriber',
+        'App\Listeners\SamlEventSubscriber'
     ];
     
     /**

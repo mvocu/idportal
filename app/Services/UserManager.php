@@ -20,6 +20,7 @@ use App\Models\Database\Email;
 use App\Models\Database\UserExt;
 use App\Events\UserCreatedEvent;
 use App\Events\UserUpdatedEvent;
+use App\Http\Resources\UserResource;
 
 class UserManager implements UserManagerInterface
 {
@@ -208,10 +209,17 @@ class UserManager implements UserManagerInterface
         }
         # after removing external account, the resulting user trust level can not increase
         if($user->trust_level > $trust_level) {
-            # we are removing account from source with higher trust than the current;
+            # we are removing account from source with higher trust than the current
             $user->trust_level = $trust_level; 
             $user->save();
         }
+        $trusted_account = $user->accounts()->with('attributes')
+            ->where('ext_source_id', '!=', $source->id)
+            ->where('trust_level', '>=', $trust_level)
+            ->orderBy('trust_level', 'desc')
+            ->first();
+        $data = (new UserResource($trusted_account))->toArray(null);
+        $this->updateUserWithContacts($user, $trusted_account, $data, $user->parent);
         event(new UserUpdatedEvent($user->id));
     }
 
