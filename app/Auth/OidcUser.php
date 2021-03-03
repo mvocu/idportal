@@ -73,6 +73,18 @@ class OidcUser implements Authenticatable
             'attributes' => $this->getAttributes()]);
     }
     
+    public function getValidatorRules()
+    {
+        return [
+            'given_name' => 'required|string|max:255',
+            'family_name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:contact,email',
+            'phone_number' => 'required|string|phone|max:255|unique:contact,phone',
+            'phone_number_verified' => 'required|in:true,1',
+            'email_verified' => 'required|in:true,1'
+        ];
+    }
+    
     public function __get($name)
     {
         return isset($this->info[$name]) ? $this->info[$name] : null; 

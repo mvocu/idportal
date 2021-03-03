@@ -30,7 +30,7 @@ class HomeController extends Controller
         $this->user_ext_mgr = $user_ext_mgr;
         $this->consent_mgr = $consent_mgr;
         $this->ldap_mgr = $ldap_mgr;
-        $this->middleware(['auth.eidp:MojeID', 'auth']);
+        $this->middleware(['auth.eidp:MojeID', 'auth.eidp:eIdentita', 'auth']);
     }
 
     /**
