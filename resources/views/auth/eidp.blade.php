@@ -29,8 +29,8 @@
                         {{ csrf_field() }}
 
                         <div class="form-group row mb-0">
-                                <div class="col-4 text-right">{{ __('Identifier') }}</div>
-								<div class="col-8">{{ $resource->getId() }}</div>
+                                <div class="col-xs-4 text-right">{{ __('Identifier') }}</div>
+								<div class="col-xs-8">{{ $resource->getId() }}</div>
 						</div>
 
 						@foreach ($attributes->sortBy('order') as $name => $value) 
