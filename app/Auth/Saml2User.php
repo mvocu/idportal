@@ -105,7 +105,7 @@ class Saml2User implements Authenticatable
         $doc = new \DOMDocument();
         $doc->loadXML('<?xml version="1.0" encoding="UTF-8"?><root xmlns:eidas="http://eidas.europa.eu/">' . $value . '</root>');
         $parent = $doc->documentElement;
-        while($parent->childNodes->count() == 1) {
+        while($parent->childNodes->length == 1) {
             $parent = $parent->firstChild;
         }
         foreach($parent->childNodes as $node) {

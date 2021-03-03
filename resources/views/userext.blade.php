@@ -59,8 +59,8 @@
                                 <div class="col-md-8 font-weight-bold">{{ __('Value') }}</div>
 						</div>						
                         <div class="row">
-                                <div class="col-4 text-right">ID</div>
-                                <div class="col-8">{{ $user_ext->login }}</div>
+                                <div class="col-md-4 text-right">ID</div>
+                                <div class="col-md-8">{{ $user_ext->login }}</div>
 						</div>						
 					@foreach ($attributes as $name => $value)
                         <div class="row">

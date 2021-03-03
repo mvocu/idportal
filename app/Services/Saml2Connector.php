@@ -79,7 +79,8 @@ class Saml2Connector implements IdentityProvider
             session()->put('saml2_logout_previous', URL::previous());
             $this->auth->logout(URL::full());
         } else {
-            redirect()->setIntendedUrl($previous_url);
+            // redirect()->setIntendedUrl($previous_url);
+	    session()->put('url.intended', $previous_url);
         }
     }
     
