@@ -18,22 +18,28 @@ Route::get('/', function () {
 Auth::routes();
 
 
+Route::name('password.')
+    ->prefix('password')
+    ->group(function() {
+        Route::post('/send', 'Auth\ForgotPasswordController@sendResetCode')->name('send');
+        // ...redirects to...
+        Route::get('/token', 'Auth\ResetPasswordController@showResetForm')->name('token');
+        
+        Route::get('/eidp/{client}', 'Auth\ResetPasswordController@showExtIdpForm')->name('eidp');
+        // posts to
+        Route::post('/eidp/{client}', 'Auth\ResetPasswordController@resetExtIdp')->name('eidp.update');
 
-Route::post('/password/send', 'Auth\ForgotPasswordController@sendResetCode')->name('password.send');
-// ...redirects to...
-Route::get('/password/token', 'Auth\ResetPasswordController@showResetForm')->name('password.token');
-
-Route::get('/password/eidp/{client}', 'Auth\ResetPasswordController@showExtIdpForm')->name('password.eidp');
-// posts to
-Route::post('/password/eidp/{client}', 'Auth\ResetPasswordController@resetExtIdp')->name('password.eidp.update');
+        Route::get('/change/{target?}', 'Auth\PasswordController@showPasswordForm')->name('change');
+        // posts to
+        Route::post('/change/{target?}', 'Auth\PasswordController@changePassword')->name('change.update');
+        
+    });
+    
 
 Route::get('/activate/token/{id}/{token?}', 'Auth\ActivateController@showActivateForm')->name('activate.token');
 // posts to
 Route::post('/activate/activate', 'Auth\ActivateController@activate')->name('activate.activate');
 
-Route::get('/password/change/{target?}', 'Auth\PasswordController@showPasswordForm')->name('password.change');
-// posts to
-Route::post('/password/change/{target?}', 'Auth\PasswordController@changePassword')->name('password.change.update');
 
 Route::get('/home', 'HomeController@index')->name('home');
 

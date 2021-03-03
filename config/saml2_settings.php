@@ -31,7 +31,7 @@ return $settings = array(
      * which middleware group to use for the saml routes
      * Laravel 5.2 will need a group which includes StartSession
      */
-    'routesMiddleware' => [],
+    'routesMiddleware' => ['saml'],
 
     /**
      * Indicates how the parameters will be
@@ -47,12 +47,12 @@ return $settings = array(
     /**
      * Where to redirect after login if no other option was provided
      */
-    'loginRoute' => '/',
+    'loginRoute' => '/home',
 
     /**
      * Where to redirect after login if no other option was provided
      */
-    'errorRoute' => '/',
+    'errorRoute' => '/login',
 
     // If 'proxyVars' is True, then the Saml lib will trust proxy headers
     // e.g X-Forwarded-Proto / HTTP_X_FORWARDED_PROTO. This is useful if
@@ -67,5 +67,5 @@ return $settings = array(
      * a `$returnTo` argument), this value allows you to pass your own controller, and have
      * it used in the routes definition.
      */
-     // 'saml2_controller' => '',
+     'saml2_controller' => 'App\Http\Controllers\Auth\Saml2Controller',
 );

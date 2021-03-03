@@ -15,6 +15,12 @@
                         </div>
                     @endif
 
+                    @if (session('saml2_error'))
+                        <div class="alert alert-danger" role="alert">
+                            {{ session('saml2_error')['error'][0] }} : {{ implode(': ', session('saml2_error_detail')) }}
+                        </div>
+                    @endif
+					
                     @if ($errors->has('failure'))
                         <div class="alert alert-danger" role="alert">
                             {{ $errors->first('failure') }}
@@ -83,10 +89,10 @@
   				<div class="panel-body mt-2">
 					<div class="form-group row">
 						@if (!empty($idp))
-						@foreach ($idp as $name) 
-							<div class="col-md-4">
+						@foreach ($idp as $name => $type) 
+							<div class="col-md-3">
 								<a class="btn btn-social" href="{{ route('login.eidp', ['client' => $name ]) }}">
-								   <span class="fa fa-openid"></span> 
+								   <span class="fa fa-{{ empty($icon = array('openid' => 'openid', 'saml2' => 'key')[strtolower($type)]) ? 'lock' : $icon }}"></span> 
 								   {{ $name }}
 								</a>
 							</div>

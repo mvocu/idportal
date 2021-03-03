@@ -21,7 +21,7 @@ return $settings = array(
     'strict' => true, //@todo: make this depend on laravel config
 
     // Enable debug mode (to print errors)
-    'debug' => env('APP_DEBUG', false),
+    'debug' => true, // env('APP_DEBUG', false),
 
     // Service Provider Data that we are deploying
     'sp' => array(
@@ -76,12 +76,12 @@ return $settings = array(
             'url' => env('SAML2_'.$this_idp_env_id.'_IDP_SL_URL', $idp_host . '/saml2/idp/SingleLogoutService.php'),
         ),
         // Public x509 certificate of the IdP
-        'x509cert' => env('SAML2_'.$this_idp_env_id.'_IDP_x509', 'MIID/TCCAuWgAwIBAgIJAI4R3WyjjmB1MA0GCSqGSIb3DQEBCwUAMIGUMQswCQYDVQQGEwJBUjEVMBMGA1UECAwMQnVlbm9zIEFpcmVzMRUwEwYDVQQHDAxCdWVub3MgQWlyZXMxDDAKBgNVBAoMA1NJVTERMA8GA1UECwwIU2lzdGVtYXMxFDASBgNVBAMMC09yZy5TaXUuQ29tMSAwHgYJKoZIhvcNAQkBFhFhZG1pbmlAc2l1LmVkdS5hcjAeFw0xNDEyMDExNDM2MjVaFw0yNDExMzAxNDM2MjVaMIGUMQswCQYDVQQGEwJBUjEVMBMGA1UECAwMQnVlbm9zIEFpcmVzMRUwEwYDVQQHDAxCdWVub3MgQWlyZXMxDDAKBgNVBAoMA1NJVTERMA8GA1UECwwIU2lzdGVtYXMxFDASBgNVBAMMC09yZy5TaXUuQ29tMSAwHgYJKoZIhvcNAQkBFhFhZG1pbmlAc2l1LmVkdS5hcjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMbzW/EpEv+qqZzfT1Buwjg9nnNNVrxkCfuR9fQiQw2tSouS5X37W5h7RmchRt54wsm046PDKtbSz1NpZT2GkmHN37yALW2lY7MyVUC7itv9vDAUsFr0EfKIdCKgxCKjrzkZ5ImbNvjxf7eA77PPGJnQ/UwXY7W+cvLkirp0K5uWpDk+nac5W0JXOCFR1BpPUJRbz2jFIEHyChRt7nsJZH6ejzNqK9lABEC76htNy1Ll/D3tUoPaqo8VlKW3N3MZE0DB9O7g65DmZIIlFqkaMH3ALd8adodJtOvqfDU/A6SxuwMfwDYPjoucykGDu1etRZ7dF2gd+W+1Pn7yizPT1q8CAwEAAaNQME4wHQYDVR0OBBYEFPsn8tUHN8XXf23ig5Qro3beP8BuMB8GA1UdIwQYMBaAFPsn8tUHN8XXf23ig5Qro3beP8BuMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAGu60odWFiK+DkQekozGnlpNBQz5lQ/bwmOWdktnQj6HYXu43e7sh9oZWArLYHEOyMUekKQAxOK51vbTHzzw66BZU91/nqvaOBfkJyZKGfluHbD0/hfOl/D5kONqI9kyTu4wkLQcYGyuIi75CJs15uA03FSuULQdY/Liv+czS/XYDyvtSLnu43VuAQWN321PQNhuGueIaLJANb2C5qq5ilTBUw6PxY9Z+vtMjAjTJGKEkE/tQs7CvzLPKXX3KTD9lIILmX5yUC3dLgjVKi1KGDqNApYGOMtjr5eoxPQrqDBmyx3flcy0dQTdLXud3UjWVW3N0PYgJtw5yBsS74QTGD4='),
+        'x509cert' => env('SAML2_'.$this_idp_env_id.'_IDP_x509', ''),
         /*
          *  Instead of use the whole x509cert you can use a fingerprint
          *  (openssl x509 -noout -fingerprint -in "idp.crt" to generate it)
          */
-        // 'certFingerprint' => '',
+        'certFingerprint' => env('SAML2_'.$this_idp_env_id.'_IDP_x509_HASH', ''),
     ),
 
 
@@ -103,15 +103,15 @@ return $settings = array(
 
         // Indicates whether the <samlp:AuthnRequest> messages sent by this SP
         // will be signed.              [The Metadata of the SP will offer this info]
-        'authnRequestsSigned' => false,
+        'authnRequestsSigned' => true,
 
         // Indicates whether the <samlp:logoutRequest> messages sent by this SP
         // will be signed.
-        'logoutRequestSigned' => false,
+        'logoutRequestSigned' => true,
 
         // Indicates whether the <samlp:logoutResponse> messages sent by this SP
         // will be signed.
-        'logoutResponseSigned' => false,
+        'logoutResponseSigned' => true,
 
         /* Sign the Metadata
          False || True (use sp certs) || array (
@@ -136,6 +136,8 @@ return $settings = array(
         // this SP to be encrypted.
         'wantNameIdEncrypted' => false,
 
+        'wantAssertionsEncrypted' => true, // MUST be enabled if SSL/HTTPs is disabled
+        
         // Authentication context.
         // Set to false and no AuthContext will be sent in the AuthNRequest,
         // Set true or don't present thi parameter and you will get an AuthContext 'exact' 'urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport'

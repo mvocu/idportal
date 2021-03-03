@@ -18,6 +18,7 @@ use App\Interfaces\ConsentManager as ConsentManagerInterface;
 use App\Interfaces\SynchronizationManager as SynchronizationManagerInterface;
 use App\Interfaces\ActivationManager as ActivationManagerInterface;
 use App\Services\ContactManager;
+use App\Services\Saml2Connector;
 use App\Services\UserExtManager;
 use App\Services\UserManager;
 use App\Services\ExtSourceManager;
@@ -57,6 +58,7 @@ class AppServiceProvider extends ServiceProvider
         'Helios' => HeliosConnector::class,
         'PortalObcana' => PortalObcanaConnector::class,
         'OpenID' => OpenIDConnector::class,
+        'SAML2' => Saml2Connector::class,
         'Internal' => InternalConnector::class,
         // other services
         ActivationManagerInterface::class => ActivationManager::class

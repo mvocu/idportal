@@ -70,7 +70,7 @@ class ExtSourceManager implements ExtSourceManagerInterface
             ['identity_provider', '=', 1]
         ])->first();
         $config = json_decode($idp_s->configuration, true);
-        $idp_c = $this->app->makeWith($idp_s->type, [ 'config' => $config]);
+        $idp_c = $this->app->makeWith($idp_s->type, [ 'name' => $name, 'config' => $config]);
         return $idp_c;
     }
 

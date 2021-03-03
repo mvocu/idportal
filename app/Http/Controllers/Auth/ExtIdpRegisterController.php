@@ -39,30 +39,40 @@ class ExtIdpRegisterController extends Controller
         $euser = $this->user_ext_mgr->getUser($idp_s, $user->getResource());
         $attributes =  $this->user_ext_mgr->mapUserAttributes($idp_s, $user->getResource());
         $data = $user->getAttributes();
+
         if(is_null($auth_user)) {
             if(!is_null($euser)) {
                 # this external identity already has been registered, redirect home 
                 return redirect()->route('home')
                         ->with('status', __('Your external account has already been registered.'));
             }
-            $validator = $this->validator($data);
+            $validator = $this->validator($data, $user);
             if(!$validator->passes()) {
                 $failed = $validator->failed();
                 if(array_key_exists('email', $failed) && array_key_exists('Unique', $failed['email']) ||
                     array_key_exists('phone_number', $failed) &&  array_key_exists('Unique', $failed['phone_number'])) {
-                        return view('auth.eidp', [ 'idp' => $client, 'attributes' => $attributes,
+                        return view('auth.eidp', [ 
+                            'idp' => $client, 
+                            'attributes' => $attributes,
+                            'resource' => $user->getResource(),
                             'invalid' => $validator->errors()
                             ->add('failure', __("There already is an account using these contacts. Please login and add external identity."))
                         ]);
                 }
-                return view('auth.eidp', [ 'idp' => $client, 'attributes' => $attributes, 
+                return view('auth.eidp', [ 
+                    'idp' => $client, 
+                    'attributes' => $attributes, 
+                    'resource' => $user->getResource(),
                     'invalid' => $validator->errors()
                         ->add('failure', __("External account can not be registered, it contains invalid data."))
                 ]);
             }
         } else {
             if(!is_null($euser)) {
-                return view('auth.eidp', [ 'idp' => $client, 'attributes' => $attributes,
+                return view('auth.eidp', [ 
+                    'idp' => $client, 
+                    'attributes' => $attributes,
+                    'resource' => $user->getResource(),
                     'invalid' => new MessageBag(['failure' => __("Identity already registered")])
                 ]);
             }
@@ -71,14 +81,15 @@ class ExtIdpRegisterController extends Controller
             'idp' => $client, 
             'attributes' => $attributes, 
             'invalid' => new MessageBag(), 
-            'user' => $auth_user 
+            'user' => $auth_user,
+            'resource' => $user->getResource(),
         ]);   
     }
 
     public function register(Request $request, $client) {
         $user = Auth::guard($client)->user();
         $data = $user->getAttributes();
-        $this->validator($data)->validate();
+        $this->validator($data, $user)->validate();
         $idp_s = $this->getExtSource($client);
         
         $user = $this->create($idp_s, $user->getResource());
@@ -114,7 +125,7 @@ class ExtIdpRegisterController extends Controller
                 ->withErrors(['failure' => __('Target user not found')]);
         }
         $data = $user->getAttributes();
-        $validator = $this->validator($data);
+        $validator = $this->validator($data, $user);
         if($validator->fails()) {
             $data = $validator->valid();
         }
@@ -186,16 +197,9 @@ class ExtIdpRegisterController extends Controller
      * @param  array  $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    protected function validator(array $data)
+    protected function validator(array $data, $user)
     {
-        return Validator::make($data, [
-            'given_name' => 'required|string|max:255',
-            'family_name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:contact,email',
-            'phone_number' => 'required|string|phone|max:255|unique:contact,phone',
-            'phone_number_verified' => 'required|in:true,1',
-            'email_verified' => 'required|in:true,1'
-        ]);
+        return Validator::make($data, $user->getValidatorRules());
     }
 
     protected function getExtSource($client) 
