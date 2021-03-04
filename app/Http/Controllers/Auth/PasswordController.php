@@ -58,4 +58,9 @@ class PasswordController extends Controller
             'password' => 'required|confirmed|min:6',
         ];
     }
+    
+    protected function guard()
+    {   
+        return Auth::guard();
+    }
 }
