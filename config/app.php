@@ -80,7 +80,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => 'cs',
 
     /*
     |--------------------------------------------------------------------------
@@ -165,6 +165,7 @@ return [
         /*
          * Package Service Providers...
          */
+	STS\SocialiteAuth\SocialiteAuthServiceProvider::class,
 
         /*
          * Application Service Providers...
