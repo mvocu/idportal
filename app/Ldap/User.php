@@ -2,22 +2,22 @@
 
 namespace App\Ldap;
 
-use LdapRecord\Models\FreeIPA\User as Model;
+use LdapRecord\Models\ActiveDirectory\User as Model;
 use STS\SocialiteAuth\Contracts\SocialiteAuthenticatable;
-use Illuminate\Auth\Authenticatable;
+use LdapRecord\Models\Concerns\CanAuthenticate;
 
 class User extends Model implements SocialiteAuthenticatable
 {
-    use Authenticatable;
-    
-	public function getSocialiteIdentifierName()
-	{
-    		return 'email';
-	}
+    use CanAuthenticate;
+
+    public function getSocialiteIdentifierName()
+    {
+   	return 'email';
+    }
  
-	public function getSocialiteIdentifier()
-	{
-    		return $this->email;
-	}
+    public function getSocialiteIdentifier()
+    {
+   	return $this->email;
+    }
 
 }
