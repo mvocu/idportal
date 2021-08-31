@@ -27,7 +27,7 @@ class HomeController extends Controller
     {
         return view('home', [
             'aduser' => Auth::user(), 
-            'oidcuser' => Socialite::driver(config('socialite-auth.driver'))->user()::guard('socialite')->getUser() 
+            'oidcuser' => session('socialite-auth.user') 
         ]);
     }
 }

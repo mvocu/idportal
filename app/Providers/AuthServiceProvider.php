@@ -28,18 +28,20 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-	SessionGuard::macro("attemptFromSocialite", function(User $user, $socialiteFieldName) { 
+        SessionGuard::macro("attemptFromSocialite", function (User $user, $socialiteFieldName) {
 
-	    $modelId = $user[$socialiteFieldName];
-	    $modelId = str_replace("zstrebotov.cz", "zstrebotov.local", $modelId);
-		
+            session()->put('socialite-auth.user', $user->toArray());
+            
+            $modelId = $user[$socialiteFieldName];
+            $modelId = str_replace("zstrebotov.cz", "zstrebotov.local", $modelId);
+
             // First try to find a match
             $userModel = $this->provider->retrieveByCredentials([
                 "userprincipalname" => $modelId
             ]);
 
             // No match? See if we have a custom handler for new users
-            if(!$userModel) {
+            if (! $userModel) {
                 $userModel = SocialiteAuth::handleNewUser($user);
             }
 
@@ -49,7 +51,7 @@ class AuthServiceProvider extends ServiceProvider
             }
 
             return false;
-	});
+        });
 
         //
     }
