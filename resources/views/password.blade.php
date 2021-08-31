@@ -7,13 +7,21 @@
 			<div class="card">
 				<div class="card-header">{{ __('Account information') }}</div>
 				<div class="card-body">
-					<div class="row">
-						<div class="col-xs-4 bg-light">{{ __('Username') }}</div>
-						<div class="col-xs-7">{{ Auth::user()->getFirstAttribute('samaccountname') }}</div>
+					<div class="row mt-1">
+						<div class="col-4 bg-light">{{ __('Username') }}</div>
+						<div class="col-7">{{ Auth::user()->getFirstAttribute('samaccountname') }}</div>
 					</div>
-					<div class="row">
-						<div class="col-xs-4 bg-light">{{ __('E-mail') }}</div>
-						<div class="col-xs-7">{{ Auth::user()->getFirstAttribute('mail') }}</div>
+					<div class="row mt-1">
+						<div class="col-4 bg-light">{{ __('Last logon') }}</div>
+						<div class="col-7">{{ Auth::user()->getFirstAttribute('lastlogon') }}</div>
+					</div>
+					<div class="row mt-1">
+						<div class="col-4 bg-light">{{ __('Last password change') }}</div>
+						<div class="col-7">{{ Auth::user()->getFirstAttribute('pwdlastset') }}</div>
+					</div>
+					<div class="row mt-1">
+						<div class="col-4 bg-light">{{ __('Account expires') }}</div>
+						<div class="col-7">{{ Auth::user()->getFirstAttribute('accountexpires') }}</div>
 					</div>
 				</div>
 			</div>

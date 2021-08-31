@@ -5,5 +5,11 @@
 	"Password" 		: "Heslo",
 	"Confirm Password" : "Heslo (potvrzení)",
 	"Change Password" : "Změnit heslo",
+	"Account information" : "Informace o účtu",
+	"Username"		: "Přihlašovací jméno",
+	"E-mail"		: "E-mail",
+	"Last logon"	: "Poslední přihlášení",
+	"Last password change" : "Poslední změna hesla",
+	"Account expires" : "Platný do",
 	"Logout"		: "Odhlásit"
 }
