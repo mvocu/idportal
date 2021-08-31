@@ -2,7 +2,24 @@
 
 @section('content')
 <div class="container">
-	<div class="row justify-content-center">
+	<div class="row justify-content-center mt-5">
+		<div class="col-md-10">
+			<div class="card">
+				<div class="card-header">{{ __('Account information') }}</div>
+				<div class="card-body">
+					<div class="row">
+						<div class="col-xs-4 bg-light">{{ __('Username') }}</div>
+						<div class="col-xs-7">{{ Auth::user()->getFirstAttribute('samaccountname') }}</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-4 bg-light">{{ __('E-mail') }}</div>
+						<div class="col-xs-7">{{ Auth::user()->getFirstAttribute('mail') }}</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row justify-content-center mt-5">
 		<div class="col-md-10">
 			<div class="card">
 				<div class="card-header">{{ __('Set New Password') }}</div>
