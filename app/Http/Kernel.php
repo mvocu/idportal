@@ -71,12 +71,13 @@ class Kernel extends HttpKernel
      *
      */
     protected $middlewarePriority = [
-	\STS\SocialiteAuth\Authenticate::class,
     	\Illuminate\Cookie\Middleware\EncryptCookies::class,
     	\Illuminate\Session\Middleware\StartSession::class,
     	\Illuminate\View\Middleware\ShareErrorsFromSession::class,
     	\Illuminate\Contracts\Auth\Middleware\AuthenticatesRequests::class,
     	\Illuminate\Routing\Middleware\ThrottleRequests::class,
+	\STS\SocialiteAuth\Authenticate::class,
+	\App\Http\Middleware\Authenticate::class,
     	\Illuminate\Session\Middleware\AuthenticateSession::class,
     	\Illuminate\Routing\Middleware\SubstituteBindings::class,
     	\Illuminate\Auth\Middleware\Authorize::class,
