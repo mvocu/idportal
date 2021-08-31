@@ -1,4 +1,9 @@
 {
 	"Continue" 		: "Pokračovat",
+	"Set New Password" : "Nastavení nového hesla",
+	"Please enter new password" : "Prosím zadejte nové heslo",
+	"Password" 		: "Heslo",
+	"Confirm Password" : "Heslo (potvrzení)",
+	"Change Password" : "Změnit heslo",
 	"Logout"		: "Odhlásit"
 }
