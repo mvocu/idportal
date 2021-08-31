@@ -33,11 +33,12 @@ class SetADPasswordController extends Controller
     public function changePassword(Request $request)
     {
         $this->validate($request, $this->rules());
-
+        $pw = $request->input('password');
+        
         try {
             $user = Auth::user();
-            $pw = $request->input('password');
             $user->setPasswordAttribute($pw);
+            $user->save();
         } catch (\Exception $e) {
             return back()
                 ->withErrors(['failure' => __('Error changing password: :msg', ['msg' => $e->getMessage()])]);
