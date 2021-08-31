@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Laravel\Socialite\Facades\Socialite;
 
 class HomeController extends Controller
 {
@@ -23,6 +25,9 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        return view('home', [
+            'aduser' => Auth::user(), 
+            'oidcuser' => Socialite::driver(config('socialite-auth.driver'))->user()::guard('socialite')->getUser() 
+        ]);
     }
 }
