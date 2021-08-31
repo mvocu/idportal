@@ -20,3 +20,6 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::get('/password', [App\Http\Controllers\SetADPasswordController::class, 'showPasswordForm'])->name('adpassword');
+Route::post('/password', [App\Http\Controllers\SetADPasswordController::class, 'changePassword'])->name('adpassword.set');
