@@ -30,7 +30,7 @@ class AuthServiceProvider extends ServiceProvider
 
         SessionGuard::macro("attemptFromSocialite", function (User $user, $socialiteFieldName) {
 
-            session()->put('socialite-auth.user', $user->toArray());
+            session()->put('socialite-auth.user', $user->getRaw());
             
             $modelId = $user[$socialiteFieldName];
             $modelId = str_replace("zstrebotov.cz", "zstrebotov.local", $modelId);
