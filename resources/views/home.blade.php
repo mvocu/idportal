@@ -14,20 +14,25 @@
     </div>
 
     <div class="row justify-content-center mt-5">
-        <div class="col-md-10">
+        <div class="col-md-6">
             <div class="card">
                 <div class="card-header">{{ __('Google Workspace Account') }}</div>
 
                 <div class="card-body">
-
+					<div class="row mt-1">
+						<div class="col-4 bg-light">{{ __('Name') }}</div>
+						<div class="col-7">{{ $oidcuser['name'] }}</div>
+					</div>
+					<div class="row mt-1">
+						<div class="col-4 bg-light">{{ __('E-mail') }}</div>
+						<div class="col-7">{{ $oidcuser['email'] }}</div>
+					</div>
                 </div>
 
             </div>
         </div>
-    </div>
 
-	<div class="row justify-content-center mt-5">
-		<div class="col-md-10">
+		<div class="col-md-6">
 			<div class="card">
 				<div class="card-header">{{ __('AD Account information') }}</div>
 				<div class="card-body">
