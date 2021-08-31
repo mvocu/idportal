@@ -6,10 +6,13 @@
 	"Confirm Password" : "Heslo (potvrzení)",
 	"Change Password" : "Změnit heslo",
 	"Account information" : "Informace o účtu",
+	"AD Account information" : "Informace o účtu Windows",
 	"Username"		: "Přihlašovací jméno",
 	"E-mail"		: "E-mail",
 	"Last logon"	: "Poslední přihlášení",
 	"Last password change" : "Poslední změna hesla",
 	"Account expires" : "Platný do",
+	"Google Workspace Account" : "Účet Google Workspace",
+	"Name" 			: "Jméno",
 	"Logout"		: "Odhlásit"
 }
