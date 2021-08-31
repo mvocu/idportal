@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SetADPasswordController extends Controller
 {
@@ -31,6 +32,26 @@ class SetADPasswordController extends Controller
      */
     public function changePassword(Request $request)
     {
-        return redirect('/home');
+        $this->validate($request, $this->rules());
+
+        try {
+            $user = Auth::user();
+            $pw = $request->input('password');
+            $user->setPasswordAttribute($pw);
+        } catch (\Exception $e) {
+            return back()
+                ->withErrors(['failure' => __('Error changing password: :msg', ['msg' => $e->getMessage()])]);
+        }
+        
+        return redirect()
+            ->route('home')
+            ->with(['status' => __('Password changed.')]);
+    }
+    
+    protected function rules()
+    {
+        return [
+          'password' => ['required', 'confirmed'],  
+        ];
     }
 }

@@ -2,6 +2,13 @@
 
 @section('content')
 <div class="container">
+
+                    @if ($errors->has('failure'))
+                        <div class="alert alert-danger" role="alert">
+                            {{ $errors->first('failure') }}
+                        </div>
+                    @endif
+
 	<div class="row justify-content-center mt-5">
 		<div class="col-md-10">
 			<div class="card">

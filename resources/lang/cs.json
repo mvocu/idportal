@@ -14,5 +14,7 @@
 	"Account expires" : "Platný do",
 	"Google Workspace Account" : "Účet Google Workspace",
 	"Name" 			: "Jméno",
+	"Password changed" : "Nové heslo bylo nastaveno",
+	"Error changing password: :msg" : "Chyba při nastavení hesla: :msg",
 	"Logout"		: "Odhlásit"
 }
