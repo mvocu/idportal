@@ -81,7 +81,7 @@ class Saml2User implements Authenticatable
             'id' => $this->getAuthIdentifier(),
             'parent' => null,
             'active' => $active,
-            'trust_level' => 0,
+            'trust_level' => 64,
             'attributes' => $this->getAttributes()]);
     }
 
@@ -90,8 +90,8 @@ class Saml2User implements Authenticatable
         return [
             'CurrentGivenName' => 'required|string|max:255',
             'CurrentFamilyName' => 'required|string|max:255',
-            'eMail' => 'required|string|email|max:255|unique:contact,email',
-            'PhoneNumber' => 'required|string|phone|max:255|unique:contact,phone',
+            'eMail' => 'sometimes|required|string|email|max:255|unique:contact,email',
+            'PhoneNumber' => 'sometimes|required|string|phone|max:255|unique:contact,phone',
         ];
     }
     

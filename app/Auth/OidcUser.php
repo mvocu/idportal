@@ -78,10 +78,10 @@ class OidcUser implements Authenticatable
         return [
             'given_name' => 'required|string|max:255',
             'family_name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:contact,email',
-            'phone_number' => 'required|string|phone|max:255|unique:contact,phone',
-            'phone_number_verified' => 'required|in:true,1',
-            'email_verified' => 'required|in:true,1'
+            'email' => 'sometimes|required|string|email|max:255|unique:contact,email',
+            'phone_number' => 'sometimes|required|string|phone|max:255|unique:contact,phone',
+            'phone_number_verified' => 'required_with:phone_number|in:true,1',
+            'email_verified' => 'required_with:email|in:true,1'
         ];
     }
     
