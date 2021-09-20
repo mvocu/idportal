@@ -21,9 +21,9 @@ class IdentityManager implements IdentityManagerInterface
     protected $identityRequirements = [
         'first_name' => 'sometimes|required|string',
         'last_name' => 'sometimes|required|string',
-        'phones' => 'required_without:emails|array',
+        'phones' => 'required_without_all:emails,verified_identity|array',
         'phones.*.phone' => 'required|phone|unique:contact,phone',
-        'emails' => 'required_without:phones|array',
+        'emails' => 'required_without_all:phones,verified_identity|array',
         'emails.*.email' => 'required|email|unique:contact,email',
         'residency' => 'sometimes|required|array',
         'residency.street' => 'required_with:residency|string',
@@ -94,6 +94,9 @@ class IdentityManager implements IdentityManagerInterface
         }
         
         $user_ext_data = $this->user_ext_mgr->getUserResource($user_ext)->toArray(null);
+        if($user_ext->trust_level > 0 && $user_ext->extSource->identity_provider == 1) {
+            $user_ext_data['verified_identity'] = true;
+        }
         $users = $this->user_mgr->findUser($user_ext_data);
         if($users->count() > 1) {
             // more users were found for this single external record

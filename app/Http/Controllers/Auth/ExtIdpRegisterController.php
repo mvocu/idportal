@@ -64,7 +64,7 @@ class ExtIdpRegisterController extends Controller
                     'attributes' => $attributes, 
                     'resource' => $user->getResource(),
                     'invalid' => $validator->errors()
-                        ->add('failure', __("External account can not be registered, it contains invalid data."))
+                        ->add('failure', __("External account can not be registered, the identity provider has not provided sufficient data."))
                 ]);
             }
         } else {
