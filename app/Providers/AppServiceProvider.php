@@ -6,6 +6,14 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
+
+    public $bindings = [
+        // identity provider for OIDC guard
+        'cas' => \App\Services\OidcConnector::class,
+    ];
+    
+    
+    
     /**
      * Register any application services.
      *

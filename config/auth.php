@@ -14,7 +14,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'web',
+        'guard' => 'cas',
         'passwords' => 'users',
     ],
 
@@ -39,6 +39,13 @@ return [
         'web' => [
             'driver' => 'session',
             'provider' => 'users',
+        ],
+        'cas' => [
+            'driver' => 'oidc', // driver is registered in AuthServiceProvider
+            'provider' => 'cas', // provider is bound into container in AppServiceProvider
+            'url' => 'https://' . env('OIDC_SERVER', 'localhost') . '/cas/oidc/',
+            'client_id' => env('OIDC_CLIENT_ID'),
+            'client_secret' => env('OIDC_CLIENT_SECRET'),
         ],
     ],
 

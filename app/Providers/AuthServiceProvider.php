@@ -3,7 +3,10 @@
 namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Request;
+use App\Auth\OidcGuard;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -25,6 +28,12 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        // register OIDC guard using CAS OIDC server
+        if(!$this->app->runningInConsole()) {
+            Auth::extend('oidc', function($app, $name, $config) {
+                return new OidcGuard($name, $this->app->makeWith($config['provider'], ['config' => $config]), Request::getSession());
+            });
+        }
+
     }
 }
