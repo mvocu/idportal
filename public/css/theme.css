@@ -1,0 +1,31 @@
+:root {
+  --cas-theme-primary-bg: rgb(21, 62, 80, 0.2);
+  --cas-theme-primary: #a22428; /* #1b304a; */
+  --mdb-primary: var(--cas-theme-primary, #1b304a);
+  --cas-theme-primary-title-color: #cc2c32;
+}
+
+body {
+  background: url("../images/UK-background.png") fixed center top repeat-y var(--cas-theme-primary-bg);
+}
+
+.navbar {
+  --mdb-navbar-padding-x: 1rem;
+  --mdb-navbar-padding-y: 0rem;
+  --mdb-navbar-padding-top: 0rem;
+}
+
+.navbar-title {
+  padding-left: 1em;
+  padding-top: 0.25rem;
+  color: rgb(0, 0, 0);
+  font-size: 1.25rem;
+}
+.navbar-title .subtitle {
+  display: block;
+  position: relative;
+  bottom: 0.5rem;
+  overflow: visible;
+  font-size: small;
+  color: var(--cas-theme-primary-title-color);
+}
