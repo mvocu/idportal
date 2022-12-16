@@ -31,7 +31,7 @@ class AuthServiceProvider extends ServiceProvider
         // register OIDC guard using CAS OIDC server
         if(!$this->app->runningInConsole()) {
             Auth::extend('oidc', function($app, $name, $config) {
-                return new OidcGuard($name, $this->app->makeWith($config['provider'], ['config' => $config]), Request::getSession());
+                return new OidcGuard($name, $this->app->makeWith($config['idp'], ['config' => $config]), Request::getSession());
             });
         }
 
