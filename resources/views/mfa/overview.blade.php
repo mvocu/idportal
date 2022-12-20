@@ -2,6 +2,6 @@
 
 @section('content')
 
-Home
+<pre>{{ var_dump(Auth::user()) }}</pre>
 
 @endsection

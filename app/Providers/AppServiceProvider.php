@@ -9,10 +9,13 @@ class AppServiceProvider extends ServiceProvider
 
     public $bindings = [
         // identity provider for OIDC guard
-        'cas' => \App\Services\OidcConnector::class,
+        'cas.idp' => \App\Services\OidcConnector::class,
     ];
     
     
+    public $singletons = [
+        'cas.mgr' => \App\Services\CasServerConnector::class,
+    ];
     
     /**
      * Register any application services.

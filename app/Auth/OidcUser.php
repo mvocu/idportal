@@ -2,8 +2,9 @@
 namespace App\Auth;
 
 use Illuminate\Contracts\Auth\Authenticatable;
+use App\Interfaces\AuthenticationInfo;
 
-class OidcUser implements Authenticatable
+class OidcUser implements Authenticatable, AuthenticationInfo
 {
     protected $idToken;
     protected $accessToken;
@@ -20,7 +21,7 @@ class OidcUser implements Authenticatable
     
     public function getAuthIdentifier()
     {
-        return $this->claims->{$this->getAuthIdentifierName()};    
+        return $this->claims[$this->getAuthIdentifierName()];    
     }
 
     public function getRememberToken()
@@ -51,6 +52,11 @@ class OidcUser implements Authenticatable
     public function getAttributes()
     {
         return $this->info;
+    }
+    
+    public function getAuthMethod() 
+    {
+        return $this->claims['amr'];
     }
     
     public function __get($name)

@@ -15,7 +15,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-})->middleware('auth');
+})->middleware(['auth', 'model']);
 
 
 Route::get('/login', 'App\Http\Controllers\Auth\LoginController@login')->name('login');
+Route::post('/logout', 'App\Http\Controllers\Auth\LoginController@login')->name('logout');
+
+Route::name('mfa')
+->prefix('mfa')
+->group(function() {
+    Route::get('/', 'App\Http\Controllers\MfaController@showOverview')->name('home'); 
+});
