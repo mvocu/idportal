@@ -5,7 +5,7 @@ use App\Models\Ldap\User as LdapUser;
 
 trait HasLdapUser
 {
-    protected LdapUser $ldap_user;
+    protected $ldap_user;
 
     public function getLdapUser()
     {

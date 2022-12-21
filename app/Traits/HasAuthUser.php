@@ -6,7 +6,7 @@ use Illuminate\Contracts\Auth\Authenticatable;
 trait HasAuthUser
 {
 
-    protected Authenticatable $auth_user;
+    protected $auth_user;
     
     public function getAuthIdentifier()
     {
