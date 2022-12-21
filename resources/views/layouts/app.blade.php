@@ -25,8 +25,8 @@
 <body>
     <div id="app">
         <nav class="navbar navbar-expand-md fixed-top bg-white shadow-sm-strong">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="{{ url('/') }}">
+            <div class="container-fluid px-0">
+                <a class="navbar-brand flex-shrink-1" href="{{ url('/') }}">
 					<img src="{{ asset('images/UK-logo.png') }}" alt="" width="48" height="48" class="d-inline-block align-text-top" />
                 	<span class="visually-hidden">{{ config('app.name', 'Laravel') }}</span>
                 <span class="navbar-title">
