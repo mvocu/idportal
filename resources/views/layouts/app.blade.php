@@ -27,7 +27,7 @@
         <nav class="navbar navbar-expand-md fixed-top bg-white shadow-sm-strong">
             <div class="container-fluid">
                 <a class="navbar-brand" href="{{ url('/') }}">
-					<img src="{{ url('/images/UK-logo.png') }}" alt="" width="48" height="48" class="d-inline-block align-text-top" />
+					<img src="{{ asset('images/UK-logo.png') }}" alt="" width="48" height="48" class="d-inline-block align-text-top" />
                 	<span class="visually-hidden">{{ config('app.name', 'Laravel') }}</span>
                 <span class="navbar-title">
                 	<span>{{ __('User profile') }}</span><br/>
