@@ -85,7 +85,7 @@
             </div>
         </nav>
 
-        <main class="d-flex flex-md-row flex-column container-fluid pt-5 justify-content-center" style="margin-top: 64px" id="content">
+        <main class="d-flex flex-md-row flex-column container-fluid justify-content-center" style="margin-top: 64px" id="content">
 	            @yield('content')
         </main>
 
