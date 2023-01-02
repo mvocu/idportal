@@ -3,6 +3,6 @@ namespace App\Interfaces;
 
 interface CasServerInterface
 {
-    public function request(... $args);
+    public function request($method, $uri);
 }
 
