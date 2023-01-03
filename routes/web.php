@@ -19,6 +19,7 @@ Route::get('/', function () {
 
 
 Route::get('/login', 'App\Http\Controllers\Auth\LoginController@login')->name('login');
+Route::get('/stepup/{method}', 'App\Http\Controllers\Auth\LoginController@stepup')->name('stepup');
 Route::post('/logout', 'App\Http\Controllers\Auth\LoginController@login')->name('logout');
 
 Route::name('mfa.')

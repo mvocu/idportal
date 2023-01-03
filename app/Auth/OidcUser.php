@@ -59,6 +59,11 @@ class OidcUser implements Authenticatable, AuthenticationInfo
         return $this->claims['amr'];
     }
     
+    public function getDisplayName()
+    {
+        return $this->name;
+    }
+    
     public function __get($name)
     {
         return isset($this->info[$name]) ? $this->info[$name] : null; 

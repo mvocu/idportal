@@ -30,6 +30,17 @@ class LoginController extends Controller
         
         return back()->withErrors([]);
     }
+    
+    public function stepup(Request $request, $method)
+    {
+        if(Auth::attempt(['mfa' => $method])) {
+            $request->session()->regenerate();
+            
+            return redirect()->intended();
+        }
+        
+        return back()->withErrors([]);
+    }
 
 }
 
