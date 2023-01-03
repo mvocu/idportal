@@ -19,21 +19,21 @@
 				<div class="flex-grow-1 px-4">
 					<h5>{{ __('Mobile phone') }}</h5>
 				</div>
-				<a class="stretch-link btn btn-light btn-lg" role="button"><i class="fa fa-angle-right"></i> </a>
+				<a class="stretch-link btn btn-light btn-lg" href="{{ route('mfa.gauth') }}" role="button"><i class="fa fa-angle-right"></i> </a>
 			</li>
 			<li class="list-group-item  d-flex flex-row justify-content-between p-3">
 				<div class="text-center" style="width: 64px"><i class="fa fa-key fa-2x"></i></div>
 				<div class="flex-grow-1 px-4">
 					<h5>{{ __('Security key') }}</h5>
 				</div>
-				<a class="stretch-link btn btn-light btn-lg" role="button"><i class="fa fa-angle-right"></i> </a>
+				<a class="stretch-link btn btn-light btn-lg" href="{{ route('mfa.webauthn') }}" role="button"><i class="fa fa-angle-right"></i> </a>
 			</li>
 			<li class="list-group-item  d-flex flex-row justify-content-between p-3">
 				<div class="text-center"  style="width: 64px"><i class="fa fa-envelope fa-2x"></i></div>
 				<div class="flex-grow-1 px-4">
 					<h5>{{ __('SMS message') }}</h5>
 				</div>
-				<a class="stretch-link btn btn-light btn-lg" role="button"><i class="fa fa-angle-right"></i> </a>
+				<a class="stretch-link btn btn-light btn-lg" href="{{ route('mfa.sms') }}" role="button"><i class="fa fa-angle-right"></i> </a>
 			</li>
 		</ul>
 	</div>

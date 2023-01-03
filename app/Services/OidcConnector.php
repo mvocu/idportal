@@ -23,7 +23,10 @@ class OidcConnector implements IdentityProvider
         $this->oidc->providerConfigParam(['token_endpoint_auth_methods_supported' => ['client_secret_post']]);
     }
 
-    public function authenticate() : Authenticatable {
+    public function authenticate(array $params) : Authenticatable {
+        if(is_array($params) && !empty($params)) {
+            $this->oidc->addAuthParam($params);
+        }
         if($this->oidc->authenticate()) {
             $claims = $this->oidc->getVerifiedClaims(); // claims from id_token
             $info = $this->oidc->requestUserInfo();

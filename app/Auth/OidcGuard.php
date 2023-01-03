@@ -50,12 +50,12 @@ class OidcGuard implements Guard
     
     public function validate(array $credentials = [])
     {
-        $this->authenticator->authenticate();
+        $this->authenticator->authenticate($credentials);
     }
     
     public function attempt(array $credentials = [], $remember = false)
     {
-        $user = $this->authenticator->authenticate();
+        $user = $this->authenticator->authenticate($credentials);
         if($user == null) {
             return false;
         }
