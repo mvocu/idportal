@@ -27,6 +27,6 @@ Route::name('mfa.')
 ->group(function() {
     Route::get('/', 'App\Http\Controllers\MfaController@showOverview')->name('home');
     Route::get('/gauth', 'App\Http\Controllers\MfaController@showGauth')->name('gauth');
-    Route::get('/webauthn', 'App\Http\Controllers\MfaController@showGauth')->name('webauthn');
-    Route::get('/sms', 'App\Http\Controllers\MfaController@showGauth')->name('sms');
+    Route::get('/webauthn', 'App\Http\Controllers\MfaController@showWebAuthn')->name('webauthn');
+    Route::get('/sms', 'App\Http\Controllers\MfaController@showSms')->name('sms');
 });

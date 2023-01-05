@@ -1,7 +1,7 @@
 <?php
 namespace App\Services;
 
-use App\Interfaces\CasServerInterface;
+use App\Interfaces\CasServer as CasServerInterface;
 use GuzzleHttp\Client;
 use Illuminate\Contracts\Config\Repository;
 
@@ -39,15 +39,20 @@ class CasServerConnector implements CasServerInterface
     }
     
     public function getGauthCredentials($id) {
-        return $this->request('GET', self::GAUTH_ENDPOINT . '/' . $id);
+        return $this->collect($this->request('GET', self::GAUTH_ENDPOINT . '/' . $id));
     }
     
     public function getWebAuthnDevices($id) {
-        return $this->request('GET', self::WEBAUTHN_ENDPOINT . '/' . $id);
+        return $this->collect($this->request('GET', self::WEBAUTHN_ENDPOINT . '/' . $id));
     }
     
     public function getTrustedDevices($id) {
-        return $this->request('GET', self::DEVICES_ENDPOINT . '/' . $id);
+        return $this->collect($this->request('GET', self::DEVICES_ENDPOINT . '/' . $id));
+    }
+    
+    protected function collect($json) {
+        $data = json_decode($json);
+        return collect($data);
     }
 }
 

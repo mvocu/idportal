@@ -2,7 +2,11 @@
 
 namespace App\Providers;
 
+use App\Interfaces\CasServer as CasServerInterface;
+use App\Services\CasServerConnector;
 use Illuminate\Support\ServiceProvider;
+use App\Interfaces\MfaManager as MfaManagerInterface;
+use App\Services\MfaManager;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,7 +18,8 @@ class AppServiceProvider extends ServiceProvider
     
     
     public $singletons = [
-        'cas.mgr' => \App\Services\CasServerConnector::class,
+        CasServerInterface::class => CasServerConnector::class,
+        MfaManagerInterface::class => MfaManager::class,
     ];
     
     /**

@@ -21,6 +21,17 @@ class User implements Authenticatable, AuthenticationInfo, Authorizable
         $this->ldap_user = $model;
     }
     
+    public function getId() 
+    {
+        if(!is_null($this->ldap_user)) {
+            return $this->ldap_user->getFirstAttribute('cunipersonalid');
+        }
+        
+        if($this->auth_user instanceof  OidcUser) {
+            return $this->auth_user->getAuthIdentifier();
+        }
+    }
+    
     public function getDisplayName()
     {
         if(!is_null($this->ldap_user)) {

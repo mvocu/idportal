@@ -51,7 +51,7 @@ class OidcUser implements Authenticatable, AuthenticationInfo
     
     public function getAttributes()
     {
-        return $this->info;
+        return get_object_vars($this->info['attributes']);
     }
     
     public function getAuthMethod() 
@@ -66,6 +66,10 @@ class OidcUser implements Authenticatable, AuthenticationInfo
     
     public function __get($name)
     {
+        $attrs = $this->getAttributes();
+        if(isset($attrs[$name])) {
+            return $attrs[$name];
+        }
         return isset($this->info[$name]) ? $this->info[$name] : null; 
     }
 }

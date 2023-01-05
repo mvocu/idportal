@@ -25,7 +25,10 @@ class OidcConnector implements IdentityProvider
 
     public function authenticate(array $params) : Authenticatable {
         if(is_array($params) && isset($params['mfa'])) {
-            $this->oidc->addAuthParam(['acr_values' => $params['mfa']]);
+            $this->oidc->addAuthParam([
+                'acr_values' => $params['mfa'],
+                'prompt' => 'login'
+            ]);
         }
         if($this->oidc->authenticate()) {
             $claims = $this->oidc->getVerifiedClaims(); // claims from id_token
