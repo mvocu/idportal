@@ -8,7 +8,7 @@ abstract class Model
 {
     protected static $booted = false;
     
-    protected static CasServer $cas;
+    protected static $cas;
     
     protected static function boot() {
         self::$cas = App::make(CasServer::class);
