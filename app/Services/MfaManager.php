@@ -6,8 +6,6 @@ use App\Models\Ldap\User;
 use App\Models\Cas\GauthRecord;
 use App\Models\Cas\MfaPolicy;
 use App\Models\Cas\WebAuthnDevice;
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
 
 class MfaManager implements MfaManagerInterface
 {
@@ -34,7 +32,7 @@ class MfaManager implements MfaManagerInterface
         if(empty($data)) {
             return [];
         }
-        $data = JWT::decode($data, new Key("0Wm0LnK8BqnkO-9fyNok-FmIQh0FFmZIJbShuR44NyE", 'HS256'));
+        $data = [];
         return collect($data)->map(function($item, $key) {
             return WebAuthnDevice::from($item);
         });
