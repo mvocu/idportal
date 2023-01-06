@@ -5,9 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Auth\LoginController;
-use App\Models\Cas\GauthRecord;
 use App\Interfaces\MfaManager;
-use App\Models\Cas\WebAuthnDevice;
 
 class MfaController extends Controller
 {
@@ -17,9 +15,9 @@ class MfaController extends Controller
     
     public function showOverview(Request $request, MfaManager $mfa) {
         $user = Auth::user();
-        $policy = $mfa->getPolicy($user);
-        $gauth = GauthRecord::forUser($user->getId());
-        $webauthn = WebAuthnDevice::forUser($user->getId());
+        $policy = $mfa->getPolicy($user->getLdapUser());
+        $gauth = $mfa->getGauthCredentials($user->getLdapUser());
+        $webauthn = $mfa->getWebAuthnDevices($user->getLdapUser());
         $sms = $user->getAuthUser()->mobile; 
         return view('mfa/overview', [
             'policy' => $policy, 

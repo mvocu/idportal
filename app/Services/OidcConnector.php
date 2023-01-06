@@ -49,7 +49,11 @@ class OidcConnector implements IdentityProvider
         $header = $this->decodeJWT($id_token);
         $claims = $this->decodeJWT($id_token, 1);
         $this->oidc->setAccessToken($ac_token);
-        $info = $this->oidc->requestUserInfo();
+        try {
+            $info = $this->oidc->requestUserInfo();
+        } catch(\Exception $e) {
+            return null;
+        }
         // TODO: check audience, expiration, nbf
         if(empty($claims->sub)) {
             if(isset($_REQUEST['code']))
