@@ -95,7 +95,8 @@ class WebAuthnDevice extends Model
     }
     
     public function getRegistrationDate() {
-        return Date::createFromTimeString($this->registrationTime);
+        //return Date::createFromTimeString($this->registrationTime);
+        return  Date::createFromTimestamp($this->registrationTime);
     }
     
 }

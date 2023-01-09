@@ -6,6 +6,7 @@ use App\Models\Ldap\User;
 use App\Models\Cas\GauthRecord;
 use App\Models\Cas\MfaPolicy;
 use App\Models\Cas\WebAuthnDevice;
+use Base64Url\Base64Url;
 
 class MfaManager implements MfaManagerInterface
 {
@@ -16,7 +17,7 @@ class MfaManager implements MfaManagerInterface
      */
     public function getGauthCredentials(User $user)
     {
-        $gauth = $this->parse(json_decode($user->getFirstAttribute('casgauthrecord')));
+        $gauth = $this->parseJavaSerialization(json_decode($user->getFirstAttribute('casgauthrecord')));
         return collect($gauth)->map(function($item, $key) {
             return GauthRecord::from(($item));
         });
@@ -29,10 +30,11 @@ class MfaManager implements MfaManagerInterface
     public function getWebAuthnDevices(User $user)
     {
         $data = $user->getFirstAttribute('caswebauthnrecord');
+        $data = $this->decodeJWERecord($data);
+        $data = json_decode($data);
         if(empty($data)) {
             return [];
         }
-        $data = [];
         return collect($data)->map(function($item, $key) {
             return WebAuthnDevice::from($item);
         });
@@ -47,23 +49,47 @@ class MfaManager implements MfaManagerInterface
         return new MfaPolicy($user->mfaPolicy);
     }
 
-    protected function parse($source)
+    protected function parseJavaSerialization($source)
     {
         if(is_array($source) && is_string($source[0]) && $source[0] == "java.util.ArrayList") {
             $result = [];
             foreach($source[1] as $value) {
-                $result[] = $this->parse($value);
+                $result[] = $this->parseJavaSerialization($value);
             }
             return $result;
         }
         if($source instanceof \stdClass) {
             $result = [];
             foreach(get_object_vars($source) as $key => $value) {
-                $result[$key] = $this->parse($value);
+                $result[$key] = $this->parseJavaSerialization($value);
             }
             return $result;
         }
         return $source;
+    }
+
+
+    /* 
+     * This is gutted out version of JWE decryption from JOSE library bySpomky-Labs:
+     *   - all algorithms are hardwired
+     *   - no hash checking 
+     *   - no header control/autodetection 
+     */
+    protected function decodeJWERecord($source) {
+        $jwt_parts = explode('.', $source);
+        // [0] header, [1] payload, [2] hash - all Base64Url encoded
+        $jwe_parts = explode('.', Base64Url::decode($jwt_parts[1]));
+        // [0] header, [1] enc_key, [2] iv, [3] cipher, [4] tag - all Base64Url encoded
+        $cipher = Base64Url::decode($jwe_parts[3]);
+        $iv = Base64Url::decode($jwe_parts[2]);
+        // encryption key from configuration
+        $cek = Base64Url::decode(env('CAS_WEBAUTHN_ENC_KEY', ""));
+        // encryption key is the right half of the content encryption key (left half is HMAC)
+        $key = mb_substr($cek, mb_strlen($cek, '8bit') / 2, null, '8bit');
+        // AES128CBC-HMAC-SHA256 is the encryption
+        $clear = openssl_decrypt($cipher, 'aes-128-cbc', $key, OPENSSL_RAW_DATA, $iv);
+        // decompress
+        return gzinflate($clear);
     }
 }
 

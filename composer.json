@@ -9,7 +9,6 @@
         "directorytree/ldaprecord-laravel": "^2.7",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
-        "hailong/jose": "^3.0",
         "jumbojett/openid-connect-php": "^0.9.10",
         "laravel/framework": "^8.75",
         "laravel/sanctum": "^2.11",
