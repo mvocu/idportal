@@ -8,7 +8,7 @@ class Base64Url
         $b64 = strtr($data, '-_', '+/');
         
         // Decode Base64 string and return the original data
-        return base64_decode($b64, $strict);
+        return base64_decode($b64);
     }
     
     public static function encode($data) {
