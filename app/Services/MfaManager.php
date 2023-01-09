@@ -6,7 +6,7 @@ use App\Models\Ldap\User;
 use App\Models\Cas\GauthRecord;
 use App\Models\Cas\MfaPolicy;
 use App\Models\Cas\WebAuthnDevice;
-use Base64Url\Base64Url;
+use App\Util\Base64Url;
 
 class MfaManager implements MfaManagerInterface
 {
