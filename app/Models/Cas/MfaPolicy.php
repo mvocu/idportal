@@ -9,10 +9,10 @@ class MfaPolicy
     public const IMPORTANT = 'important';
     
     private static $_DESCRIPTIONS = [
-        self::NONE => 'Second factor is not available.',
-        self::ALLOWED => 'Second factor will be used only when service requires it',
+        self::NONE => 'Second factor is off.',
+        self::ALLOWED => 'Second factor will be used only when service requires it.',
         self::IMPORTANT => 'Second factor will be used for important services and services that require it.',
-        self::ALWAYS => 'Second factor will be required every time you attempt to log in',
+        self::ALWAYS => 'Second factor will be required every time you attempt to log in.',
     ];
     
     protected $policy;
