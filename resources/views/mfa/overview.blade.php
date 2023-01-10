@@ -15,13 +15,15 @@
 	</div>
 	<div class="card mt-4">
 		<ul class="list-group">
-			<li class="list-group-item d-flex flex-row justify-content-between p-3 align-items-start flex-wrap">
-				<div class="text-center pb-2" style="width: 64px"><i class="fa fa-mobile-alt fa-3x"></i></div>
-				<div class="flex-grow-1 ps-2">
-					<a class="stretch-link btn btn-light btn-lg float-end" href="{{ route('mfa.gauth') }}" role="button"><i class="fa fa-angle-right"></i> </a>
-					<h5>{{ __('Mobile phone') }}</h5>
-					<p>{{ __('List of devices you can use to obtain confirmation code.') }}</p>
-				</div>
+			<li class="list-group-item p-3">
+				<div class="d-flex flex-row justify-content-between">
+					<div class="text-center" style="width: 64px"><i class="fa fa-mobile-alt fa-3x"></i></div>
+					<div class="flex-grow-1 ps-2">
+						<a class="stretch-link btn btn-light btn-lg float-end" href="{{ route('mfa.gauth') }}" role="button"><i class="fa fa-angle-right"></i> </a>
+						<h5>{{ __('Mobile phone') }}</h5>
+						<p>{{ __('List of devices you can use to obtain confirmation code.') }}</p>
+					</div>
+				</div>					
 				<div class="container offset-sm-1">
 					@if ( !empty($gauth) )
 						@foreach ($gauth as $device)
@@ -34,12 +36,14 @@
 					@endif
 				</div>
 			</li>
-			<li class="list-group-item  d-flex flex-row justify-content-between p-3 align-items-start flex-wrap">
-				<div class="text-center pb-2" style="width: 64px"><i class="fa fa-key fa-2x"></i></div>
-				<div class="flex-grow-1 ps-2">
-					<a class="stretch-link btn btn-light btn-lg float-end" href="{{ route('mfa.webauthn') }}" role="button"><i class="fa fa-angle-right"></i> </a>
-					<h5>{{ __('Security key') }}</h5>
-					<p>{{ __('You have registered the following security keys.') }}</p>
+			<li class="list-group-item p-3">
+				<div class="d-flex flex-row justify-content-between">
+					<div class="text-center pb-2" style="width: 64px"><i class="fa fa-key fa-2x"></i></div>
+					<div class="flex-grow-1 ps-2">
+						<a class="stretch-link btn btn-light btn-lg float-end" href="{{ route('mfa.webauthn') }}" role="button"><i class="fa fa-angle-right"></i> </a>
+						<h5>{{ __('Security key') }}</h5>
+						<p>{{ __('You have registered the following security keys.') }}</p>
+					</div>
 				</div>
 				<div class="container offset-sm-1"">
 					@if ( !empty($webauthn) )
@@ -53,7 +57,7 @@
 					@endif
 				</div>
 			</li>
-			<li class="list-group-item  d-flex flex-row justify-content-between p-3">
+			<li class="list-group-item d-flex flex-row justify-content-between p-3">
 				<div class="text-center pb-2"  style="width: 64px"><i class="fa fa-envelope fa-2x"></i></div>
 				<div class="flex-grow-1 ps-2">
 					<a class="stretch-link btn btn-light btn-lg float-end" href="{{ route('mfa.sms') }}" role="button"><i class="fa fa-angle-right"></i> </a>
