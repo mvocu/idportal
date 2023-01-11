@@ -6,7 +6,14 @@
 	<div class="card mt-5">
 		<div class="card-body">
 			<h4 class="card-title">{{ __('Multifactor authentication') }}</h4>
-			<p>{{ $policy->getDescription() }}</p>
+			<div class="d-flex flex-row justify-content-between">
+				<p>{{ $policy->getDescription() }}</p>
+				@if ( $policy->isOn() )
+					<a class="btn btn-primary" role="button">{{ __('Turn off') }}</a>
+				@else
+					<a class="btn btn-danger" role="button">{{ __('Turn on') }}</a>
+				@endif
+			</div>
 		</div> 
 	</div>
 	<div class="border-bottom border-2 border-primary">
@@ -20,7 +27,7 @@
 					<div class="text-center" style="width: 64px"><i class="fa fa-mobile-alt fa-3x"></i></div>
 					<div class="flex-grow-1 ps-2">
 						<a class="stretch-link btn btn-light btn-lg float-end" href="{{ route('mfa.gauth') }}" role="button"><i class="fa fa-angle-right"></i> </a>
-						<h5>{{ __('Mobile phone') }}</h5>
+						<h5>{{ __('Mobile phone application') }}</h5>
 						<p>{{ __('List of devices you can use to obtain confirmation code.') }}</p>
 					</div>
 				</div>					

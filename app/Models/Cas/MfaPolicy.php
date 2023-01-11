@@ -30,5 +30,10 @@ class MfaPolicy
         
         return self::$_DESCRIPTIONS[self::NONE];
     }
+    
+    public function isOn() 
+    {
+        return !(empty($this->policy) || $this->policy == self::NONE); 
+    }
 }
 
