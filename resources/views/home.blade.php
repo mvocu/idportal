@@ -2,6 +2,12 @@
 
 @section('content')
 <div class="container">
+	<div class="row">
+		<div class="col-md-10 col-md-offset-1">
+			<h4>{{ __('Personal settings') }}</h4>
+			<hr style="border-top-color: #7bbb57; margin-top: 0px" />
+		</div>
+	</div>
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
             <div class="panel panel-default">
@@ -96,7 +102,13 @@
         </div>
     </div>
     
-	@if (isset($children))
+	@if (isset($children) && !$children->isEmpty())
+	<div class="row mt-2">
+		<div class="col-md-10 col-md-offset-1">
+			<h4>{{ __('List of managed accounts') }}</h4>
+			<hr class="mt-1" style="border-top-color: #7bbb57; margin-top: 0px" />
+		</div>
+	</div>
     <div class="row justify-content-center mt-2">
 		<div class="col-md-10 col-md-offset-1">
 			<div class="panel panel-default">
@@ -120,5 +132,12 @@
     </div>
     @endif
     
+	<div class="row">
+		<div class="col-md-10 col-md-offset-1">
+			<h4>{{ __('Participative budget') }}</h4>
+			<hr style="border-top-color: #7bbb57; margin-top: 0px" />
+		</div>
+	</div>
+
 </div>
 @endsection

@@ -96,4 +96,8 @@ class User extends Model
     public function parent() {
         return $this->belongsTo('App\Models\Database\User', 'parent_id');
     }
+    
+    public function votingCodes() {
+        return $this->hasMany('App\Models\Database\VotingCode', 'user_id');
+    }
 }

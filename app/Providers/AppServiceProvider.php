@@ -17,6 +17,7 @@ use App\Interfaces\ContactManager as ContactManagerInterface;
 use App\Interfaces\ConsentManager as ConsentManagerInterface;
 use App\Interfaces\SynchronizationManager as SynchronizationManagerInterface;
 use App\Interfaces\ActivationManager as ActivationManagerInterface;
+use App\Interfaces\VotingCodeManager as VotingCodeManagerInterface;
 use App\Services\ContactManager;
 use App\Services\Saml2Connector;
 use App\Services\UserExtManager;
@@ -36,6 +37,7 @@ use App\Services\OpenIDConnector;
 use App\Utils\Names;
 use GuzzleHttp\Client;
 use Carbon\Carbon;
+use App\Services\VotingCodeManager;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -47,7 +49,8 @@ class AppServiceProvider extends ServiceProvider
         ContactManagerInterface::class => ContactManager::class,
         LdapConnectorInterface::class => LdapConnector::class,
         ConsentManagerInterface::class => ConsentManager::class,
-        SynchronizationManagerInterface::class => SynchronizationManager::class
+        SynchronizationManagerInterface::class => SynchronizationManager::class,
+        VotingCodeManagerInterface::class => VotingCodeManager::class
     ];
     
     public $bindings = [
