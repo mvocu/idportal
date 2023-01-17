@@ -11,6 +11,7 @@ use App\Models\Database\ExtSource;
 use App\Interfaces\ConsentManager;
 use Adldap\AdldapInterface;
 use App\Interfaces\LdapConnector;
+use App\Interfaces\VotingCodeManager;
 
 class HomeController extends Controller
 {
@@ -20,15 +21,22 @@ class HomeController extends Controller
     
     protected $ldap_mgr; 
     
+    protected $voting_code_mgr;
+    
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(UserExtManager $user_ext_mgr, ConsentManager $consent_mgr, LdapConnector $ldap_mgr)
+    public function __construct(
+        UserExtManager $user_ext_mgr, 
+        ConsentManager $consent_mgr,
+        VotingCodeManager $voting_code_mgr,
+        LdapConnector $ldap_mgr)
     {
         $this->user_ext_mgr = $user_ext_mgr;
         $this->consent_mgr = $consent_mgr;
+        $this->voting_code_mgr = $voting_code_mgr;
         $this->ldap_mgr = $ldap_mgr;
         $this->middleware(['auth.eidp:MojeID', 'auth.eidp:eIdentita', 'auth']);
     }
@@ -64,7 +72,11 @@ class HomeController extends Controller
                 if(array_key_exists('emails', $data)) $accounts[$account->extSource->id]['email'] = $data['emails'][0]['email'];
             }
         }
-        return view('home', ['user' => Auth::user(), 'accounts' => $accounts, 
-            'children' => $this->ldap_mgr->listChildren(Auth::user()) ]);
+        return view('home', [
+            'user' => Auth::user(), 
+            'accounts' => $accounts, 
+            'children' => $this->ldap_mgr->listChildren(Auth::user()), 
+            'voting' => $this->voting_code_mgr->hasActiveVotingCode($user)
+        ]);
     }
 }

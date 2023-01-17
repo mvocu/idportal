@@ -138,6 +138,32 @@
 			<hr style="border-top-color: #7bbb57; margin-top: 0px" />
 		</div>
 	</div>
+    <div class="row justify-content-center mt-2">
+		<div class="col-md-10 col-md-offset-1">
+			<div class="panel panel-default">
+				<div class="panel-heading">{{ __('Voting codes') }}</div>
+				
+				<div class="panel-body">
+				@if ($voting)
+					<div class="row form-group">
+						<div class="col-xs-8">{{ __('You have been assigned active voting code.') }}</div>
+						<div class="col-xs-4">
+							<a href="{{ route('voting.show') }}" class="btn btn-primary btn-block">{{ __('Show voting code') }}</a>
+						</div>
+					</div>
+				@else
+					<div class="row form-group">
+						<div class="col-xs-8">{{ __('No voting code has been assigned yet.') }}</div>
+						<div class="col-xs-4">
+							<a href="{{ route('voting.get') }}" class="btn btn-primary btn-block">{{ __('Obtain voting code') }}</a>
+						</div>
+					</div>
+				</div>
+				@endif
+			</div>
+		</div>
+    </div>
+	
 
 </div>
 @endsection

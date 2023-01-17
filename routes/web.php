@@ -70,6 +70,12 @@ Route::get('/consent/ask', 'ConsentController@showConsentForm')->name('consent.a
 
 Route::post('/consent/set', 'ConsentController@setConsent')->name('consent.set');
 
+Route::get('/voting/show', 'VotingCodeController@showCode')->name('voting.show');
+
+Route::get('/voting/get', 'VotingCodeController@getCode')->name('voting.get');
+
+Route::post('/voting/declare', 'VotingCodeController@declare')->name('voting.declare');
+
 Route::name('admin.')
     ->prefix('admin')
     ->namespace('Admin')
