@@ -7,14 +7,18 @@ use Illuminate\Support\HtmlString;
 use App\Http\Controllers\Controller;
 use App\Models\Database\User;
 use App\Interfaces\LdapConnector;
+use App\Interfaces\VotingCodeManager;
 
 class UserController extends Controller
 {
     protected $ldapc;
 
-    public function __construct(LdapConnector $ldapc)
+    protected $voting_code_mgr;
+    
+    public function __construct(LdapConnector $ldapc, VotingCodeManager $voting_code_mgr)
     {
         $this->ldapc = $ldapc;
+        $this->voting_code_mgr = $voting_code_mgr;
         $this->middleware('auth');
         $this->middleware('group:administrators');
     }
@@ -67,6 +71,7 @@ class UserController extends Controller
         return view('admin.userdetail', ['id' => $user->id, 'user' => $user, 'ldapuser' => $ldapuser, 
             'haspw' => $ldapuser ? $this->ldapc->hasPassword($ldapuser) : false,
             'lock' => $ldapuser ? $this->ldapc->isUserLocked($ldapuser) : false,
+            'voting_code' => $this->voting_code_mgr->getActiveVotingCode($user),
         ]);
     }
     
