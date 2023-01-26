@@ -43,8 +43,8 @@
 
 					<div class="container form-outline mb-4">
 						<div class="d-flex flex-row justify-content-between">
-							<a class="btn btn-default col-3" href="{{ route('mfa.home') }}"><i class="fa fa-arrow-left me-2"></i>{{ __('Back') }}</a>
-							<button type="submit" class="col-3 btn btn-primary">{{ __('Submit') }}</button>
+							<a class="btn btn-default col-md-3" href="{{ route('mfa.home') }}"><i class="fa fa-arrow-left me-2"></i>{{ __('Back') }}</a>
+							<button type="submit" class="col-md-3 btn btn-primary">{{ __('Submit') }}</button>
 						</div>
 					</div>
 				</form>
