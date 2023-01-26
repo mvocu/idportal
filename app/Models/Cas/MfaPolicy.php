@@ -9,17 +9,24 @@ class MfaPolicy
     public const IMPORTANT = 'important';
     
     private static $_DESCRIPTIONS = [
-        self::NONE => 'Authentication by second factor is turned off.',
-        self::ALLOWED => 'Second factor will be used only when service requires it.',
+        self::NONE => 'Authentication by second factor is turned off. You will not have access to applications that require multifactor authentication.',
+        self::ALLOWED => 'Second factor will be used only for applications that require it.',
         self::IMPORTANT => 'Second factor will be used for important services and services that require it.',
-        self::ALWAYS => 'Second factor will be required every time you attempt to log in.',
+        self::ALWAYS => 'Second factor will be required every time you attempt to log in, unless you log in from already known device.',
     ];
     
     protected $policy;
     
     public function __construct($source)
     {
+        if(empty($source) || !array_key_exists($source, self::$_DESCRIPTIONS)) {
+            $source = self::NONE;
+        }
         $this->policy = $source;
+    }
+    
+    public function getValue() {
+        return empty($this->policy) ? self::NONE : $this->policy;
     }
     
     public function getDescription()
@@ -33,7 +40,12 @@ class MfaPolicy
     
     public function isOn() 
     {
-        return !(empty($this->policy) || $this->policy == self::NONE); 
+        $policy = $this->getValue();
+        return $policy != self::NONE; 
+    }
+    
+    public function getDescriptions() {
+        return self::$_DESCRIPTIONS;
     }
 }
 

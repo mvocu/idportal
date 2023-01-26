@@ -46,9 +46,15 @@ class MfaManager implements MfaManagerInterface
      */
     public function getPolicy(User $user)
     {
-        return new MfaPolicy($user->mfaPolicy);
+        return new MfaPolicy($user->getFirstAttribute('cuniMfaPolicy'));
     }
 
+    public function setPolicy(User $user, MfaPolicy $policy)
+    {
+        $user->cuniMfaPolicy = $policy->getValue();
+        $user->save();
+    }
+    
     protected function parseJavaSerialization($source)
     {
         if(is_array($source) && is_string($source[0]) && $source[0] == "java.util.ArrayList") {

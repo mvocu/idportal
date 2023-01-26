@@ -2,20 +2,22 @@
 
 @section('content')
 
-<div class="d-flex flex-column" style="max-width: 720px">	
+<div class="d-flex flex-column col-7" style="max-width: 720px">	
 	<div class="card mt-5">
 		<div class="card-body">
 			<h4 class="card-title">{{ __('Multifactor authentication') }}</h4>
 			<div class="d-flex flex-row justify-content-between">
-				<p>{{ $policy->getDescription() }}</p>
+				<p class="me-2">{{ __($policy->getDescription()) }}</p>
 				@if ( $policy->isOn() )
-					<a class="btn btn-primary" role="button">{{ __('Turn off') }}</a>
+					<a class="btn btn-success" role="button" href="{{ route('mfa.policy') }}">{{ __('Turn off') }}</a>
 				@else
-					<a class="btn btn-danger" role="button">{{ __('Turn on') }}</a>
+					<a class="btn btn-danger" role="button" href="{{ route('mfa.policy') }}">{{ __('Turn on') }}</a>
 				@endif
 			</div>
 		</div> 
 	</div>
+	
+	@if ( $policy->isOn() )
 	<div class="border-bottom border-2 border-primary">
 		<h5 class="mt-5">{{ __('Available methods') }}</h5>
 		<p>{{ __('These methods are available as a second factor.') }}</p>
@@ -82,6 +84,8 @@
 		<h5 class="mt-5">{{ __('Registered trusted devices') }}</h5>
 		<p>You will not be asked to use second factor when authenticating from one of those devices.</p>
 	</div>
+	@endif
+	
 </div>
 
 @endsection
