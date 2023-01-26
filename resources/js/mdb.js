@@ -16,8 +16,8 @@ window.Popper = Popper
 try {
 //    window.$ = window.jQuery = require('jquery');
 
-    //require('mdb-ui-kit');
-    require('mdb-vue-ui-kit');
+    require('mdb-ui-kit');
+    //require('mdb-vue-ui-kit');
 } catch (e) {}
 
 /**
