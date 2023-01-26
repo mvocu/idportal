@@ -2,7 +2,7 @@
 
 @section('content')
 
-<div class="d-flex flex-column col-7" style="max-width: 720px">	
+<div class="d-flex flex-column col-md-7" style="max-width: 720px">	
 	<div class="card mt-5">
 
 		<div class="card-body">
