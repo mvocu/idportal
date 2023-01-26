@@ -6,7 +6,7 @@
 	<div class="card mt-5">
 		<div class="card-body">
 			<h4 class="card-title">{{ __('Multifactor authentication') }}</h4>
-			<div class="d-flex flex-row justify-content-between">
+			<div class="d-flex flex-row justify-content-between align-items-start">
 				<p class="me-2">{{ __($policy->getDescription()) }}</p>
 				@if ( $policy->isOn() )
 					<a class="btn btn-success" role="button" href="{{ route('mfa.policy') }}">{{ __('Turn off') }}</a>
