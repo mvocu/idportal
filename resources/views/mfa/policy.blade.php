@@ -5,6 +5,7 @@
 <div class="d-flex flex-column col-md-7" style="max-width: 720px">	
 	<div class="card mt-5">
 
+         @if (session('status') || $errors->has('failure'))
 		<div class="card-body">
 	         @if (session('status'))
 	      	<div class="alert alert-success" role="alert">
@@ -18,6 +19,7 @@
              </div>
              @endif
 		</div>
+		@endif
 			
 		<div class="card-body">
 			<h4 class="card-title">{{ __('Multifactor authentication') }}</h4>
