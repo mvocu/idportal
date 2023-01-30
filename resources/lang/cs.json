@@ -11,14 +11,14 @@
 	
 	"Multifactor authentication" : "Vícefaktorová autentizace",
 	"Please select when you want to use second factor during authentication:" : "Vyberte si, v jakých situacích si přejete použít při přihlášení druhý faktor:",
-	"Authentication by second factor is turned off. You will not have access to applications that require multifactor authentication." : "Ověření pomocí druhého faktoru je vypnuto. Nebudete mít přístup k aplikacím, které vyžadují vícefaktorovou autentizaci.",
-	"Second factor will be used only for applications that require it." : "K druhému kroku ověření budete vyzváni, pouze pokud to vyžaduje konkrétní aplikace.",
-	"Second factor will be used for important services and services that require it." : "Druhý krok ověření bude použit pro důležité aplikace nebo pokud to konkrétní aplikace vyžaduje.",
-	"Second factor will be required every time you attempt to log in, unless you log in from already known device." : "Při každém přihlášení z neznámého (dosud neregistrovaného) zařízení budete požádáni o druhý krok ověření.",
+	"Authentication by second factor is turned off. You do not have access to applications that require multifactor authentication." : "Ověření pomocí druhého faktoru je vypnuto. Nemáte mít přístup k aplikacím, které vyžadují vícefaktorovou autentizaci.",
+	"Turned on, second factor will be used only for applications that require it." : "Zapnutá, ale k druhému kroku ověření budete vyzváni, pouze pokud to vyžaduje konkrétní aplikace.",
+	"Turned on, second factor will be used for important services and services that require it." : "Zapnutá, druhý krok ověření bude použit pro důležité aplikace nebo pokud to konkrétní aplikace vyžaduje.",
+	"Turned on, second factor will be required every time you attempt to log in, unless you log in from already known device." : "Zapnutá, při každém přihlášení z neznámého (dosud neregistrovaného) zařízení budete požádáni o druhý krok ověření.",
 	"Available methods" : "Dostupné metody",
 	"These methods are available as a second factor." : "Pro druhý přihlašovací krok jsou dostupné následující metody:",
 	"Mobile phone application" : "Mobilní aplikace",
-	"List of devices you can use to obtain confirmation code." : "Pro získání bezpečnostního kódu můžete použít tato zařízení:",
+	"List of devices you can use to obtain confirmation code." : "Pro získání bezpečnostního kódu můžete použít toto zařízení:",
 	"Security key" : "Bezpečnostní klíč",
 	"You have registered the following security keys." : " Máte zaregistrovány tyto bezpečnostní klíče:",
 	"SMS message" : "SMS zpráva",
@@ -39,7 +39,7 @@
 			
 	"mfa.policy-none" : "Nikdy",
 	"mfa.policy-allowed" : "Jen na vyžádání aplikace",
-	"mfa.policy-important" : "Pro důležité aplikace nebo na vyžádání",
+	"mfa.policy-important" : "Pro aplikace, které jsou důležité, nebo na vyžádání",
 	"mfa.policy-always" : "Při každém přihlášení",
 	
 	"mfa.reauth-description" : "Před registrací nového zařízení budete požádáni o zadání přihlašovacích údajů kvůli ověření totožnosti.",
