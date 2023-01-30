@@ -2,18 +2,27 @@
 
 @section('content')
 
-<div class="d-flex flex-column col-md-7" style="max-width: 720px">	
+<div class="d-flex flex-column col-lg-7" style="max-width: 720px">	
 	<div class="card mt-5">
 		<div class="card-body">
 			<h4 class="card-title">{{ __('Multifactor authentication') }}</h4>
-			<div class="d-flex flex-row justify-content-between align-items-start">
-				<p class="me-2">{{ __($policy->getDescription()) }}</p>
-				@if ( $policy->isOn() )
-					<a class="btn btn-success" role="button" href="{{ route('mfa.policy') }}">{{ __('Turn off') }}</a>
-				@else
-					<a class="btn btn-danger" role="button" href="{{ route('mfa.policy') }}">{{ __('Turn on') }}</a>
-				@endif
+			<p class="mb-2">{{ __($policy->getDescription()) }}</p>
+			@if ( $policy->isOn() )
+			<div class="d-flex flex-row flex-wrap justify-content-end align-items-stretch" style="gap: 0.5rem">
+					<a class="btn btn-info col-12 col-sm-4 m-0" role="button" href="{{ route('mfa.policy') }}"><i class="fa fa-cog me-2"></i>{{ __('Choose policy') }}</a>
+					<form method="POST" class="col-12 col-sm-4" action="{{ route('mfa.policy.set') }}">
+						@csrf
+						
+						<input type="hidden" name="policy" value="none" />
+						
+						<button class="btn btn-primary w-100 h-100 m-0" type="submit"><i class="fa fa-power-off me-2"></i>{{ __('Turn off') }}</button>
+					</form>
 			</div>
+			@else
+			<div class="d-flex flex-row justify-content-end align-items-start">
+				<a class="btn btn-danger" role="button" href="{{ route('mfa.policy') }}"><i class="fa fa-power-off me-2"></i>{{ __('Turn on') }}</a>
+			</div>
+			@endif
 		</div> 
 	</div>
 	
@@ -82,7 +91,7 @@
 	</div>
 	<div class="border-bottom border-2 border-primary">
 		<h5 class="mt-5">{{ __('Registered trusted devices') }}</h5>
-		<p>You will not be asked to use second factor when authenticating from one of those devices.</p>
+		<p>{{ __('You will not be asked to use second factor when authenticating from one of those devices.') }}</p>
 	</div>
 	@endif
 	

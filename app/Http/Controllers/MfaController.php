@@ -11,15 +11,18 @@ use App\Models\Cas\MfaPolicy;
 
 class MfaController extends Controller
 {
-    public function __construct() {
+    protected $mfa;
+    
+    public function __construct(MfaManager $mfa) {
+        $this->mfa = $mfa;
         $this->middleware(['auth', 'model']);    
     }
     
-    public function showOverview(Request $request, MfaManager $mfa) {
+    public function showOverview(Request $request) {
         $user = Auth::user();
-        $policy = $mfa->getPolicy($user->getLdapUser());
-        $gauth = $mfa->getGauthCredentials($user->getLdapUser());
-        $webauthn = $mfa->getWebAuthnDevices($user->getLdapUser());
+        $policy = $this->mfa->getPolicy($user->getLdapUser());
+        $gauth = $this->mfa->getGauthCredentials($user->getLdapUser());
+        $webauthn = $this->mfa->getWebAuthnDevices($user->getLdapUser());
         $sms = $user->getAuthUser()->mobile; 
         return view('mfa/overview', [
             'policy' => $policy, 
@@ -29,9 +32,9 @@ class MfaController extends Controller
         ]);
     }
     
-    public function showPolicy(Request $request, MfaManager $mfa) {
+    public function showPolicy(Request $request) {
         $user = Auth::user();
-        $policy = $mfa->getPolicy($user->getLdapUser());
+        $policy = $this->mfa->getPolicy($user->getLdapUser());
 
         return view('mfa/policy', [ 'user' => $user, 'policy' => $policy ]);
     }
@@ -40,7 +43,7 @@ class MfaController extends Controller
         $user = Auth::user();
         $policy = new MfaPolicy($request->input('policy'));
         try {
-            $mfa->setPolicy($user->getLdapUser(), $policy);
+            $this->mfa->setPolicy($user->getLdapUser(), $policy);
         } catch (Exception $e) {
             return back()->withErrors(['failure' => __('Error setting MFA policy.')]);
         }
@@ -49,25 +52,59 @@ class MfaController extends Controller
     }
     
     public function showGauth(Request $request) {
-        redirect()->setIntendedUrl(route('mfa.home'));
+        $user = Auth::user();
+        $gauth = $this->mfa->getGauthCredentials($user->getLdapUser());
+
+        return view('mfa/gauth', [ 'user' => $user, 'gauth' => $gauth ]);
+    }
+    
+    public function deleteGauth(Request $request) {
+        $user = Auth::user();
+
+        try {
+            $this->mfa->deleteGauthCredentials($user->getLdapUser());
+        } catch(Exception $e) {
+            return back()->withErrors(['failure' => __('Error removing device records.')]);
+        }
+        
+        return redirect()->back()->with('status', __('All devices removed.'));
+    }
+    
+    public function performGauth(Request $request) {
+        redirect()->setIntendedUrl(route('mfa.gauth'));
         return redirect()
             ->action([LoginController::class, 'stepup'], ['method' => 'mfa-gauth']);
-        
-        return view('mfa/gauth');
     }
     
     public function showWebAuthn(Request $request) {
-        redirect()->setIntendedUrl(route('mfa.home'));
-        return redirect()
-        ->action([LoginController::class, 'stepup'], ['method' => 'mfa-webauthn']);
+        $user = Auth::user();
+        $webauthn = $this->mfa->getWebAuthnDevices($user->getLdapUser());
         
-        return view('mfa/webauthn');
+        return view('mfa/webauthn', [ 'user' => $user, 'webauthn' => $webauthn ]);
+    }
+    
+    public function deleteWebAuthn(Request $request) {
+        $user = Auth::user();
+        
+        try {
+            $this->mfa->deleteWebAuthnDevices($user->getLdapUser());
+        } catch(Exception $e) {
+            return back()->withErrors(['failure' => __('Error removing device records.')]);
+        }
+        
+        return redirect()->back()->with('status', __('All devices removed.'));
+    }
+    
+    public function performWebAuthn(Request $request) {
+        redirect()->setIntendedUrl(route('mfa.webauthn'));
+        return redirect()
+            ->action([LoginController::class, 'stepup'], ['method' => 'mfa-webauthn']);
     }
 
     public function showSms(Request $request) {
         redirect()->setIntendedUrl(route('mfa.home'));
         return redirect()
-        ->action([LoginController::class, 'stepup'], ['method' => 'mfa-simple']);
+            ->action([LoginController::class, 'stepup'], ['method' => 'mfa-simple']);
         
         return view('mfa/sms');
     }

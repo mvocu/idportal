@@ -99,5 +99,9 @@ class WebAuthnDevice extends Model
         return  Date::createFromTimestamp($this->registrationTime);
     }
     
+    public function getAttestationMetadata() {
+        return $this->attestationMetadata;
+    }
+    
 }
 

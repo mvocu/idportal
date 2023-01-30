@@ -2,7 +2,7 @@
 
 @section('content')
 
-<div class="d-flex flex-column col-md-7" style="max-width: 720px">	
+<div class="d-flex flex-column col-lg-7" style="max-width: 720px">	
 	<div class="card mt-5">
 
          @if (session('status') || $errors->has('failure'))
@@ -46,7 +46,7 @@
 					<div class="container form-outline mb-4">
 						<div class="d-flex flex-row justify-content-between">
 							<a class="btn btn-default col-md-3" href="{{ route('mfa.home') }}"><i class="fa fa-arrow-left me-2"></i>{{ __('Back') }}</a>
-							<button type="submit" class="col-md-3 btn btn-primary">{{ __('Submit') }}</button>
+							<button type="submit" class="col-md-3 btn btn-primary"><i class="fa fa-check me-2"></i>{{ __('Submit') }}</button>
 						</div>
 					</div>
 				</form>

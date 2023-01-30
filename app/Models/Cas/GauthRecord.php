@@ -75,5 +75,9 @@ class GauthRecord extends Model
     public function getRegistrationDate() {
         return Date::createFromTimeString($this->registrationDate);
     }
+    
+    public function getScratchCodes() {
+        return $this->scratchCodes;
+    }
 }
 

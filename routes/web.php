@@ -29,6 +29,12 @@ Route::name('mfa.')
     Route::get('/policy', 'App\Http\Controllers\MfaController@showPolicy')->name('policy');
     Route::post('/policy', 'App\Http\Controllers\MfaController@setPolicy')->name('policy.set');
     Route::get('/gauth', 'App\Http\Controllers\MfaController@showGauth')->name('gauth');
+    Route::delete('/gauth', 'App\Http\Controllers\MfaController@deleteGauth')->name('gauth.delete');
+    Route::post('/gauth', 'App\Http\Controllers\MfaController@performGauth')->name('gauth.add');
+    Route::get('/gauth/test', 'App\Http\Controllers\MfaController@performGauth')->name('gauth.test');
     Route::get('/webauthn', 'App\Http\Controllers\MfaController@showWebAuthn')->name('webauthn');
+    Route::delete('/webauthn', 'App\Http\Controllers\MfaController@deleteWebAuthn')->name('webauthn.delete');
+    Route::post('/webauthn', 'App\Http\Controllers\MfaController@performWebAuthn')->name('webauthn.add');
+    Route::get('/webauthn/test', 'App\Http\Controllers\MfaController@performWebAuthn')->name('webauthn.test');
     Route::get('/sms', 'App\Http\Controllers\MfaController@showSms')->name('sms');
 });

@@ -4,6 +4,10 @@
 	
 	
 	"Submit" : "Uložit",
+	"Back" : "Zpět",
+	"Test" : "Otestovat",
+	"Remove all" : "Odstranit vše",
+	"Register" : "Registrovat",
 	
 	"Multifactor authentication" : "Vícefaktorová autentizace",
 	"Please select when you want to use second factor during authentication:" : "Vyberte si, v jakých situacích si přejete použít při přihlášení druhý faktor:",
@@ -11,12 +15,37 @@
 	"Second factor will be used only for applications that require it." : "K druhému kroku ověření budete vyzváni, pouze pokud to vyžaduje konkrétní aplikace.",
 	"Second factor will be used for important services and services that require it." : "Druhý krok ověření bude použit pro důležité aplikace nebo pokud to konkrétní aplikace vyžaduje.",
 	"Second factor will be required every time you attempt to log in, unless you log in from already known device." : "Při každém přihlášení z neznámého (dosud neregistrovaného) zařízení budete požádáni o druhý krok ověření.",
+	"Available methods" : "Dostupné metody",
+	"These methods are available as a second factor." : "Pro druhý přihlašovací krok jsou dostupné následující metody:",
+	"Mobile phone application" : "Mobilní aplikace",
+	"List of devices you can use to obtain confirmation code." : "Pro získání bezpečnostního kódu můžete použít tato zařízení:",
+	"Security key" : "Bezpečnostní klíč",
+	"You have registered the following security keys." : " Máte zaregistrovány tyto bezpečnostní klíče:",
+	"SMS message" : "SMS zpráva",
+	"Verification codes will be sent by SMS to this number." : "Kód pro ověření přihlášení bude odeslán na toto číslo.",
+	"Registered trusted devices" : "Důvěryhodná zařízení",
+	"You will not be asked to use second factor when authenticating from one of those devices." : "Pokud se přihlašujete na jednom z následujících zařízení, nebudete muset při přihlášení použít druhý krok.", 
+	"Registered at" : "Zaregistrováno",
+	"Turn on" : "Zapnout",
+	"Turn off" : "Vypnout",
+	"Choose policy" : "Upřesnit nastavení",
+	"Emergency scratch codes" : "Nouzové přihlašovací kódy",
+	"You have no registered devices to generate confirmation codes." : "Nemáte registrované žádné zařízení pro generování přihlašovacích kódů.",
+	"Error setting MFA policy." : "Nepodařilo se uložit nastavení.",
+	"MFA policy saved." : "Nastavení druhého kroku uloženo.",
+	"Error removing device records." : "Nepodařilo se odstranit záznamy o zařízení.",
+	"All devices removed." : "Všechna zařízení byla odstraněna.",
 	
+			
 	"mfa.policy-none" : "Nikdy",
 	"mfa.policy-allowed" : "Jen na vyžádání aplikace",
 	"mfa.policy-important" : "Pro důležité aplikace nebo na vyžádání",
 	"mfa.policy-always" : "Při každém přihlášení",
 	
+	"mfa.reauth-description" : "Před registrací nového zařízení budete požádáni o zadání přihlašovacích údajů kvůli ověření totožnosti.",
+	
+	"mfa.gauth-description" : "Jako druhý krok ověření použijete jednorázové heslo, které vám vygeneruje a zobrazí aplikace instalovaná na mobilním telefonu (nebo desktopu).",
+	"mfa.webauthn-description" : "Při druhém kroku ověření budete vyzváni k připojení bezpečnostního klíče k vašemu zařízení, případně můžete použít mobilní telefon s podporou biometrického přihlášení.",
 	
 	"__END_" : "__KONEC__"
 }

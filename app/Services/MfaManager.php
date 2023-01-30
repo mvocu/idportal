@@ -25,11 +25,24 @@ class MfaManager implements MfaManagerInterface
 
     /**
      * {@inheritDoc}
+     * @see \App\Interfaces\MfaManager::deleteGauthCredentials()
+     */
+    public function deleteGauthCredentials(User $user, $id = null)
+    {
+        $user->deleteAttribute('casgauthrecord');
+        $user->save();
+    }
+
+    /**
+     * {@inheritDoc}
      * @see \App\Interfaces\MfaManager::getWebAuthnDevices()
      */
     public function getWebAuthnDevices(User $user)
     {
         $data = $user->getFirstAttribute('caswebauthnrecord');
+        if(empty($data)) {
+            return [];
+        }
         $data = $this->decodeJWERecord($data);
         $data = json_decode($data);
         if(empty($data)) {
@@ -38,6 +51,16 @@ class MfaManager implements MfaManagerInterface
         return collect($data)->map(function($item, $key) {
             return WebAuthnDevice::from($item);
         });
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\MfaManager::deleteWebAuthnDevices()
+     */
+    public function deleteWebAuthnDevices(User $user, $id = null)
+    {
+        $user->deleteAttribute('caswebauthnrecord');
+        $user->save();
     }
 
     /**
