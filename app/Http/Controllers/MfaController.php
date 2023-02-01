@@ -102,11 +102,14 @@ class MfaController extends Controller
     }
 
     public function showSms(Request $request) {
-        redirect()->setIntendedUrl(route('mfa.home'));
-        return redirect()
-            ->action([LoginController::class, 'stepup'], ['method' => 'mfa-simple']);
-        
-        return view('mfa/sms');
+        $user = Auth::user();
+        $sms = $user->getAuthUser()->mobile;
+        return view('mfa/sms', ['sms' => $sms]);
     }
     
+    public function performSms(Request $request) {
+        redirect()->setIntendedUrl(route('mfa.home'));
+        return redirect()
+        ->action([LoginController::class, 'stepup'], ['method' => 'mfa-simple']);
+    }
 }

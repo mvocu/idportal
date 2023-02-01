@@ -35,6 +35,7 @@
 	"MFA policy saved." : "Nastavení druhého kroku uloženo.",
 	"Error removing device records." : "Nepodařilo se odstranit záznamy o zařízení.",
 	"All devices removed." : "Všechna zařízení byla odstraněna.",
+	"You have no registered security keys." : "Nemáte zaregistrovaný žádný bezpečnostní klíč.",
 	
 			
 	"mfa.policy-none" : "Nikdy",
@@ -46,6 +47,7 @@
 	
 	"mfa.gauth-description" : "Jako druhý krok ověření použijete jednorázové heslo, které vám vygeneruje a zobrazí aplikace instalovaná na mobilním telefonu (nebo desktopu).",
 	"mfa.webauthn-description" : "Při druhém kroku ověření budete vyzváni k připojení bezpečnostního klíče k vašemu zařízení, případně můžete použít mobilní telefon s podporou biometrického přihlášení.",
+	"mfa.sms-description" : "Na vaše telefonní číslo bude odeslána textová zpráva s kódem, který zadáte při druhém kroku přihlášení pro ověření vaší totožnosti.",
 	
 	"__END_" : "__KONEC__"
 }

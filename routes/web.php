@@ -37,4 +37,5 @@ Route::name('mfa.')
     Route::post('/webauthn', 'App\Http\Controllers\MfaController@performWebAuthn')->name('webauthn.add');
     Route::get('/webauthn/test', 'App\Http\Controllers\MfaController@performWebAuthn')->name('webauthn.test');
     Route::get('/sms', 'App\Http\Controllers\MfaController@showSms')->name('sms');
+    Route::get('/sms/test', 'App\Http\Controllers\MfaController@performSms')->name('sms.test');
 });
