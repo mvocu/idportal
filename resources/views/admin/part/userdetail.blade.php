@@ -159,13 +159,13 @@
 			</div>
 		</div>
 		@else 
-			No LDAP record.
+			{{ __('No LDAP record.') }}
 		@endif
 	</div>
 	<div role="tabpanel" class="tab-pane fade" id="voting-{{$id}}" role="tabpanel" aria-labelledby="voting-tab">
 		<div class="row mt-2" style="padding-top: 2rem; padding-bottom: 2rem">
 		@if (!empty($voting_code))
-			<div class="col-xs-11">
+			<div class="col-xs-11 text-center">
 				<h2>{{ $voting_code->code }}</h2>
 			</div>
 		</div>

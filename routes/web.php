@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\UserController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -82,6 +84,9 @@ Route::name('admin.')
     ->group(function() {
         Route::get('/user/list', 'UserController@listUsers')->name('user.list');
         Route::post('/user/list', 'UserController@listUsers')->name('user.list.search');
+        Route::get('/user/new', 'UserController@newUser')->name('user.new');
+        Route::post('/user/new', 'UserController@createUser')->name('user.create');
+        Route::get('/user/code/{user}', 'UserController@showVotingCode')->name('user.show.code');
         Route::get('/user/show/{user}', 'UserController@showUser')->name('user.show');
         Route::get('/userext/list', 'UserExtController@listUsers')->name('userext.list'); 
         Route::get('/userext/list/{id}', 'UserExtController@listUsers')->name('userext.list.source');

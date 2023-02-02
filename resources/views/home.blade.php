@@ -132,6 +132,7 @@
     </div>
     @endif
     
+	@if ( 0 )
 	<div class="row">
 		<div class="col-md-10 col-md-offset-1">
 			<h4>{{ __('Participative budget') }}</h4>
@@ -163,7 +164,7 @@
 			</div>
 		</div>
     </div>
-	
+	@endif
 
 </div>
 @endsection
