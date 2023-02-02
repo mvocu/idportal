@@ -39,6 +39,15 @@
 				<div class="panel-body">
 					{{ $table->render() }}
 				</div>
+				
+				<div class="panel-footer">
+					<div class="row">
+						<div class="col-xs-12 text-center">
+							<a class="btn btn-primary" href="{{ route('admin.user.new') }}">{{ __('Add user') }}</a> 
+							<a class="btn btn-primary" href="{{ route('admin.userext.list') }}">{{ __('List external') }}</a> 
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

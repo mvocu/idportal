@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\UserController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -70,12 +72,21 @@ Route::get('/consent/ask', 'ConsentController@showConsentForm')->name('consent.a
 
 Route::post('/consent/set', 'ConsentController@setConsent')->name('consent.set');
 
+Route::get('/voting/show', 'VotingCodeController@showCode')->name('voting.show');
+
+Route::get('/voting/get', 'VotingCodeController@getCode')->name('voting.get');
+
+Route::post('/voting/declare', 'VotingCodeController@declare')->name('voting.declare');
+
 Route::name('admin.')
     ->prefix('admin')
     ->namespace('Admin')
     ->group(function() {
         Route::get('/user/list', 'UserController@listUsers')->name('user.list');
         Route::post('/user/list', 'UserController@listUsers')->name('user.list.search');
+        Route::get('/user/new', 'UserController@newUser')->name('user.new');
+        Route::post('/user/new', 'UserController@createUser')->name('user.create');
+        Route::get('/user/code/{user}', 'UserController@showVotingCode')->name('user.show.code');
         Route::get('/user/show/{user}', 'UserController@showUser')->name('user.show');
         Route::get('/userext/list', 'UserExtController@listUsers')->name('userext.list'); 
         Route::get('/userext/list/{id}', 'UserExtController@listUsers')->name('userext.list.source');

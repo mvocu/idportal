@@ -4,17 +4,26 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\HtmlString;
+use Illuminate\Support\Facades\Validator;
+use Ramsey\Uuid\Uuid;
 use App\Http\Controllers\Controller;
 use App\Models\Database\User;
+use App\Models\Database\Contact;
 use App\Interfaces\LdapConnector;
+use App\Interfaces\VotingCodeManager;
+use App\Models\Database\Uri;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
     protected $ldapc;
 
-    public function __construct(LdapConnector $ldapc)
+    protected $voting_code_mgr;
+    
+    public function __construct(LdapConnector $ldapc, VotingCodeManager $voting_code_mgr)
     {
         $this->ldapc = $ldapc;
+        $this->voting_code_mgr = $voting_code_mgr;
         $this->middleware('auth');
         $this->middleware('group:administrators');
     }
@@ -67,6 +76,89 @@ class UserController extends Controller
         return view('admin.userdetail', ['id' => $user->id, 'user' => $user, 'ldapuser' => $ldapuser, 
             'haspw' => $ldapuser ? $this->ldapc->hasPassword($ldapuser) : false,
             'lock' => $ldapuser ? $this->ldapc->isUserLocked($ldapuser) : false,
+            'voting_code' => $this->voting_code_mgr->getActiveVotingCode($user),
+        ]);
+    }
+    
+    public function newUser(Request $request) {
+        $table = null;
+        $users = $request->session()->get('conflicts');
+        
+        if($users && !$users->isEmpty()) {
+            $table = tableView($users)
+            ->column('Id', function(User $user) {
+                return new HtmlString(view('components.userlink', ['user' => $user, 'name' => $user->id])->render());
+            })
+            ->column(__('First name'), 'first_name')
+            ->column(__('Last name'), 'last_name')
+            ->column(__('Date of birth'), 'birth_date')
+            ->setTableClass('table table-striped')
+            ->useDataTable();
+        }
+            
+        return view('admin.newuser', [ 'table' => $table ]);
+    }
+    
+    public function createUser(Request $request) {
+        $data = $request->all();
+        $conflicts = $request->input('conflicts', 'check');
+        $idcard = 'urn:mestouvaly:idcard:' . $data['idcard'];
+        $ndata = $data;
+        $ndata['idcard'] = $idcard;
+        $this->validator($ndata)->validate();
+
+        # first try to find pre-existing user
+        $users = User::where([
+            ['first_name', '=', $data['firstname']],
+            ['last_name', '=', $data['lastname']],
+            ['birth_date', '=', new Carbon($data['birthdate'])]
+        ])->get();
+        if($conflicts == 'check' && !$users->isEmpty()) {
+            $request->session()->flashInput($data);
+            return redirect()->back()->withErrors([
+                'failure' => 'Another conflicting account found'
+            ])->with('conflicts', $users);
+        }
+        
+        $uri = new Uri(['uri' => $idcard]);
+        $user = new User([
+            'first_name' => $data['firstname'],
+            'last_name' => $data['lastname'],
+            'birth_date' => $data['birthdate'],
+        ]);
+        $user->identifier = Uuid::uuid4();
+        $user->trust_level = 1;
+        $user->export_to_ldap = 0;
+        $user->save();
+        $user->uris()->save($uri);
+
+        if(!$this->voting_code_mgr->assignVotingCode($user)) {
+            return back()
+            ->withErrors(['failure' => 'Could not assign new voting code']);
+        }
+        
+        return redirect()->route('admin.user.show.code', ['user' => $user->refresh() ]);
+    }
+
+    public function showVotingCode(Request $request, User $user) {
+        return view('admin.votingcode', [ 'user' => $user,
+            'code' => $this->voting_code_mgr->getActiveVotingCode($user),
+        ]);
+    }
+    
+    /**
+     * Get a validator for an incoming registration request.
+     *
+     * @param  array  $data
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    protected function validator(array $data)
+    {
+        return Validator::make($data, [
+            'firstname' => 'required|string|max:255',
+            'lastname' => 'required|string|max:255',
+            'birthdate' => 'required|date|max:255',
+            'idcard' => 'required|string|max:255|unique:contact,uri',
         ]);
     }
     

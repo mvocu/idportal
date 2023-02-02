@@ -12,6 +12,9 @@
 		<a class="nav-link" id="ldap-tab" data-toggle="tab" href="#ldap-{{$id}}" role="tab" aria-controls="ldap" aria-selected="false">{{ __("LDAP entry") }}</a>
 	</li>
 	<li class="nav-item" role="presentation">
+		<a class="nav-link" id="voting-tab" data-toggle="tab" href="#voting-{{$id}}" role="tab" aria-controls="voting" aria-selected="false">{{ __("Voting codes") }}</a>
+	</li>
+	<li class="nav-item" role="presentation">
 		<a class="nav-link" id="status-tab" data-toggle="tab" href="#status-{{$id}}" role="tab" aria-controls="status" aria-selected="false">{{ __("Status") }}</a>
 	</li>
 </ul>
@@ -156,9 +159,18 @@
 			</div>
 		</div>
 		@else 
-			No LDAP record.
+			{{ __('No LDAP record.') }}
 		@endif
 	</div>
+	<div role="tabpanel" class="tab-pane fade" id="voting-{{$id}}" role="tabpanel" aria-labelledby="voting-tab">
+		<div class="row mt-2" style="padding-top: 2rem; padding-bottom: 2rem">
+		@if (!empty($voting_code))
+			<div class="col-xs-11 text-center">
+				<h2>{{ $voting_code->code }}</h2>
+			</div>
+		</div>
+		@endif
+	</div>	
 	<div role="tabpanel" class="tab-pane fade" id="status-{{$id}}" role="tabpanel" aria-labelledby="status-tab">
 		<div class="row mt-2">
 			<div class="col-xs-11">
