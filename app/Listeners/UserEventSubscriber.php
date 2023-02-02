@@ -19,14 +19,18 @@ class UserEventSubscriber implements ShouldQueue
     public function onUserCreated($event)
     {
         $user = User::findOrFail($event->user_id);
-        $this->ldapc->createUser($user);
+        if($user->export_to_ldap) {
+            $this->ldapc->createUser($user);
+        }
         return true;
     }
     
     public function onUserUpdated($event)
     {
         $user = User::findOrFail($event->user_id);
-        $this->ldapc->syncUsers(collect([$user]));
+        if($user->export_to_ldap) {
+            $this->ldapc->syncUsers(collect([$user]));
+        }
         return true;
     }
     
