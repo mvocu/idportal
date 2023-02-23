@@ -21,7 +21,7 @@ if(vmApp) {
             <div class="panel">
 				<div class="panel-heading">{{ __('List of external accounts') }}</div>
 
-				<div class="panel-body shadow-sm">
+				<div class="panel-body shadow-sm" id="vue-app">
 
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">

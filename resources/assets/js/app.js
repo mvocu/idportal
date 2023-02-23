@@ -7,7 +7,10 @@
 
 require('./bootstrap');
 
-window.Vue = require('vue');
+import Vue from 'vue';
+import SMSAuthorizationComponent from './components/SMSAuthorizationComponent.vue';  
+
+// window.Vue = require('vue');
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -17,16 +20,17 @@ window.Vue = require('vue');
 
 // Vue.component('example-component', require('./components/ExampleComponent.vue'));
 
-Vue.component('sms-authorization', require('./components/SMSAuthorizationComponent.vue'));
+// Vue.component('sms-authorization', require('./components/SMSAuthorizationComponent.vue'));
 
 const app = new Vue({
-    el: '#app',
+    el: '#vue-app',
     data: {
     	extensionObject: {}
     },
     mounted: function() {
    		typeof(appMountedHooks) != 'undefined' ? appMountedHooks.forEach(item => item(this)) : false;
-    }
+    },
+    components: { 'sms-authorization': SMSAuthorizationComponent }
 });
 
 window.vmApp = app;

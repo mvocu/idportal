@@ -7,7 +7,8 @@
             <div class="panel panel-default">
                 <div class="panel-heading">{{ __('Registration') }}</div>
 
-                <div class="panel-body">
+				<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+                <div class="panel-body" id="vue-app">
 
                     @if ($errors->has('failure'))
                         <div class="alert alert-danger" role="alert">

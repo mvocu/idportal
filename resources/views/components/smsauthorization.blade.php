@@ -1,4 +1,3 @@
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <sms-authorization 
   v-bind:phone="{ label: '{{ __('Phone number') }}', old: '{{ old('phone') }}', valid: {{ $errors->has('phone') ? 0 : 1 }} }"
   v-bind:token="{ label: '{{ __('Authorization token') }}', old : '{{ old('token') }}', valid: {{ $errors->has('token') ? 0 : 1 }} }"
