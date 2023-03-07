@@ -23,7 +23,7 @@
 					
                     @if ($errors->has('failure'))
                         <div class="alert alert-danger" role="alert">
-                            {{ $errors->first('failure') }}
+                            {{ __($errors->first('failure')) }}
                         </div>
                     @endif
 
