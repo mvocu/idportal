@@ -7,7 +7,7 @@
             <div class="panel">
 				<div class="panel-heading">{{ __('List of users') }}</div>
 
-				<div class="panel-body shadow-sm">
+				<div class="panel-body shadow-sm" style="border-bottom: 1px solid #ccc;">
 					<form method="POST" action="{{ route('admin.user.list.search') }}" aria-label="{{ __('Search users') }}">
 						{{ csrf_field() }}
 						
@@ -18,6 +18,18 @@
 									<label for="search"  class="col-md-3 col-form-label text-md-right">{{ __('Attribute') }}:</label>
 									<div class="col-md-6">
         		                        <input id="search" type="text" class="form-control" name="search" value="{{ old('search') }}" />
+									</div>
+								</div>
+								<div class="row form-group">
+									<label for="internal" class="col-md-3 col-form-label text-md-right">{{ __('No external account') }}:</label>
+									<div class="col-md-6">
+								    	<input id="internal" type="checkbox" class="" name="internal" value="internal" {{ 'internal' == old('internal') ? 'checked' : '' }} />
+									</div>
+								</div>
+								<div class="row form-group">
+									<label for="voting" class="col-md-3 col-form-label text-md-right">{{ __('With voting code') }}:</label>
+									<div class="col-md-6">
+								    	<input id="voting" type="checkbox" class="" name="voting" value="voter" {{ 'voter' == old('voting') ? 'checked' : '' }} />
 									</div>
 								</div>
 							</div>

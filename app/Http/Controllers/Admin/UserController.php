@@ -31,16 +31,32 @@ class UserController extends Controller
     public function listUsers(Request $request)
     {
         if($request->isMethod('POST')) {
-            $search = $request->input('search', '%');
-            $query = User::with(['phones', 'emails', 'accounts', 'accounts.attributes', 'accounts.extSource'])
-                ->where('identifier', 'like', $search);
-            foreach(['first_name', 'last_name', 'birth_date'] as $column) {
-                $query = $query->orWhere($column, 'like', $search);
+            $search = $request->input('search', '');
+            $internal = $request->input('internal', 0);
+            $voter = $request->input('voting', 0);
+            $query = User::with(['phones', 'emails', 'accounts', 'accounts.attributes', 'accounts.extSource']);
+            if($internal) {
+                $query = $query->doesntHave('accounts');
             }
-            foreach(['street', 'email', 'phone', 'databox', 'bank_account'] as $column) {
-                $query = $query->orWhereHas('contacts', function($subquery) use ($column, $search) {
-                   $subquery->where($column, 'like', $search); 
-                });
+            if($voter) {
+                $query = $query->has('votingCodes');
+            }
+            if(!empty($search)) {
+                $query = $query->where(function($query) use ( $search )
+                    {
+                        $query = $query->where('identifier', 'like', $search);
+                        foreach(['first_name', 'last_name', 'birth_date'] as $column) {
+                            $query = $query->orWhere($column, 'like', $search);
+                        }
+                        foreach(['street', 'email', 'phone', 'databox', 'bank_account'] as $column) {
+                           $query = $query->orWhereHas('contacts', function($subquery) use ($column, $search) {
+                                $subquery->where($column, 'like', $search); 
+                           });
+                        }   
+                        $query = $query->orWhereHas('contacts', function($subquery) use ($search) {
+                            $subquery->where('uri', 'like', '%'.$search);
+                        });
+                    });
             }
             $users = $query->latest()->get();
         } else {
@@ -73,10 +89,23 @@ class UserController extends Controller
     public function showUser(Request $request, User $user)
     {
         $ldapuser = $this->ldapc->findUser($user);
+        $idcard = "";
+        if(!empty($user->uris)) {
+            $pos = $user->uris
+                ->search(function ($item, $key) {
+                    return strstr($item, 'urn:mestouvaly:idcard:');
+                });
+            if($pos !== false) {
+                $val = $user->uris->get($pos)->uri;
+                $idcard = substr($val, strrpos($val, ':') + 1);
+            }
+                
+        }
         return view('admin.userdetail', ['id' => $user->id, 'user' => $user, 'ldapuser' => $ldapuser, 
             'haspw' => $ldapuser ? $this->ldapc->hasPassword($ldapuser) : false,
             'lock' => $ldapuser ? $this->ldapc->isUserLocked($ldapuser) : false,
             'voting_code' => $this->voting_code_mgr->getActiveVotingCode($user),
+            'idcard' => $idcard,
         ]);
     }
     

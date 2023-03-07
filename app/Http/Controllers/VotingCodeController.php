@@ -19,7 +19,19 @@ class VotingCodeController extends Controller
     {
         $user = Auth::user()->getDatabaseUser();
         $code = $this->voting_code_mgr->getActiveVotingCode($user);
-        return view('votingcode', ['code' => $code]);
+        $idcard = "";
+        if(!empty($user->uris)) {
+            $pos = $user->uris
+            ->search(function ($item, $key) {
+                return strstr($item, 'urn:mestouvaly:idcard:');
+            });
+                if($pos !== false) {
+                    $val = $user->uris->get($pos)->uri;
+                    $idcard = substr($val, strrpos($val, ':') + 1);
+                }
+                
+        }
+        return view('votingcode', ['user' => $user, 'idcard' => $idcard, 'code' => $code]);
     }
     
     public function getCode(Request $request) 
