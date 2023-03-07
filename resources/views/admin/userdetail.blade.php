@@ -7,7 +7,7 @@
             <div class="panel">
             	<div class="panel-heading">{{ __('User detail - :user', ['user' => $user->first_name . " " . $user->last_name ]) }}</div>
 				<div class="panel-body">
-					@include('admin.part.userdetail', ['user' => $user, 'id' => $id ])
+					@include('admin.part.userdetail', ['user' => $user, 'id' => $id, 'idcard' => $idcard ])
 				</div>
 				<div class="panel-footer">
 					<div class="row">

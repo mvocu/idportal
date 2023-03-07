@@ -44,6 +44,14 @@
 					</div>
 				</div>
 				@endforeach
+				<div class="row">
+					<div class="col-xs-4">
+						{{ __('ID card') }}
+					</div>
+					<div class="col-xs-8">
+						{{ $idcard }}
+					</div>
+				</div>
 			</div>
 			<div class="col-xs-1">
 			</div>
@@ -100,6 +108,7 @@
 	<div role="tabpanel" class="tab-pane fade" id="account-{{$id}}" role="tabpanel" aria-labelledby="account-tab">
 		<div class="row mt-3">
 			<div class="col-xs-12">
+				@if(!empty($user->accounts) && !$user->accounts->isEmpty())
 				{{ tableView($user->accounts)
 					->column('Source', function($acct) { return __($acct->extSource->name); })
 					->column('Identifier', 'login')
@@ -110,6 +119,7 @@
 					->setTableClass('table compact hover')
 					->useDataTable()
 					->render() }}
+				@endif
 			</div>
 		</div>
 	</div>
@@ -165,8 +175,35 @@
 	<div role="tabpanel" class="tab-pane fade" id="voting-{{$id}}" role="tabpanel" aria-labelledby="voting-tab">
 		<div class="row mt-2" style="padding-top: 2rem; padding-bottom: 2rem">
 		@if (!empty($voting_code))
-			<div class="col-xs-11 text-center">
+		   	<div class="container col-xs-6 m-auto text-center">
+				<div class="row">
+					<div class="col-xs-4">
+						{{ __('Full name') }}:
+					</div>
+					<div class="col-xs-8">
+						{{ $user->first_name }} {{ $user->last_name }}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-4">
+						{{ __('birth_date') }}:
+					</div>
+					<div class="col-xs-8">
+						{{ $user->birth_date }}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-4">
+						{{ __('ID card') }}:
+					</div>
+					<div class="col-xs-8">
+						{{ $idcard }}
+					</div>
+				</div>
+			</div>			
+			<div class="col-xs-6 text-center">
 				<h2>{{ $voting_code->code }}</h2>
+				<p>{{ __('Created at') }} {{ $voting_code->updated_at }}</p>
 			</div>
 		</div>
 		@endif
