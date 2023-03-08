@@ -89,18 +89,7 @@ class UserController extends Controller
     public function showUser(Request $request, User $user)
     {
         $ldapuser = $this->ldapc->findUser($user);
-        $idcard = "";
-        if(!empty($user->uris)) {
-            $pos = $user->uris
-                ->search(function ($item, $key) {
-                    return strstr($item, 'urn:mestouvaly:idcard:');
-                });
-            if($pos !== false) {
-                $val = $user->uris->get($pos)->uri;
-                $idcard = substr($val, strrpos($val, ':') + 1);
-            }
-                
-        }
+        $idcard = $user->getIdCard();
         return view('admin.userdetail', ['id' => $user->id, 'user' => $user, 'ldapuser' => $ldapuser, 
             'haspw' => $ldapuser ? $this->ldapc->hasPassword($ldapuser) : false,
             'lock' => $ldapuser ? $this->ldapc->isUserLocked($ldapuser) : false,
@@ -170,7 +159,8 @@ class UserController extends Controller
     }
 
     public function showVotingCode(Request $request, User $user) {
-        return view('admin.votingcode', [ 'user' => $user,
+        $idcard = $user->getIdCard();
+        return view('admin.votingcode', [ 'user' => $user, 'idcard' => $idcard,
             'code' => $this->voting_code_mgr->getActiveVotingCode($user),
         ]);
     }

@@ -37,6 +37,21 @@ class User extends Model
         $this->attributes['birth_date'] = new Carbon($value);    
     }
     
+    public function getIdCard() {
+        $idcard = "";
+        if(!empty($this->uris)) {
+            $pos = $this->uris
+                ->search(function ($item, $key) {
+                    return strstr($item, 'urn:mestouvaly:idcard:');
+                });
+            if($pos !== false) {
+                 $val = $this->uris->get($pos)->uri;
+                 $idcard = substr($val, strrpos($val, ':') + 1);
+            }
+        }
+        return $idcard;
+    }
+    
     public function birthPlace() {
         return $this->belongsTo('App\Models\Database\Address', 'birth_place_id');
     }
