@@ -2069,6 +2069,7 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       tokenSent: 0,
+      sendError: 0,
       mobile: this.phone.old,
       authcode: "",
       busy: 0
@@ -2078,22 +2079,31 @@ __webpack_require__.r(__webpack_exports__);
     phone: Object,
     token: Object,
     send: Object,
+    resend: Object,
     recaptcha: Object
   },
   methods: {
     sendToken: function sendToken(phone) {
       var context = this;
       var reCaptcha = grecaptcha.getResponse();
+      grecaptcha.reset();
       this.busy = 1;
       jQuery.post(this.send.url, {
         'phone': this.mobile,
         'g-recaptcha-response': reCaptcha
       }).done(function (data) {
         context.tokenSent = 1;
-        context.busy = 0;
         context.authcode = "";
         context.setFocus();
+      }).fail(function (data) {
+        context.tokenSent = 0;
+        context.sendError = "Sending SMS failed";
+      }).always(function (data) {
+        context.busy = 0;
       });
+    },
+    resendToken: function resendToken(phone) {
+      this.sendToken(phone);
     },
     setFocus: function setFocus() {
       var _this = this;
@@ -2171,7 +2181,9 @@ var render = function render() {
     staticClass: "form-group row"
   }, [_c("div", {
     staticClass: "col-md-6 col-md-offset-4"
-  }, [_c("button", {
+  }, [_vm.sendError ? _c("div", {
+    staticClass: "error"
+  }, [_vm._v(_vm._s(_vm.sendError))]) : _vm._e(), _vm._v(" "), !_vm.tokenSent && !_vm.sendError ? _c("button", {
     staticClass: "btn btn-primary",
     attrs: {
       type: "button"
@@ -2181,7 +2193,17 @@ var render = function render() {
         return _vm.sendToken(_vm.mobile);
       }
     }
-  }, [_vm._v("\n                                    " + _vm._s(_vm.send.label) + "\n                                ")])])]), _vm._v(" "), _vm.busy ? _c("div", {
+  }, [_vm._v("\n                                    " + _vm._s(_vm.send.label) + "\n                                ")]) : _vm._e(), _vm._v(" "), _vm.tokenSent || _vm.sendError ? _c("button", {
+    staticClass: "btn btn-primary",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.resendToken(_vm.mobile);
+      }
+    }
+  }, [_vm._v("\n                                    " + _vm._s(_vm.resend.label) + "\n                                ")]) : _vm._e()])]), _vm._v(" "), _vm.busy ? _c("div", {
     staticClass: "fixed-top text-center w-100 h-100",
     staticStyle: {
       "background-color": "rgba(240,240,240,0.6)"

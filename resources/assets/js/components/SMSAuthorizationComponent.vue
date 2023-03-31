@@ -19,8 +19,12 @@
 
                         <div class="form-group row">
                             <div class="col-md-6 col-md-offset-4">
-                                <button type="button" class="btn btn-primary" v-on:click="sendToken(mobile)">
+                                <div class="error" v-if="sendError">{{ sendError }}</div>
+                                <button type="button" class="btn btn-primary" v-on:click="sendToken(mobile)" v-if="!tokenSent && !sendError">
                                     {{ send.label }}
+                                </button>
+                                <button type="button" class="btn btn-primary" v-on:click="resendToken(mobile)" v-if="tokenSent || sendError">
+                                    {{ resend.label }}
                                 </button>
                             </div>
                         </div>
@@ -46,6 +50,7 @@
     	data() {
     		return {
     			tokenSent: 0,
+    			sendError: 0,
     			mobile: this.phone.old,
     			authcode: "",
     			busy: 0
@@ -55,15 +60,22 @@
     		phone: Object,
     		token: Object,
     		send: Object,
+    		resend: Object,
     		recaptcha: Object
     	},
     	methods: {
 			sendToken: function(phone) {
 				var context = this;
 				var reCaptcha = grecaptcha.getResponse();
+				grecaptcha.reset();				
 				this.busy = 1;
 				jQuery.post(this.send.url, { 'phone': this.mobile, 'g-recaptcha-response': reCaptcha })
-					  .done(function(data) { context.tokenSent = 1; context.busy = 0; context.authcode = ""; context.setFocus() });
+					  .done(function(data) { context.tokenSent = 1; context.authcode = ""; context.setFocus() })
+					  .fail(function(data) { context.tokenSent = 0; context.sendError = "Sending SMS failed"; })
+					  .always(function(data) { context.busy = 0; });
+			},
+			resendToken: function(phone) {
+				this.sendToken(phone);
 			},
 			setFocus: function() {
 				this.$nextTick(() => this.$refs.token.focus());
