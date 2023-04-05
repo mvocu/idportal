@@ -111,8 +111,8 @@
 		</div>
 		@endif
 
+		@if (!empty($trusted) && !$trusted->isEmpty())
 		<ul class="list-group list-group-light">
-			@if (!empty($trusted))
 				@foreach ($trusted as $device) 
 				<li class="list-group-item p-3">
 					<div class="row align-items-center">
@@ -121,7 +121,6 @@
 					</div> 
 				</li>
 				@endforeach
-			@endif
 		</ul>
 		<div class="card-footer">
 			<div class="d-flex flex-row justify-content-end align-items-start">
@@ -136,6 +135,15 @@
 				</form>
 			</div>
 		</div>
+		@else
+		<div class="card-body">
+			<div class="alert alert-info text-align-center">
+			<i class="fa fa-info me-2"></i>
+			{{ __('You have no registered trusted devices.') }}
+			</div>
+		</div>
+		@endif
+		
 	</div>
 	@endif
 	

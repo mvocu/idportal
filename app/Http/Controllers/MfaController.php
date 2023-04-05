@@ -132,10 +132,17 @@ class MfaController extends Controller
     }
 
     public function deleteTrusted(Request $request, $device = null) {
-        if(empty($device)) {
-            return redirect()->back()->with('status', __('All devices removed.'));
-        } else {
-            return redirect()->back()->with('status', __('Device removed.'));
+        $user = Auth::user();
+        try {
+            if(empty($device)) {
+                $this->mfa->deleteTrustedDevices($user->getLdapUser());
+                return redirect()->back()->with('status', __('All devices removed.'));
+            } else {
+                $this->mfa->deleteTrustedDevices($user->getLdapUser(), $device);
+                return redirect()->back()->with('status', __('Device removed.'));
+            }
+        } catch(Exception $e){
+            return back()->withErrors(['failure' => __('Error removing device records.')]);
         }
     }
 }

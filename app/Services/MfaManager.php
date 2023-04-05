@@ -79,8 +79,14 @@ class MfaManager implements MfaManagerInterface
      */
     public function deleteTrustedDevices(User $user, $id = null)
     {
-        // TODO Auto-generated method stub
-        
+        $devices = TrustedDevice::forUser($user->getFirstAttribute('cunipersonalid'));
+        foreach($devices as $device) {
+            if(empty($id) || $device->getId() == $id) {
+                if(!$device->delete()) {
+                    throw new \Exception("Failed to remove trusted device.");
+                }
+            }
+        }
     }
 
     /**

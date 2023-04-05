@@ -28,6 +28,10 @@ class TrustedDevice extends Model
         $objects = self::$cas->getTrustedDevices($id);
         return $objects->map(function($item, $key) { return self::from($item); });
     }
+
+    public function delete() {
+        return self::$cas->deleteTrustedDevice($this->getRecordKey());
+    }
     
     public function __construct() {
     }

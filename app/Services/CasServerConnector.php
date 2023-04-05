@@ -51,6 +51,17 @@ class CasServerConnector implements CasServerInterface
         return $this->collect($this->request('GET', self::DEVICES_ENDPOINT . '/' . $id));
     }
     
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\CasServer::deleteTrustedDevice()
+     */
+    public function deleteTrustedDevice($key)
+    {
+        $response = $this->client->request('DELETE', self::DEVICES_ENDPOINT . '/' . $key,
+            ['auth' => [$this->username, $this->password]]);
+        return $response->getStatusCode() == 200; 
+    }
+
     protected function collect($json) {
         $data = json_decode($json);
         return collect($data);

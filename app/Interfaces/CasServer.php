@@ -11,4 +11,6 @@ interface CasServer
     
     public function getTrustedDevices($id);
     
+    public function deleteTrustedDevice($key);
+    
 }

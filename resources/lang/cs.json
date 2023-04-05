@@ -38,6 +38,7 @@
 	"All devices removed." : "Všechna zařízení byla odstraněna.",
 	"Device removed." : "Zařízení bylo odstraněno.",
 	"You have no registered security keys." : "Nemáte zaregistrovaný žádný bezpečnostní klíč.",
+	"You have no registered trusted devices." : "Nemáte zaregistrované žádné zařízení, které by umožňovalo vynechat druhý krok ověření.",
 	"Expires at" : "Platné do",
 	"Review list" : "Upravit seznam",
 	"Clear all" : "Vymazat vše",

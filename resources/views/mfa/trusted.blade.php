@@ -38,7 +38,7 @@
 						<div class="col-sm-4 fw-bold">{{ $device->getName() }}</div>
 						<div class="col-sm-7">{{ __('Expires at') }} {{ $device->getExpirationDate() }} </div>
 						<div class="col-sm-1 text-end">
-							<form method="POST" class="" action="{{ route('mfa.trusted.delete.one', [ 'device' => $device->getRecordKey() ] ) }}">
+							<form method="POST" class="" action="{{ route('mfa.trusted.delete.one', [ 'device' => $device->getId() ] ) }}">
 								@csrf
 								@method('DELETE')
 						
@@ -67,7 +67,7 @@
 		<div class="card-body py-1">
 			<div class="alert alert-info text-align-center">
 			<i class="fa fa-info me-2"></i>
-			{{ __('You have no trusted devices.') }}
+			{{ __('You have no registered trusted devices.') }}
 			</div>
 		</div>
 		@endif
