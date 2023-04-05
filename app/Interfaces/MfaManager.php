@@ -17,5 +17,9 @@ interface MfaManager
     public function getWebAuthnDevices(User $user);
     
     public function deleteWebAuthnDevices(User $user, $id = null);
+    
+    public function getTrustedDevices(User $user);
+    
+    public function deleteTrustedDevices(User $user, $id = null);
 }
 

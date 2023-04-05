@@ -22,35 +22,39 @@
 		</div>
 		@endif
 
+
 		<div class="card-body pb-2">
-			<h5 class="card-title">{{ __('Mobile phone application') }}</h5>
-			<p>{{ __('mfa.gauth-description') }}</p> 
+			<h5 class="card-title">{{ __('Registered trusted devices') }}</h5>
+			<p>{{ __('You will not be asked to use second factor when authenticating from one of those devices.') }}</p>
 		</div>
 		
-		@if ( !empty($gauth) && !$gauth->isEmpty() )
+		@if ( !empty($trusted) && !$trusted->isEmpty() )
 		<div class="card-body py-1">
-			<p>{{ __('List of devices you can use to obtain confirmation code.') }}</p>
+			<p>{{ __('You have chosen to skip the second factor on the following trusted devices') }}:</p>
 			<ul class="list-group">
-				@foreach ($gauth as $device)
-				<li class="list-group-item">
+				@foreach ($trusted as $device)
+				<li class="list-group-item py-3">
 					<div class="d-flex flex-row align-items-center">
-						<div class="col-sm-1"><i class="bi bi-phone fs-2"></i></div>
 						<div class="col-sm-4 fw-bold">{{ $device->getName() }}</div>
-					</div>
-					<div class="container offset-sm-1">
-						<p>{{ __('Registered at') }} {{ $device->getRegistrationDate() }}</p>
-						<h6>{{ __('Emergency scratch codes') }}:</h6>
-						<strong>{{ join(", ", $device->getScratchCodes()) }}</strong>
+						<div class="col-sm-7">{{ __('Expires at') }} {{ $device->getExpirationDate() }} </div>
+						<div class="col-sm-1 text-end">
+							<form method="POST" class="" action="{{ route('mfa.trusted.delete.one', [ 'device' => $device->getRecordKey() ] ) }}">
+								@csrf
+								@method('DELETE')
+						
+								<button class="btn btn-light btn-floating" type="submit"><i class="fa fa-times"></i></button>
+							</form>
+						</div>
 					</div>
 				</li> 
 				@endforeach
 			</ul>
+
 		</div>
-		
+
 		<div class="card-body">
 			<div class="d-flex flex-row justify-content-end align-items-start">
-					<a class="btn btn-info" role="button" href="{{ route('mfa.gauth.test') }}"><i class="fa fa-question me-2"></i>{{ __('Test') }}</a>
-					<form method="POST" class="" action="{{ route('mfa.gauth.delete') }}">
+					<form method="POST" class="" action="{{ route('mfa.trusted.delete') }}">
 						@csrf
 						@method('DELETE')
 						
@@ -58,24 +62,16 @@
 					</form>
 			</div>
 		</div>
-		
-		@else
 
+		@else
 		<div class="card-body py-1">
 			<div class="alert alert-info text-align-center">
 			<i class="fa fa-info me-2"></i>
-			{{ __('You have no registered devices to generate confirmation codes.') }}
+			{{ __('You have no trusted devices.') }}
 			</div>
-			<div class="d-flex flex-row justify-content-center align-items-start my-4">
-					<form method="POST" class="" action="{{ route('mfa.gauth.add') }}">
-						@csrf
-						<button class="btn btn-primary" type="submit"><i class="fa fa-plus-circle me-2"></i>{{ __('Register') }}</button>
-					</form>
-			</div>
-			<p>{{ __('mfa.reauth-description') }}</p>
 		</div>
-		
 		@endif
+				
 		
 		<div class="card-footer">
 			<a class="btn btn-default col-md-3" href="{{ route('mfa.home') }}"><i class="fa fa-arrow-left me-2"></i>{{ __('Back') }}</a>

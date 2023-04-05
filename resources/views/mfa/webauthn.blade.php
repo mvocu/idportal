@@ -52,6 +52,11 @@
 					</div>
 				</li> 
 				@endforeach
+				@if (0)
+				<li class="list-group-item py-3 text-center">
+					<a href="{{ route('mfa.webauthn.adddevice') }}" class="btn btn-default"><i class="fa fa-plus-circle me-2"></i>{{ __('Add new device') }}</a>
+				</li>
+				@endif
 			</ul>
 
 		</div>
@@ -62,8 +67,6 @@
 					<form method="POST" class="" action="{{ route('mfa.webauthn.delete') }}">
 						@csrf
 						@method('DELETE')
-						
-						<input type="hidden" name="device" value="all" />
 						
 						<button class="btn btn-primary" type="submit"><i class="fa fa-times me-2"></i>{{ __('Remove all') }}</button>
 					</form>

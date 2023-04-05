@@ -3,6 +3,7 @@ namespace App\Models\Cas;
 
 use App\Interfaces\CasServer;
 use Illuminate\Support\Facades\App;
+use stdClass;
 
 abstract class Model
 {
@@ -14,5 +15,22 @@ abstract class Model
         self::$cas = App::make(CasServer::class);
         self::$booted = true;
     }
+    
+    public static function from($source) {
+        $instance = new static;
+        if($source instanceof stdClass) {
+            $instance->fill(get_object_vars($source));
+        } else {
+            $instance->fill($source);
+        }
+        return $instance;
+    }
+    
+    public function fill(array $attributes) {
+        foreach(get_object_vars($this) as $name => $dummy) {
+            $this->$name = $attributes[$name];
+        }
+    }
+    
 }
 

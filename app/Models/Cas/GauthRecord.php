@@ -32,16 +32,6 @@ class GauthRecord extends Model
     
     protected $registrationDate;
     
-    public static function from($source) {
-        $instance = new static;
-        if($source instanceof stdClass) {
-            $instance->fill(get_object_vars($source));
-        } else {
-            $instance->fill($source);
-        }
-        return $instance;
-    }
-    
     public static function forUser($id) {
         if(!self::$booted) {
             self::boot();
@@ -52,12 +42,6 @@ class GauthRecord extends Model
     }
     
     public function __construct() {
-    }
-    
-    public function fill(array $attributes) {
-        foreach(get_object_vars($this) as $name => $dummy) {
-            $this->$name = $attributes[$name];
-        }
     }
     
     public function getId() {

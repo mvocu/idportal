@@ -35,7 +35,11 @@ Route::name('mfa.')
     Route::get('/webauthn', 'App\Http\Controllers\MfaController@showWebAuthn')->name('webauthn');
     Route::delete('/webauthn', 'App\Http\Controllers\MfaController@deleteWebAuthn')->name('webauthn.delete');
     Route::post('/webauthn', 'App\Http\Controllers\MfaController@performWebAuthn')->name('webauthn.add');
+    Route::get('/webauthn/add', 'App\Http\Controllers\MfaController@addWebAuthn')->name('webauthn.adddevice');
     Route::get('/webauthn/test', 'App\Http\Controllers\MfaController@performWebAuthn')->name('webauthn.test');
     Route::get('/sms', 'App\Http\Controllers\MfaController@showSms')->name('sms');
     Route::get('/sms/test', 'App\Http\Controllers\MfaController@performSms')->name('sms.test');
+    Route::get('/trusted', 'App\Http\Controllers\MfaController@showTrusted')->name('trusted');
+    Route::delete('/trusted', 'App\Http\Controllers\MfaController@deleteTrusted')->name('trusted.delete');
+    Route::delete('/trusted/{device}', 'App\Http\Controllers\MfaController@deleteTrusted')->name('trusted.delete.one');
 });

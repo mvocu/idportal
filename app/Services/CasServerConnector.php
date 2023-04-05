@@ -47,6 +47,7 @@ class CasServerConnector implements CasServerInterface
     }
     
     public function getTrustedDevices($id) {
+        $this->request('GET', self::DEVICES_ENDPOINT . '/' . $id);
         return $this->collect($this->request('GET', self::DEVICES_ENDPOINT . '/' . $id));
     }
     

@@ -23,12 +23,14 @@ class MfaController extends Controller
         $policy = $this->mfa->getPolicy($user->getLdapUser());
         $gauth = $this->mfa->getGauthCredentials($user->getLdapUser());
         $webauthn = $this->mfa->getWebAuthnDevices($user->getLdapUser());
+        $trusted = $this->mfa->getTrustedDevices($user->getLdapUser());
         $sms = $user->getAuthUser()->mobile; 
         return view('mfa/overview', [
             'policy' => $policy, 
             'gauth' => $gauth, 
             'webauthn' => $webauthn,
             'sms' => $sms,
+            'trusted' => $trusted
         ]);
     }
     
@@ -95,6 +97,16 @@ class MfaController extends Controller
         return redirect()->back()->with('status', __('All devices removed.'));
     }
     
+    public function addWebAuthn(Request $request) {
+        $user = Auth::user();
+        
+        return view('mfa/addwebauthn', [ 'user' => $user ]);    
+    }
+    
+    public function registerWebAuthn(Request $request) {
+        
+    }
+    
     public function performWebAuthn(Request $request) {
         redirect()->setIntendedUrl(route('mfa.webauthn'));
         return redirect()
@@ -111,5 +123,19 @@ class MfaController extends Controller
         redirect()->setIntendedUrl(route('mfa.home'));
         return redirect()
         ->action([LoginController::class, 'stepup'], ['method' => 'mfa-simple']);
+    }
+    
+    public function showTrusted(Request $request) {
+        $user = Auth::user();
+        $trusted = $this->mfa->getTrustedDevices($user->getLdapUser());
+        return view('mfa/trusted', [ 'trusted' => $trusted ]); 
+    }
+
+    public function deleteTrusted(Request $request, $device = null) {
+        if(empty($device)) {
+            return redirect()->back()->with('status', __('All devices removed.'));
+        } else {
+            return redirect()->back()->with('status', __('Device removed.'));
+        }
     }
 }

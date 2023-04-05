@@ -24,7 +24,8 @@
 	"SMS message" : "SMS zpráva",
 	"Verification codes will be sent by SMS to this number." : "Kód pro ověření přihlášení bude odeslán na toto číslo.",
 	"Registered trusted devices" : "Důvěryhodná zařízení",
-	"You will not be asked to use second factor when authenticating from one of those devices." : "Pokud se přihlašujete na jednom z následujících zařízení, nebudete muset při přihlášení použít druhý krok.", 
+	"You will not be asked to use second factor when authenticating from one of those devices." : "Pokud se přihlašujete na jednom z následujících zařízení, nebudete muset při přihlášení použít druhý krok.",
+	"You have chosen to skip the second factor on the following trusted devices" : "Druhý přihlašovací krok je vynechán pro tato zařízení",
 	"Registered at" : "Zaregistrováno",
 	"Turn on" : "Zapnout",
 	"Turn off" : "Vypnout",
@@ -35,7 +36,11 @@
 	"MFA policy saved." : "Nastavení druhého kroku uloženo.",
 	"Error removing device records." : "Nepodařilo se odstranit záznamy o zařízení.",
 	"All devices removed." : "Všechna zařízení byla odstraněna.",
+	"Device removed." : "Zařízení bylo odstraněno.",
 	"You have no registered security keys." : "Nemáte zaregistrovaný žádný bezpečnostní klíč.",
+	"Expires at" : "Platné do",
+	"Review list" : "Upravit seznam",
+	"Clear all" : "Vymazat vše",
 	
 			
 	"mfa.policy-none" : "Nikdy",

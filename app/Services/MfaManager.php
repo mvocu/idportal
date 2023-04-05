@@ -7,6 +7,7 @@ use App\Models\Cas\GauthRecord;
 use App\Models\Cas\MfaPolicy;
 use App\Models\Cas\WebAuthnDevice;
 use App\Util\Base64Url;
+use App\Models\Cas\TrustedDevice;
 
 class MfaManager implements MfaManagerInterface
 {
@@ -61,6 +62,25 @@ class MfaManager implements MfaManagerInterface
     {
         $user->deleteAttribute('caswebauthnrecord');
         $user->save();
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\MfaManager::getTrustedDevices()
+     */
+    public function getTrustedDevices(User $user)
+    {
+        return TrustedDevice::forUser($user->getFirstAttribute('cunipersonalid'));
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\MfaManager::deleteTrustedDevices()
+     */
+    public function deleteTrustedDevices(User $user, $id = null)
+    {
+        // TODO Auto-generated method stub
+        
     }
 
     /**

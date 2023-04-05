@@ -93,6 +93,50 @@
 		<h5 class="mt-5">{{ __('Registered trusted devices') }}</h5>
 		<p>{{ __('You will not be asked to use second factor when authenticating from one of those devices.') }}</p>
 	</div>
+	<div class="card mt-4 mb-5">
+
+         @if (session('status') || $errors->has('failure'))
+		<div class="card-body">
+	         @if (session('status'))
+	      	<div class="alert alert-success" role="alert">
+    	        {{ session('status') }}
+             </div>
+             @endif
+
+             @if ($errors->has('failure'))
+             <div class="alert alert-danger" role="alert">
+             	{{ $errors->first('failure') }}
+             </div>
+             @endif
+		</div>
+		@endif
+
+		<ul class="list-group list-group-light">
+			@if (!empty($trusted))
+				@foreach ($trusted as $device) 
+				<li class="list-group-item p-3">
+					<div class="row align-items-center">
+						<div class="col-sm-4 fw-bold">{{ $device->getName() }}</div>
+						<div class="col-sm-7">{{ __('Expires at') }} {{ $device->getExpirationDate() }} </div>
+					</div> 
+				</li>
+				@endforeach
+			@endif
+		</ul>
+		<div class="card-footer">
+			<div class="d-flex flex-row justify-content-end align-items-start">
+				<a class="btn btn-default" role="button" href="{{ route('mfa.trusted') }}"><i class="fa fa-cog me-2"></i>{{ __('Review list') }}</a>
+				<form method="POST" class="" action="{{ route('mfa.trusted.delete') }}">
+					@csrf
+					@method('DELETE')
+						
+					<input type="hidden" name="device" value="all" />
+						
+					<button class="btn btn-danger" role="button"><i class="fa fa-times me-2"></i>{{ __('Clear all') }}</button>
+				</form>
+			</div>
+		</div>
+	</div>
 	@endif
 	
 </div>
