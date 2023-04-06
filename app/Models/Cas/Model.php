@@ -28,7 +28,7 @@ abstract class Model
     
     public function fill(array $attributes) {
         foreach(get_object_vars($this) as $name => $dummy) {
-            $this->$name = $attributes[$name];
+            $this->$name = array_key_exists($name, $attributes) ? $attributes[$name] : null;
         }
     }
     

@@ -46,7 +46,11 @@
 						@endif
 						<div class="col-sm-9">
 							<strong>{{ $device->getName() }}</strong>
+							@if (null !== $device->getAttestationMetadata())
 							<p>{{ $device->getAttestationMetadata()->deviceProperties->displayName }}</p>
+							@else
+							<p>{{ __('Unknown device') }}</p>
+							@endif
 							<p>{{ __('Registered at') }} {{ $device->getRegistrationDate() }}</p> 
 						</div>
 					</div>
