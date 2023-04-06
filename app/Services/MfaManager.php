@@ -40,18 +40,22 @@ class MfaManager implements MfaManagerInterface
      */
     public function getWebAuthnDevices(User $user)
     {
-        $data = $user->getFirstAttribute('caswebauthnrecord');
-        if(empty($data)) {
+        $result = collect([]);
+        $values = $user->getAttribute('caswebauthnrecord');
+        if(empty($values)) {
             return [];
         }
-        $data = $this->decodeJWERecord($data);
-        $data = json_decode($data);
-        if(empty($data)) {
-            return [];
+        foreach($values as $record) {
+            $data = $this->decodeJWERecord($record);
+            $data = json_decode($data);
+            if(empty($data)) {
+                next;
+            }
+            collect($data)->map(function($item, $key) use ($result) {
+                $result->add(WebAuthnDevice::from($item));
+            });
         }
-        return collect($data)->map(function($item, $key) {
-            return WebAuthnDevice::from($item);
-        });
+        return $result;
     }
 
     /**
