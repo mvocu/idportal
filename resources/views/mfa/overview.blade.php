@@ -60,7 +60,11 @@
 					<div class="flex-grow-1 ps-2">
 						<a class="stretch-link btn btn-light btn-lg float-end" href="{{ route('mfa.webauthn') }}" role="button"><i class="fa fa-angle-right"></i> </a>
 						<h5>{{ __('Security key') }}</h5>
+						@if ( !empty($webauthn) && !$webauthn->isEmpty())
 						<p>{{ __('You have registered the following security keys.') }}</p>
+						@else
+						<p>{{ __('You have no registered security keys.') }}</p>
+						@endif
 					</div>
 				</div>
 				<div class="container offset-sm-1"">
