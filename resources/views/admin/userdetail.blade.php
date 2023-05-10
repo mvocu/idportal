@@ -11,7 +11,7 @@
 				</div>
 				<div class="panel-footer">
 					<div class="row">
-						<div class="col-xs-2"><a href="{{ url()->previous() }}" class="btn btn-default btn-block"><span class="fa fa-long-arrow-left">&nbsp;</span>{{ __('Back') }}</a></div>
+						<div class="col-xs-2"><a href="{{ route('admin.user.list') }}" class="btn btn-default btn-block"><span class="fa fa-long-arrow-left">&nbsp;</span>{{ __('Back') }}</a></div>
 					</div>
 				</div>
 			</div>
