@@ -200,6 +200,11 @@
 						{{ $idcard }}
 					</div>
 				</div>
+				<div class="row mt-2">
+					<div class="col-xs-10">
+						<a class="btn btn-default" href="{{ route('admin.user.show.code', [ 'user' => $user ]) }}">{{ __('Show code for print') }}</a>
+					</div>
+				</div>
 			</div>			
 			<div class="col-xs-6 text-center">
 				<h2>{{ $voting_code->code }}</h2>
