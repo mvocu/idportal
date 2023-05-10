@@ -58,11 +58,17 @@
 
             	<div class="panel-footer">
 					<div class="row">
+						 @if (1)
+						<div class="col-xs-2"
+							><a href="{{ route()->back() }}" class="btn btn-default btn-block"><span class="fa fa-long-arrow-left">&nbsp;</span>{{ __('Back') }}</a>
+						</div>
+						@else
 						<div class="col-xs-12 text-center">
 							<a class="btn btn-primary" href="{{ route('admin.user.new') }}">{{ __('Add user') }}</a> 
 							<a class="btn btn-primary" href="{{ route('admin.user.list') }}">{{ __('List users') }}</a> 
 							<a class="btn btn-primary" href="{{ route('admin.userext.list') }}">{{ __('List external') }}</a> 
 						</div>
+						@endif
 					</div>
             	</div>
 
