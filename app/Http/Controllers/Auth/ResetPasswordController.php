@@ -97,7 +97,7 @@ class ResetPasswordController extends Controller
         } catch (\Exception $e) {
             return $this->sendResetFailedResponse($request, $e->getMessage());
         }
-        return $this->sendResetResponse($request, "passwords.reset");
+        return $this->sendResetResponse("passwords.reset");
     }
     
     /**

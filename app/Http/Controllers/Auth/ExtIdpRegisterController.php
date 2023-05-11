@@ -111,7 +111,7 @@ class ExtIdpRegisterController extends Controller
             }
         }
         
-        return $this->registered($request, $user)
+        return $this->registered($request, $user, $client)
         ?: redirect($this->redirectTo);
         
     }
@@ -186,9 +186,10 @@ class ExtIdpRegisterController extends Controller
      * @param  mixed  $user
      * @return mixed
      */
-    protected function registered(Request $request, $user)
+    protected function registered(Request $request, $user, $client)
     {
-        return redirect($this->casLogoutUrl . '?service=' . route('password.request'));
+        // return redirect($this->casLogoutUrl . '?service=' . route('password.request'));
+        return redirect($this->casLogoutUrl . '?service=' . route('password.eidp', [ 'client' => $client ]));
     }
 
     /**

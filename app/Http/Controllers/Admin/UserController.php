@@ -177,7 +177,7 @@ class UserController extends Controller
             'firstname' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
             'birthdate' => 'required|date|max:255',
-            'idcard' => 'required|string|max:255|unique:contact,uri',
+            'idcard' => 'sometimes|required|string|max:255|unique:contact,uri',
         ]);
     }
     
