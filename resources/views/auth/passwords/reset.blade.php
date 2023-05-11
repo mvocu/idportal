@@ -68,7 +68,7 @@
                         <input type="hidden" name="uid" value="{{ $uid ?? old('uid') }}">
                         
                         <div class="form-group">
-                        	<div class="col-md-4">{{ __('Username') }}:</div>
+                        	<div class="col-md-4">{{ __('Login') }}:</div>
                         	<div class="col-md-6"><b>{{ $uid }}</b></div>
                         </div>
                         
