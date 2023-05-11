@@ -189,7 +189,7 @@ class ExtIdpRegisterController extends Controller
     protected function registered(Request $request, $user, $client)
     {
         // return redirect($this->casLogoutUrl . '?service=' . route('password.request'));
-        return redirect($this->casLogoutUrl . '?service=' . route('password.eidp', [ 'client' => $client ]));
+	return redirect($this->casLogoutUrl . '?service=' . route('password.eidp', [ 'client' => $client ]));
     }
 
     /**
