@@ -13,6 +13,7 @@ class IdentityEventSubscriber implements ShouldQueue
 {
     public function onIdentityFailed($event)
     {
+        Log::error("Failed to create identity: ", [ 'errors' => $event->errors ]);
         return true;
     }
 

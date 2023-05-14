@@ -19,12 +19,14 @@
                     <form class="form-horizontal" method="POST" action="{{ route('register') }}">
                         {{ csrf_field() }}
 
-						@component('components.smsauthorization')
-						    @slot('url')
-						    {{ route('register.authorize') }}
-						    @endslot
-						@endcomponent
-						
+						 @if (0)
+                         <div class="form-group row">
+                            <div class="col-md-6 col-md-offset-4">
+								<div class="g-recaptcha" data-sitekey="{{ (Config::get('recaptcha'))['client_secret'] }}"></div>
+                            </div>
+                        </div>
+                        @endif
+
                         <div class="form-group row {{ $errors->has('firstname') ? ' has-error' : '' }}">
                             <label for="firstname" class="col-md-4 col-form-label text-md-right control-label">{{ __('First name') }}</label>
 
@@ -53,11 +55,49 @@
                             </div>
                         </div>
 
+                        <div class="form-group{{ $errors->has('birth_date') ? ' has-error' : '' }}">
+                            <label for="email" class="col-md-4 control-label"><em>{{ __('Date of birth') }}</em></label>
+
+                            <div class="col-md-6">
+                                <input id="birth_date" type="date" class="form-control" name="birth_date" value="{{ old('birth_date') }}" required>
+
+                                @if ($errors->has('birth_date'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('birth_date') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+						@if (1)
+						@component('components.smsauthorization')
+						    @slot('url')
+						    {{ route('register.authorize') }}
+						    @endslot
+						@endcomponent
+						@else
+
+                         <div class="form-group row" class="{{ $errors->has('phone') ? 'has-error': '' }}">
+                            <label for="phone" class="col-md-4 col-form-label text-md-right control-label"><em>{{ __('Phone number') }}</em></label>
+
+                            <div class="col-md-6">
+                                <input id="phone" type="text" class="form-control" name="phone" value="{{ old('phone') }}">
+
+                                @if ($errors->has('phone'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('phone') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+						
+						@endif
+						
                         <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
                             <label for="email" class="col-md-4 control-label"><em>{{ __('E-mail address') }}</em></label>
 
                             <div class="col-md-6">
-                                <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required>
+                                <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}">
 
                                 @if ($errors->has('email'))
                                     <span class="help-block">
@@ -74,6 +114,7 @@
                                 </button>
                             </div>
                         </div>
+                        
                     </form>
                 </div>
 

@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Traits\SendsAccountActivationEmail;
 use App\Interfaces\ExtSourceManager;
 use App\Interfaces\LdapConnector;
+use App\Auth\RegistrationUser;
 
 class RegisterController extends Controller
 {
@@ -80,13 +81,15 @@ class RegisterController extends Controller
     public function register(Request $request)
     {
         $data = $request->all();
-        $contact = new Contact();
-        $contact->setAttribute('phone', $data['phone']);
-        $data['phone'] = $contact->phone;
+        if(!empty($data['phone'])) {
+            $contact = new Contact();
+            $contact->setAttribute('phone', $data['phone']);
+            $data['phone'] = $contact->phone;
+        }
         $this->validator($data)->validate();
         
         // check token
-        $this->validateToken($request);
+        //$this->validateToken($request);
         
         $user = $this->create($data);
         if(false === $user) {
@@ -110,10 +113,12 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
+            'g-recaptcha-response' => 'required|recaptcha',
             'firstname' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
-            'email' => 'sometimes|nullable|required_without:phone|string|email|max:255|unique:contact,email',
-            'phone' => 'sometimes|required_without:email|string|phone|max:255|unique:contact,phone',
+            'birth_date' => 'sometimes|required_without:phone|date',
+            'email' => 'sometimes|nullable|required_without_all:phone,birth_date|string|email|max:255|unique:contact,email',
+            'phone' => 'sometimes|nullable|required_without_all:email,birth_date|string|phone|max:255|unique:contact,phone',
         ]);
     }
 
@@ -127,7 +132,11 @@ class RegisterController extends Controller
     {
         if(empty($data['email'])) {
             $default_mail = config('registration.default_email');
-            $data['email'] = $data['phone'] . '@' . $default_mail;
+            if(!empty($data['phone'])) {
+                $data['email'] = $data['phone'] . '@' . $default_mail;
+            } else {
+                $data['email'] = $data['firstname'] . '.' . $data['lastname'] . '.' . $data['birth_date'] . '@' . $default_mail;
+            }
         }
         $source = ExtSource::where('type', 'Internal')->get()->first();
         if($source == null) throw new ModelNotFoundException();
@@ -168,7 +177,20 @@ class RegisterController extends Controller
                 }
             }
             
-            return redirect()->route('password.request', [ 'phone' => $request->input('phone'), 'auto' => 1 ]);
+            if(empty($request->input['phone'])) {
+                if(empty($ldap_user)) {
+                    return back()
+                        ->withInput($request->all())
+                        ->withErrors(['failure' => __("User registration failed")]);
+                } else {
+                    return redirect()->route('password.reset', [ 
+                        'token' => $this->broker()->getRepository()->create(new RegistrationUser($ldap_user->getUniqueIdentifier())),
+                        'uid' => $ldap_user->getFirstAttribute('uid')
+                    ]);
+                }
+            } else {
+                return redirect()->route('password.request', [ 'phone' => $request->input('phone'), 'auto' => 1 ]);
+            }
         }
 
         // send activation challenge

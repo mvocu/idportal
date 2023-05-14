@@ -287,8 +287,8 @@ class LdapConnector implements LdapConnectorInterface
         if($accounts->isNotEmpty()) {
             foreach($accounts as $account) {
                 $login = $account->login;
+                $name = Str::kebab(Str::lower(Str::ascii($account->extSource->name)));
                 if(!empty($login)) {
-                    $name = Str::kebab(Str::lower(Str::ascii($account->extSource->name)));
                     $data['employeeNumber;x-'.$name] = $login;
                 } else {
                     $data['employeeNumber;x-'.$name] = null;

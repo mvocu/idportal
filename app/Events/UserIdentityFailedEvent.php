@@ -12,8 +12,8 @@ class UserIdentityFailedEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    protected $user_id;
-    protected $errors;
+    public $user_id;
+    public $errors;
     
     /**
      * Create a new event instance.

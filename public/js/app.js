@@ -2152,7 +2152,7 @@ var render = function render() {
     attrs: {
       "for": "phone"
     }
-  }, [_vm._v(_vm._s(_vm.phone.label))]), _vm._v(" "), _c("div", {
+  }, [_c("em", [_vm._v(_vm._s(_vm.phone.label))])]), _vm._v(" "), _c("div", {
     staticClass: "col-md-6"
   }, [_c("input", {
     directives: [{
@@ -2165,8 +2165,7 @@ var render = function render() {
     attrs: {
       id: "phone",
       type: "text",
-      name: "phone",
-      required: ""
+      name: "phone"
     },
     domProps: {
       value: _vm.mobile

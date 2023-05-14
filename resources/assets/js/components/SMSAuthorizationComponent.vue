@@ -1,17 +1,17 @@
 <template>
 <div class="sms-authorization">
 
-                         <div class="form-group row">
+                        <div class="form-group row">
                             <div class="col-md-6 col-md-offset-4">
 								<div class="g-recaptcha" v-bind:data-sitekey="recaptcha.client_secret"></div>
                             </div>
                         </div>
 
                          <div class="form-group row" v-bind:class="{ 'has-error': !phone.valid }">
-                            <label for="phone" class="col-md-4 col-form-label text-md-right control-label">{{ phone.label }}</label>
+                            <label for="phone" class="col-md-4 col-form-label text-md-right control-label"><em>{{ phone.label }}</em></label>
 
                             <div class="col-md-6">
-                                <input id="phone" type="text" v-model="mobile" class="form-control" name="phone" required>
+                                <input id="phone" type="text" v-model="mobile" class="form-control" name="phone">
 
 								<slot name="phone-error"></slot>
                             </div>

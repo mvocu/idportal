@@ -21,9 +21,9 @@ class IdentityManager implements IdentityManagerInterface
     protected $identityRequirements = [
         'first_name' => 'sometimes|required|string',
         'last_name' => 'sometimes|required|string',
-        'phones' => 'required_without_all:emails,verified_identity|array',
+        'phones' => 'required_without_all:emails,birth_date,verified_identity|array',
         'phones.*.phone' => 'required|phone|unique:contact,phone',
-        'emails' => 'required_without_all:phones,verified_identity|array',
+        'emails' => 'required_without_all:phones,birth_date,verified_identity|array',
         'emails.*.email' => 'required|email|unique:contact,email',
         'residency' => 'sometimes|required|array',
         'residency.street' => 'required_with:residency|string',
@@ -53,7 +53,7 @@ class IdentityManager implements IdentityManagerInterface
         'bankAccounts' => 'sometimes|required|array',
         'bankAccounts.*.bank_account' => 'required|string',
         'birth_code' => [ 'sometimes', 'required', 'regex:/\d{9,10}/', 'unique:user,birth_code' ],
-        'birth_date' => 'sometimes|required|date',
+        'birth_date' => 'required_without_all:phones,emails,verified_identity|date',
     ];
     
     protected $sameIdentityRequirements = [

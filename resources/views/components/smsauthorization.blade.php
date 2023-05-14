@@ -5,14 +5,14 @@
   v-bind:resend="{ label: '{{ __('Re-send authorization code') }}' }"
   v-bind:recaptcha="{ client_secret: '{{ (Config::get('recaptcha'))['client_secret'] }}' }"
   >
-<template name="phone-error">
+<template #phone-error>
                                 @if ($errors->has('phone'))
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $errors->first('phone') }}</strong>
                                     </span>
                                 @endif
 </template>
-<template name="token-error">
+<template #token-error>
                                 @if ($errors->has('token'))
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $errors->first('token') }}</strong>
