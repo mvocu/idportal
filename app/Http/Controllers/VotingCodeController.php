@@ -36,7 +36,8 @@ class VotingCodeController extends Controller
     
     public function getCode(Request $request) 
     {
-        return view('votingform');
+        $user = Auth::user()->getDatabaseUser();
+        return view('votingform', [ 'user' => $user ]);
     }
     
     public function declare(Request $request)

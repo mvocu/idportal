@@ -6,7 +6,7 @@
 		<div class="col-md-10 col-md-offset-1">
 			<h4>{{ __('Voting codes') }}</h4>
 			<hr style="border-top-color: #7bbb57; margin-top: 0px" />
-			<p>{{ __('Voting in participative budget is available only to permanent residents. Before we assign you'
+			<p>{{ __('Voting in participative budget is available only with consent to the voting regulation. Before we assign you'
 			. ' a new voting code, we need you to sign the following declaration:') }}
 			</p>
 		</div>
@@ -14,7 +14,7 @@
     <div class="row justify-content-center">
         <div class="col-md-10 col-md-offset-1">
             <div class="panel panel-default">
-                <div class="panel-heading">{{ __('Declaration of permanent residence') }}</div>
+                <div class="panel-heading">{{ __('Declaration of consent') }}</div>
 
                 <div class="panel-body">
                     @if (session('status'))
@@ -34,7 +34,11 @@
 
 						<div class="form-group row">
 							<div class="col-xs-12">
-								{{ __('I declare that I have permanent residency here.') }} 
+								{{ __('I :name born :born declare that I have read the participative budget voting regulation',
+								['name' => "$user->first_name $user->last_name",
+								 'born' => $user->birth_date->format('d.m.Y')
+								]) }} <a href="https://mojeobec.kr-stredocesky.cz/portal/paroz/uvaly/zasady">{{ __('here') }}</a>
+								{{ __('and I will adhere to the stated conditions.') }} 
 							</div>
 						</div>
 

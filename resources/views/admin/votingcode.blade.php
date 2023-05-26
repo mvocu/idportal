@@ -10,6 +10,14 @@
 				<div class="panel-body">
 					<div class="row">
 						<div class="col-xs-4">
+							<strong>{{ __('identifier') }}:</strong>
+						</div>
+						<div class="col-xs-8">
+								{{ $user->identifier }}
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-4">
 							<strong>{{ __('Full name') }}:</strong>
 						</div>
 						<div class="col-xs-8">
@@ -21,7 +29,7 @@
 							<strong>{{ __('birth_date') }}:</strong>
 						</div>
 						<div class="col-xs-8">
-							{{ $user->birth_date }}
+							{{ $user->birth_date->format('d.m.Y') }}
 						</div>
 					</div>
 					<div class="row">
@@ -33,6 +41,18 @@
 						</div>
 					</div>
 				</div>
+
+				<div class="panel-body mt-2">
+					<div class="row">
+						<div class="col-xs-12">
+							{{ __('I :name born :born declare that I have read the participative budget voting regulation',
+							['name' => "$user->first_name $user->last_name",
+							 'born' => $user->birth_date->format('d.m.Y')
+							]) }} <a href="https://mojeobec.kr-stredocesky.cz/portal/paroz/uvaly/zasady">https://mojeobec.kr-stredocesky.cz/portal/paroz/uvaly/zasady</a>
+							{{ __('and I will adhere to the stated conditions.') }} 
+						</div>
+					</div>
+				</div>					
 				
 				<div class="panel-body mt-2">
 					<div class="row">
@@ -51,7 +71,7 @@
 
 					<div class="row" style="margin-bottom: 2rem">
 						<div class="col-xs-10 col-xs-offset-1 text-center">
-							{{ __('You can use this code for voting in participative budget') }} <a href="">{{ __('here') }}.</a>
+							{{ __('You can use this code for voting in participative budget') }} <a href="https://mojeobec.kr-stredocesky.cz/portal/paroz/uvaly/">https://mojeobec.kr-stredocesky.cz/portal/paroz/uvaly/</a>.
 						</div>
 					</div>
 				</div>				

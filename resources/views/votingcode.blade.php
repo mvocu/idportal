@@ -24,6 +24,14 @@
 				<div class="panel-body">
 					<div class="row">
 						<div class="col-xs-4">
+							<strong>{{ __('identifier') }}:</strong>
+						</div>
+						<div class="col-xs-8">
+								{{ $user->identifier }}
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-4">
 							<strong>{{ __('Full name') }}:</strong>
 						</div>
 						<div class="col-xs-8">
@@ -71,7 +79,7 @@
 
 					<div class="row" style="margin-bottom: 2rem">
 						<div class="col-xs-10 col-xs-offset-1 text-center">
-							{{ __('You can use this code for voting in participative budget') }} <a href="">{{ __('here') }}.</a>
+							{{ __('You can use this code for voting in participative budget') }} <a href="https://mojeobec.kr-stredocesky.cz/portal/paroz/uvaly/">{{ __('here') }}.</a>
 						</div>
 					</div>				
 				</div>
