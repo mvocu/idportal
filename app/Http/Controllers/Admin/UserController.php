@@ -165,7 +165,9 @@ class UserController extends Controller
 
     public function showVotingCode(Request $request, User $user) {
         $idcard = $user->getIdCard();
-        return view('admin.votingcode', [ 'user' => $user, 'idcard' => $idcard,
+        $ldapuser = $this->ldapc->findUser($user);
+        return view('admin.votingcode', [ 'user' => $user, 'ldapuser' => $ldapuser, 
+            'idcard' => $idcard,
             'code' => $this->voting_code_mgr->getActiveVotingCode($user),
         ]);
     }
