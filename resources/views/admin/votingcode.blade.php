@@ -26,12 +26,13 @@
 					</div>
 					<div class="row">
 						<div class="col-xs-4">
-							<strong>{{ __('birth_date') }}:</strong>
+							<strong>{{ __('Year of birth') }}:</strong>
 						</div>
 						<div class="col-xs-8">
-							{{ $user->birth_date->format('d.m.Y') }}
+							{{ $user->birth_date->format('Y') }}
 						</div>
 					</div>
+					@if (0)
 					<div class="row">
 						<div class="col-xs-4">
 							<strong>{{ __('ID card') }}:</strong>
@@ -40,6 +41,7 @@
 							{{ $idcard }}
 						</div>
 					</div>
+					@endif
 				</div>
 
 				<div class="panel-body mt-2">
@@ -47,7 +49,7 @@
 						<div class="col-xs-12">
 							{{ __('I :name born :born declare that I have read the participative budget voting regulation',
 							['name' => "$user->first_name $user->last_name",
-							 'born' => $user->birth_date->format('d.m.Y')
+							 'born' => $user->birth_date->format('Y')
 							]) }} <a href="https://mojeobec.kr-stredocesky.cz/portal/paroz/uvaly/zasady">https://mojeobec.kr-stredocesky.cz/portal/paroz/uvaly/zasady</a>
 							{{ __('and I will adhere to the stated conditions.') }} 
 						</div>

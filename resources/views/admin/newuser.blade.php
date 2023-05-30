@@ -46,21 +46,22 @@
                         </div>
 
                         <div class="form-group{{ $errors->has('birthdate') ? ' has-error' : '' }}">
-                            <label for="idcard" class="col-md-4 col-form-label text-md-right control-label">{{ __('Date of birth') }}</label>
+                            <label for="birth_year" class="col-md-4 col-form-label text-md-right control-label">{{ __('Year of birth') }}</label>
 
                             <div class="col-md-6">
-                                <input id="birthdate" type="text" class="form-control" name="birthdate" value="{{ old('birthdate') }}" required>
+                                <input id="birth_year" type="text" class="form-control" name="birth_year" value="{{ old('birth_year') }}" required>
 
-                                @if ($errors->has('birthdate'))
+                                @if ($errors->has('birth_year'))
                                     <span class="help-block">
-                                        <strong>{{ $errors->first('birthdate') }}</strong>
+                                        <strong>{{ $errors->first('birth_year') }}</strong>
                                     </span>
                                 @endif
                             </div>
                         </div>
 
+						@if (0)
                         <div class="form-group{{ $errors->has('idcard') ? ' has-error' : '' }}">
-                            <label for="idcard" class="col-md-4 col-form-label text-md-right control-label">{{ __('Identity card number') }}</label>
+                            <label for="idcard" class="col-md-4 col-form-label text-md-right control-label"><em>{{ __('Identity card number') }}</em></label>
 
                             <div class="col-md-6">
                                 <input id="idcard" type="text" class="form-control" name="idcard" value="{{ old('idcard') }}" required>
@@ -72,6 +73,7 @@
                                 @endif
                             </div>
                         </div>
+                        @endif
 
                         <div class="form-group">
                             <label for="conflicts" class="col-md-4 col-form-label text-md-right control-label">{{ __('Ignore conflicts') }}</label>

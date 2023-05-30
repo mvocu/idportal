@@ -56,14 +56,14 @@
                         </div>
 
                         <div class="form-group{{ $errors->has('birth_date') ? ' has-error' : '' }}">
-                            <label for="email" class="col-md-4 control-label"><em>{{ __('Date of birth') }}</em></label>
+                            <label for="birth_year" class="col-md-4 control-label"><em>{{ __('Year of birth') }}</em></label>
 
                             <div class="col-md-6">
-                                <input id="birth_date" type="date" class="form-control" name="birth_date" value="{{ old('birth_date') }}" required>
+                                <input id="birth_year" type="text" class="form-control" name="birth_year" value="{{ old('birth_year') }}" required>
 
-                                @if ($errors->has('birth_date'))
+                                @if ($errors->has('birth_year'))
                                     <span class="help-block">
-                                        <strong>{{ $errors->first('birth_date') }}</strong>
+                                        <strong>{{ $errors->first('birth_year') }}</strong>
                                     </span>
                                 @endif
                             </div>

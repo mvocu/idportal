@@ -120,9 +120,12 @@ class UserController extends Controller
     public function createUser(Request $request) {
         $data = $request->all();
         $conflicts = $request->input('conflicts', 'check');
-        $idcard = 'urn:mestouvaly:idcard:' . $data['idcard'];
         $ndata = $data;
-        $ndata['idcard'] = $idcard;
+        if(array_key_exists('idcard', $data)) {
+            $idcard = 'urn:mestouvaly:idcard:' . $data['idcard'];
+            $ndata['idcard'] = $idcard;
+        }
+        $data['birthdate'] = '01/01/' . $data['birth_year'];
         $this->validator($ndata)->validate();
 
         # first try to find pre-existing user
@@ -138,7 +141,6 @@ class UserController extends Controller
             ])->with('conflicts', $users);
         }
         
-        $uri = new Uri(['uri' => $idcard]);
         $user = new User([
             'first_name' => $data['firstname'],
             'last_name' => $data['lastname'],
@@ -148,7 +150,10 @@ class UserController extends Controller
         $user->trust_level = 1;
         $user->export_to_ldap = 0;
         $user->save();
-        $user->uris()->save($uri);
+        if(!empty($idcard)) {
+            $uri = new Uri(['uri' => $idcard]);
+            $user->uris()->save($uri);
+        }
 
         if(!$this->voting_code_mgr->assignVotingCode($user)) {
             return back()
@@ -176,8 +181,8 @@ class UserController extends Controller
         return Validator::make($data, [
             'firstname' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
-            'birthdate' => 'required|date|max:255',
-            'idcard' => 'sometimes|required|string|max:255|unique:contact,uri',
+            'birth_year' => 'required|date_format:Y',
+            'idcard' => 'sometimes|nullable|string|max:255|unique:contact,uri',
         ]);
     }
     

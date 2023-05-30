@@ -19,6 +19,7 @@ class VotingCodeController extends Controller
     {
         $user = Auth::user()->getDatabaseUser();
         $code = $this->voting_code_mgr->getActiveVotingCode($user);
+        $login = Auth::user()->getFirstAttribute('uid');
         $idcard = "";
         if(!empty($user->uris)) {
             $pos = $user->uris
@@ -31,7 +32,7 @@ class VotingCodeController extends Controller
                 }
                 
         }
-        return view('votingcode', ['user' => $user, 'idcard' => $idcard, 'code' => $code]);
+        return view('votingcode', ['user' => $user, 'login' => $login, 'idcard' => $idcard, 'code' => $code]);
     }
     
     public function getCode(Request $request) 

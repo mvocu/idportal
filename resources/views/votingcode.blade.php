@@ -32,6 +32,14 @@
 					</div>
 					<div class="row">
 						<div class="col-xs-4">
+							<strong>{{ __('Login') }}:</strong>
+						</div>
+						<div class="col-xs-8">
+								{{ $login }}
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-4">
 							<strong>{{ __('Full name') }}:</strong>
 						</div>
 						<div class="col-xs-8">
@@ -40,12 +48,13 @@
 					</div>
 					<div class="row">
 						<div class="col-xs-4">
-							<strong>{{ __('birth_date') }}:</strong>
+							<strong>{{ __('Year of birth') }}:</strong>
 						</div>
 						<div class="col-xs-8">
-							{{ $user->birth_date }}
+							{{ $user->birth_date->format('Y') }}
 						</div>
 					</div>
+					@if (0)
 					<div class="row">
 						<div class="col-xs-4">
 							<strong>{{ __('ID card') }}:</strong>
@@ -54,6 +63,7 @@
 							{{ $idcard }}
 						</div>
 					</div>
+					@endif
 				</div>
 				
 				<div class="panel-body mt-2">

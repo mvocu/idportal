@@ -91,6 +91,9 @@ class RegisterController extends Controller
         // check token
         //$this->validateToken($request);
         
+        if(!empty($data['birth_year'])) {
+            $data['birth_date'] = '01/01/' . $data['birth_year'];
+        }
         $user = $this->create($data);
         if(false === $user) {
             return redirect('/register')
@@ -116,9 +119,10 @@ class RegisterController extends Controller
             'g-recaptcha-response' => 'required|recaptcha',
             'firstname' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
-            'birth_date' => 'sometimes|required_without:phone|date',
-            'email' => 'sometimes|nullable|required_without_all:phone,birth_date|string|email|max:255|unique:contact,email',
-            'phone' => 'sometimes|nullable|required_without_all:email,birth_date|string|phone|max:255|unique:contact,phone',
+            //'birth_date' => 'sometimes|required_without:phone|date',
+            'birth_year' => 'sometimes|required_without:phone|date_format:Y',
+            'email' => 'sometimes|nullable|required_without_all:phone,birth_year|string|email|max:255|unique:contact,email',
+            'phone' => 'sometimes|nullable|required_without_all:email,birth_year|string|phone|max:255|unique:contact,phone',
         ]);
     }
 
@@ -135,7 +139,7 @@ class RegisterController extends Controller
             if(!empty($data['phone'])) {
                 $data['email'] = $data['phone'] . '@' . $default_mail;
             } else {
-                $data['email'] = $data['firstname'] . '.' . $data['lastname'] . '.' . $data['birth_date'] . '@' . $default_mail;
+                $data['email'] = $data['firstname'] . '.' . $data['lastname'] . '.' . $data['birth_year'] . '@' . $default_mail;
             }
         }
         $source = ExtSource::where('type', 'Internal')->get()->first();
