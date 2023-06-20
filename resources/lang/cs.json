@@ -56,5 +56,8 @@
 	"mfa.webauthn-description" : "Při druhém kroku ověření budete vyzváni k připojení bezpečnostního klíče k vašemu zařízení, případně můžete použít mobilní telefon s podporou biometrického přihlášení.",
 	"mfa.sms-description" : "Na vaše telefonní číslo bude odeslána textová zpráva s kódem, který zadáte při druhém kroku přihlášení pro ověření vaší totožnosti.",
 	
+	"External identities" : "Externí identity",
+	"This application is still being developed. Please come back later." : "Tato aplikace se ještě připravuje. Prosíme o trpělivost.", 
+	
 	"__END_" : "__KONEC__"
 }
