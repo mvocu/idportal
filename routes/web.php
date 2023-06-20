@@ -43,3 +43,9 @@ Route::name('mfa.')
     Route::delete('/trusted', 'App\Http\Controllers\MfaController@deleteTrusted')->name('trusted.delete');
     Route::delete('/trusted/{device}', 'App\Http\Controllers\MfaController@deleteTrusted')->name('trusted.delete.one');
 });
+
+Route::name('ext.')
+->prefix('ext')
+->group(function() {
+   Route::get('/', 'App\Http\Controllers\UserExtController@showOverview')->name('home'); 
+});
