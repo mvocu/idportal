@@ -15,7 +15,7 @@ class OidcUser implements Authenticatable, AuthenticationInfo
     {
         $this->idToken = $idToken;
         $this->accessToken = $accessToken;
-        $this->claims = $claims;
+        $this->claims = $claims instanceof \stdClass ? get_object_vars($claims) : $claims;
         $this->info = $info;
     }
     
@@ -61,7 +61,7 @@ class OidcUser implements Authenticatable, AuthenticationInfo
     
     public function getDisplayName()
     {
-        return $this->name;
+        return empty($this->name) ? $this->sub : $this->name;
     }
     
     public function __get($name)

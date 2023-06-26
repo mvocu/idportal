@@ -8,6 +8,8 @@
 	"Test" : "Otestovat",
 	"Remove all" : "Odstranit vše",
 	"Register" : "Registrovat",
+	"Login" : "Přihlásit",
+	"Confirm" : "Potvrdit",
 	
 	"Multifactor authentication" : "Vícefaktorová autentizace",
 	"Please select when you want to use second factor during authentication:" : "Vyberte si, v jakých situacích si přejete použít při přihlášení druhý faktor:",
@@ -58,6 +60,39 @@
 	
 	"External identities" : "Externí identity",
 	"This application is still being developed. Please come back later." : "Tato aplikace se ještě připravuje. Prosíme o trpělivost.", 
+	
+	"You are not signed in. Please login to continue." : "Zatím nejste přihlášeni. Abyste mohli pokračovat, prosím, přihlaste se.", 
+	"These external identy providers are available to login with CAS:" : "Pro přihlášení k CAS jsou k dispozici následující způsoby přihlášení:",
+	"Add external identity" : "Přidání externí identity",
+	"Add external ID" : "Přidat externí identitu",
+	"Remove external ID" : "Odebrat externí identitu",
+	"Registered ID:" : "Registrovaný identifikátor:",
+	"You have no registered external identity." : "Nemáte zaregistrovanou žádnou externí identitu.",
+	"You are about to add an external identity to your CAS account, which will allow this external identity to login using your CAS account." : "Chystáte se přidat externí identitu ke svému účtu v CAS, což vám umožní přihlásit se k účtu v CAS prostřednictvím tohoto externího účtu.", 
+	"Identity in CAS" : "Identifikace v CAS",
+	"Identity from external provider" : "Identifikace od externího poskytovatele",
+	"Unregistered external identity" : "Neregistrovaný externí účet",		
+	"You have signed in using account that is not yet registered with CAS. You have to register this account with CAS to continue." : "Účet, kterým jste se přihlásili, dosud není v CAS registrovaný. Abyste mohli pokračovat dále, prosíme zaregistrujte jej.",
+	"Information about external account" : "Informace o externím účtu",
+	"Data displayed above is only for your information, it will not be stored and further processed except the anonymous identifier." : "Výše zobrazené údaje jsou jen pro vaši kontrolu. S výjimkou anonymního identifikátoru nebudou zde dále uloženy ani zpracovávány.",
+	"To register this account, you have to sign-in using your CAS account to continue." : "Abyste mohli tento účet zaregistrovat v CAS, prosím přihlašte se vaším CAS účtem.",
+	"Login with CAS" : "Přihlásit přes CAS",
+
+	"Login failed." : "Přihlášení se nezdařilo.",
+	"External login failed." : "Přihlášení externím účtem se nezdařilo.",
+	"Authenticated user has changed." : "Došlo ke změně přihlášeného uživatele.",
+	"Unknown identity provider." : "Neznámý externí poskytovatel.",
+	"User not found." : "Uživatel nenalezen.",
+	"External identity was successfully registered." : "Externí identita byla zaregistrována.",
+	"External identity removed." : "Externí identita odstraněna.",
+	
+	"NIA" : "Identita občana",
+	"NIA-desc" : "Elektronická identita poskytovaná státem (včetně bankovní identity).",
+
+	"Identifier" : "Identifikátor",
+	"First name" : "Křestní jméno",
+	"Last name" : "Příjmení",
+	"Address" : "Adresa",	
 	
 	"__END_" : "__KONEC__"
 }

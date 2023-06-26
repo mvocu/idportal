@@ -5,11 +5,12 @@ namespace App\Http\Controllers\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 
 
 class LoginController extends Controller
 {
-
+    
     public function __construct()
     {
     }
@@ -20,9 +21,9 @@ class LoginController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function login(Request $request)
+    public function login(Request $request, $method = null)
     {
-        if(Auth::attempt([])) {
+        if(Auth::attempt($method ? ['delegate' => $method ]: [])) {
             $request->session()->regenerate();
             
             return redirect()->intended();
@@ -42,5 +43,19 @@ class LoginController extends Controller
         return back()->withErrors([]);
     }
 
+    public function logout(Request $request)
+    {
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        if(Auth::hasUser()) {
+            Auth::logout(url()->current());
+        }
+        
+        return $request->wantsJson()
+        ? new JsonResponse([], 204)
+        : redirect()->intended();
+    }
+    
+    
 }
 

@@ -19,7 +19,7 @@ class OidcConnector implements IdentityProvider
             $this->config['client_secret']
         );
         $this->oidc->setResponseTypes(['code']);
-        $this->oidc->addScope(['openid', 'phone', 'email', 'profile', 'address']);
+        $this->oidc->addScope(['openid', 'phone', 'email', 'profile', 'address', 'nia', 'cuni']);
         $this->oidc->providerConfigParam(['token_endpoint_auth_methods_supported' => ['client_secret_post']]);
     }
 
@@ -27,6 +27,12 @@ class OidcConnector implements IdentityProvider
         if(is_array($params) && isset($params['mfa'])) {
             $this->oidc->addAuthParam([
                 'acr_values' => $params['mfa'],
+                'prompt' => 'login'
+            ]);
+        }
+        if(is_array($params) && isset($params['delegate'])) {
+            $this->oidc->addAuthParam([
+                'acr_values' => $params['delegate'],
                 'prompt' => 'login'
             ]);
         }
@@ -63,7 +69,8 @@ class OidcConnector implements IdentityProvider
         return new OidcUser($id_token, $ac_token, get_object_vars($claims), get_object_vars($info));
     }
     
-    public function logout() {
+    public function logout($id_token, $redirect = "/") {
+        return $this->oidc->signOut($id_token, $redirect);
     }
     
     protected function parseInfo($info, &$result, $prefix) {
