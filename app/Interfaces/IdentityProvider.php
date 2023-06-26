@@ -9,6 +9,6 @@ interface IdentityProvider
         
         public function validate($id_token, $ac_token);
 
-        public function logout();
+        public function logout($id_tokent, $redirect);
 }
 

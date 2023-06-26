@@ -79,12 +79,16 @@ class OidcGuard implements Guard
         $this->setUser($user);
     }
     
-    public function logout()
+    public function logout($redirect)
     {
+        $key = $this->getName();
+        $id_token = $this->session->get($key . "_id");
         $this->user = null;
         $this->loggedOut = true;
         $this->updateSession("", "");
-        $this->authenticator->logout();
+        if(!is_null($id_token)) {
+            $this->authenticator->logout($id_token, $redirect);
+        }
     }
     
     /**
@@ -103,7 +107,7 @@ class OidcGuard implements Guard
         $key = $this->getName();
         $this->session->put($key . "_id", $id_token);
         $this->session->put($key . "_ac", $ac_token);
-        $this->session->migrate(true);
+        $this->session->migrate(false);
     }
     
 }

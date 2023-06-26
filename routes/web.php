@@ -20,7 +20,8 @@ Route::get('/', function () {
 
 Route::get('/login', 'App\Http\Controllers\Auth\LoginController@login')->name('login');
 Route::get('/stepup/{method}', 'App\Http\Controllers\Auth\LoginController@stepup')->name('stepup');
-Route::post('/logout', 'App\Http\Controllers\Auth\LoginController@login')->name('logout');
+Route::get('/logout', 'App\Http\Controllers\Auth\LoginController@logout')->name('logout');
+Route::post('/logout', 'App\Http\Controllers\Auth\LoginController@logout')->name('logout');
 
 Route::name('mfa.')
 ->prefix('mfa')
@@ -47,5 +48,10 @@ Route::name('mfa.')
 Route::name('ext.')
 ->prefix('ext')
 ->group(function() {
-   Route::get('/', 'App\Http\Controllers\UserExtController@showOverview')->name('home'); 
+    Route::get('/', 'App\Http\Controllers\UserExtController@showOverview')->name('home');
+    Route::get('/login/{provider}', 'App\Http\Controllers\UserExtController@loginRemote')->name('login.ext'); 
+    Route::get('/login', 'App\Http\Controllers\UserExtController@loginLocal')->name('login');
+    Route::get('/confirm/{provider}', 'App\Http\Controllers\UserExtController@confirmIdentity')->name('confirm');
+    Route::post('/add/{provider}', 'App\Http\Controllers\UserExtController@addIdentity')->name('add');
+    Route::post('/remove/{provider}', 'App\Http\Controllers\UserExtController@removeIdentity')->name('remove');    
 });
