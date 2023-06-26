@@ -17,18 +17,24 @@
 					<div class="col-sm-4">{{ __('Identifier') }}</div>
 					<div class="col-sm-8 fw-bold">{{ $auth_user->getAuthIdentifier() }}</div>
 				</div>
+				@if (array_key_exists('nia_given_name', $attrs))
 				<div class="d-flex flex-row row">
 					<div class="col-sm-4">{{ __('First name') }}</div>
 					<div class="col-sm-8 fw-bold">{{ $attrs['nia_given_name'] }}</div>
 				</div>
+				@endif
+                                @if (array_key_exists('nia_family_name', $attrs))
 				<div class="d-flex flex-row row">
 					<div class="col-sm-4">{{ __('Last name') }}</div>
 					<div class="col-sm-8 fw-bold">{{ $attrs['nia_family_name'] }}</div>
 				</div>
+				@endif
+                                @if (array_key_exists('nia_address', $attrs))
 				<div class="d-flex flex-row row">
 					<div class="col-sm-4">{{ __('Address') }}</div>
 					<div class="col-sm-8 fw-bold">{{ $attrs['nia_address'] }}</div>
 				</div>
+				@endif
 			</div>
 
 			<p class="mt-2 fw-bold">{{ __('Data displayed above is only for your information, it will not be stored and further processed except the anonymous identifier.') }}</p>

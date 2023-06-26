@@ -85,6 +85,7 @@
 	"User not found." : "Uživatel nenalezen.",
 	"External identity was successfully registered." : "Externí identita byla zaregistrována.",
 	"External identity removed." : "Externí identita odstraněna.",
+	"No external identity found." : "Nebyla nalezena externí identita.",
 	
 	"NIA" : "Identita občana",
 	"NIA-desc" : "Elektronická identita poskytovaná státem (včetně bankovní identity).",

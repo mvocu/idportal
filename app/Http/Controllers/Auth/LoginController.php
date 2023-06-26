@@ -47,7 +47,7 @@ class LoginController extends Controller
     {
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        if(Auth::hasUser()) {
+        if(1 || Auth::hasUser()) {
             Auth::logout(url()->current());
         }
         

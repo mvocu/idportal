@@ -19,7 +19,7 @@ class UserExtController extends Controller
 
     const ALLOWED_PROVIDERS = ['NIA'];
     
-    protected UserExtManager $ue_mgr;
+    protected $ue_mgr;
     
     public function __construct(UserExtManager $mgr) {
         $this->ue_mgr = $mgr;
@@ -66,7 +66,7 @@ class UserExtController extends Controller
 
     public function loginLocal(Request $request) {
         if(!Auth::attempt(['delegate' => 'cas'])) {
-            return back()->withErrors(['failure' => __('Login failed.')]);
+            return redirect()->route('ext.home')->withErrors(['failure' => __('Login failed.')]);
         }
         $auth_user = Auth::user();
         $provider = session(self::REMOTE_PROVIDER_KEY);
@@ -77,6 +77,9 @@ class UserExtController extends Controller
             
             Auth::guard()->login($user);
         }
+        if(empty($provider)) {
+	    $provider = 'NIA';
+        }
         $local_user = $this->rememberLocalUser($user);
         return redirect()->route('ext.confirm', ['provider' => $provider]);
         //$remote_user = session(self::REMOTE_USER_KEY);
@@ -85,9 +88,12 @@ class UserExtController extends Controller
     
     public function loginRemote(Request $request, $provider) {
         if(!Auth::attempt(['delegate' => $provider])) {
-            return back()->withErrors(['failure' => __('External login failed.')]);
+            return redirect()->route('ext.home')->withErrors(['failure' => __('External login failed.')]);
         }
         $remote_user = $this->rememberRemoteUser(Auth::user(), $provider);
+	if(empty($remote_user)) {
+	    return redirect()->route('ext.home')->withErrors(['failure' => __('No external identity found.')]);
+	}
         return redirect()->route('ext.confirm', ['provider' => $provider]);
         //$local_user = session(self::LOCAL_USER_KEY);
         //return view('ext.confirm', [ 'local' => $local_user, 'remote' => $remote_user, 'provider' => $provider ]);
@@ -146,6 +152,9 @@ class UserExtController extends Controller
             $id = $attrs['nia_identifier'];
             $provider = "NIA";
         }
+	if(empty($id)) {
+		return null;
+	}
         session()->put(self::REMOTE_USER_KEY, $id);
         if(!empty($provider)) {
             session()->put(self::REMOTE_PROVIDER_KEY, $provider);
