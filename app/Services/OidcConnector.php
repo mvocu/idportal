@@ -69,7 +69,7 @@ class OidcConnector implements IdentityProvider
         return new OidcUser($id_token, $ac_token, get_object_vars($claims), get_object_vars($info));
     }
     
-    public function logout($id_token, $redirect = "/") {
+    public function logout($id_token, $redirect = null) {
         return $this->oidc->signOut($id_token, $redirect);
     }
     

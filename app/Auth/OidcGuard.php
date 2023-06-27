@@ -5,6 +5,7 @@ namespace App\Auth;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Session\Session;
+use Illuminate\Support\Facades\Auth;
 use App\Interfaces\IdentityProvider;
 use Illuminate\Auth\GuardHelpers;
 
@@ -42,8 +43,8 @@ class OidcGuard implements Guard
             $this->user = $this->authenticator->validate($id_token, $ac_token);
             if(is_null($this->user)) {
                 // $this->logout();
-		$this->updateSession("", "");
-		$this->loggedOut = true;
+                $this->updateSession("", "");
+                $this->loggedOut = true;
             }
         }
         
@@ -81,16 +82,14 @@ class OidcGuard implements Guard
         $this->setUser($user);
     }
     
-    public function logout($redirect)
+    public function logout($redirect = null)
     {
         $key = $this->getName();
         $id_token = $this->session->get($key . "_id");
         $this->user = null;
         $this->loggedOut = true;
         $this->updateSession("", "");
-        if(!is_null($id_token)) {
-            $this->authenticator->logout($id_token, $redirect);
-        }
+        $this->authenticator->logout($id_token, $redirect);
     }
     
     /**
@@ -108,15 +107,15 @@ class OidcGuard implements Guard
     {
         $key = $this->getName();
         if(empty($id_token)) {
-		$this->session->forget($key . "_id");
-	} else {
-		$this->session->put($key . "_id", $id_token);
-	}
-	if(empty($ac_token)) {
-		$this->session->forget($key . "_ac");
-	} else {
+            $this->session->forget($key . "_id");
+	    } else {
+	        $this->session->put($key . "_id", $id_token);
+	    }
+	    if(empty($ac_token)) {
+            $this->session->forget($key . "_ac");
+	    } else {
         	$this->session->put($key . "_ac", $ac_token);
-	}
+	    }
         $this->session->migrate(false);
     }
     
