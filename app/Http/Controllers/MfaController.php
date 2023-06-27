@@ -8,6 +8,7 @@ use Exception;
 use App\Http\Controllers\Auth\LoginController;
 use App\Interfaces\MfaManager;
 use App\Models\Cas\MfaPolicy;
+use App\Auth\OidcUser;
 
 class MfaController extends Controller
 {
@@ -20,11 +21,15 @@ class MfaController extends Controller
     
     public function showOverview(Request $request) {
         $user = Auth::user();
-        $policy = $this->mfa->getPolicy($user->getLdapUser());
-        $gauth = $this->mfa->getGauthCredentials($user->getLdapUser());
-        $webauthn = $this->mfa->getWebAuthnDevices($user->getLdapUser());
-        $trusted = $this->mfa->getTrustedDevices($user->getLdapUser());
-        $sms = $user->getAuthUser()->mobile; 
+        if($user instanceof OidcUser) {
+            return redirect()->route('ext.home');
+        }
+        $ldap_user = $user->getLdapUser();
+        $policy = $this->mfa->getPolicy($ldap_user);
+        $gauth = $this->mfa->getGauthCredentials($ldap_user);
+        $webauthn = $this->mfa->getWebAuthnDevices($ldap_user);
+        $trusted = $this->mfa->getTrustedDevices($ldap_user);
+        $sms = $this->mfa->getPagerNumber($ldap_user); 
         return view('mfa/overview', [
             'policy' => $policy, 
             'gauth' => $gauth, 
@@ -115,7 +120,7 @@ class MfaController extends Controller
 
     public function showSms(Request $request) {
         $user = Auth::user();
-        $sms = $user->getAuthUser()->mobile;
+        $sms = $this->mfa->getPagerNumber($user->getLdapUser());
         return view('mfa/sms', ['sms' => $sms]);
     }
     

@@ -12,6 +12,8 @@ interface MfaManager
     
     public function getGauthCredentials(User $user);
     
+    public function getPagerNumber(User $user);
+    
     public function deleteGauthCredentials(User $user, $id = null);
     
     public function getWebAuthnDevices(User $user);

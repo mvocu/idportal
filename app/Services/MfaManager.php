@@ -70,6 +70,19 @@ class MfaManager implements MfaManagerInterface
 
     /**
      * {@inheritDoc}
+     * @see \App\Interfaces\MfaManager::getPagerNumber()
+     */
+    public function getPagerNumber(User $user)
+    {
+        $pager = $user->getFirstAttribute('pager');
+        if(empty($pager)) {
+            $pager = $user->getFirstAttribute('pager;x-cuni-is');
+        }
+        return $pager;
+    }
+
+    /**
+     * {@inheritDoc}
      * @see \App\Interfaces\MfaManager::getTrustedDevices()
      */
     public function getTrustedDevices(User $user)
