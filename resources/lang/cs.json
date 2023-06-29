@@ -10,6 +10,7 @@
 	"Register" : "Registrovat",
 	"Login" : "Přihlásit",
 	"Confirm" : "Potvrdit",
+	"Continue" : "Pokračovat",
 	
 	"Multifactor authentication" : "Vícefaktorová autentizace",
 	"Please select when you want to use second factor during authentication:" : "Vyberte si, v jakých situacích si přejete použít při přihlášení druhý faktor:",
@@ -77,6 +78,9 @@
 	"Data displayed above is only for your information, it will not be stored and further processed except the anonymous identifier." : "Výše zobrazené údaje jsou jen pro vaši kontrolu. S výjimkou anonymního identifikátoru nebudou zde dále uloženy ani zpracovávány.",
 	"To register this account, you have to sign-in using your CAS account to continue." : "Abyste mohli tento účet zaregistrovat v CAS, prosím přihlašte se vaším CAS účtem.",
 	"Login with CAS" : "Přihlásit přes CAS",
+	"Reinitialize session" : "Aktualizace přihlášení",
+	"Your old session without updated information about external identity is still active. You need to logout and sign in again to reinitiliaze your session." : "Vaše přihlašovací sezení ještě neobsahuje aktualizované informace o externí identitě. Pro aktualizaci sezení je nutné se odhlásit a znovu přihlásit.",
+	"By clicking on 'Continue' you will be redirected to CAS logout." : "Po kliknutí na tlačítko 'Pokračovat' vás přesměrujeme na odhlášení od CAS.",
 
 	"Login failed." : "Přihlášení se nezdařilo.",
 	"External login failed." : "Přihlášení externím účtem se nezdařilo.",

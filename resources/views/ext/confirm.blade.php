@@ -53,7 +53,7 @@
 					@csrf
 					<input type="hidden" name="local" value="{{$local}}"/>
 					<input type="hidden" name="remote" value="{{$remote}}"/>
-					<button class="btn btn-danger" role="button" type="submit"><i class="fa fa-plus me-2"></i>{{ __('Confirm') }}</button>
+					<button class="btn btn-primary" role="button" type="submit"><i class="fa fa-plus me-2"></i>{{ __('Confirm') }}</button>
 				</form>	
 			</div>
 		</div> 

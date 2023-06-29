@@ -123,6 +123,9 @@ class UserExtController extends Controller
             return back()->withErrors(['failure' => __('User not found.')]); 
         }
         $this->ue_mgr->setExtIdentity($ldap_user, $provider, $remote_user);
+        if(Auth::user()->getAuthIdentifier() == $remote_user) {
+            return redirect()->route('ext.ssoinfo')->with('status', __('External identity was successfully registered.'));
+        }
         return redirect()->route('ext.home')->with('status', __('External identity was successfully registered.'));
     }
     
@@ -144,6 +147,11 @@ class UserExtController extends Controller
             Auth::logout();
         }
         return redirect()->route('ext.home')->with('status', __('External identity removed.'));
+    }
+    
+    public function ssoInfo(Request $request) {
+        redirect()->setIntendedUrl(route('ext.home'));
+        return view('ext.ssoinfo');
     }
     
     protected function rememberRemoteUser(OidcUser $user, $provider = null) {

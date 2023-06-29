@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-})->middleware(['auth', 'model']);
+})->middleware(['auth', 'model'])->name('home');
 
 
 Route::get('/login', 'App\Http\Controllers\Auth\LoginController@login')->name('login');
@@ -54,4 +54,5 @@ Route::name('ext.')
     Route::get('/confirm/{provider}', 'App\Http\Controllers\UserExtController@confirmIdentity')->name('confirm');
     Route::post('/add/{provider}', 'App\Http\Controllers\UserExtController@addIdentity')->name('add');
     Route::post('/remove/{provider}', 'App\Http\Controllers\UserExtController@removeIdentity')->name('remove');    
+    Route::get('/ssoinfo', 'App\Http\Controllers\UserExtController@ssoInfo')->name('ssoinfo');
 });

@@ -45,13 +45,14 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
+        $redirect = $request->session()->get('url.intended', route('home'));
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        Auth::logout();
+        Auth::logout($redirect);
         
         return $request->wantsJson()
         ? new JsonResponse([], 204)
-        : redirect()->intended();
+        : redirect($redirect);
     }
     
     

@@ -5,6 +5,8 @@ use App\Interfaces\IdentityProvider;
 use Jumbojett\OpenIDConnectClient as OidcClient;
 use App\Auth\OidcUser;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Facades\URL;
+use GuzzleHttp\Psr7\Uri;
 
 class OidcConnector implements IdentityProvider
 {
@@ -70,7 +72,10 @@ class OidcConnector implements IdentityProvider
     }
     
     public function logout($id_token, $redirect = null) {
-        return $this->oidc->signOut($id_token, $redirect);
+        $url = new Uri($this->config['url']);
+        $logout_url = "https://" . $url->getHost() . "/cas/logout?service=" . urlencode($redirect);
+        return $this->oidc->redirect($logout_url);
+        //return $this->oidc->signOut($id_token, $redirect);
     }
     
     protected function parseInfo($info, &$result, $prefix) {
