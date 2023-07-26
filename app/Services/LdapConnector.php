@@ -12,6 +12,9 @@ use App\Interfaces\ConsentManager;
 use App\Events\LdapUserCreatedEvent;
 use App\Events\LdapUserUpdatedEvent;
 use App\Models\Database\ExtSource;
+use App\Models\Database\Phone;
+use App\Models\Database\Email;
+use Carbon\Carbon;
 
 class LdapConnector implements LdapConnectorInterface
 {
@@ -38,7 +41,7 @@ class LdapConnector implements LdapConnectorInterface
     public function findUser(User $user)
     {
         $dn = $this->buildDN($user);
-        $result = $this->ldap->search()->findByDn($dn);
+        $result = $this->ldap->search()->select()->findByDn($dn, ['*', 'accountunlocktime', 'nsrole']);
         if($result != null && $result->exists) return $result;
         return null;
     }
@@ -138,8 +141,9 @@ class LdapConnector implements LdapConnectorInterface
      */
     public function isUserLocked(\App\Models\Ldap\LdapUser $user)
     {
+        $rootdn = $this->ldap->getProvider('admin')->getConfiguration()->get('base_dn');
         $nsrole = $user->getAttribute('nsrole');
-        return is_array($nsrole) && in_array($this->ACCOUNT_INACTIVATION_ROLE, $nsrole);
+        return is_array($nsrole) && in_array($this->ACCOUNT_INACTIVATION_ROLE. "," . $rootdn, $nsrole);
     }
 
     /**
@@ -214,6 +218,34 @@ class LdapConnector implements LdapConnectorInterface
         return $this->ldap->search()->where('manager', $user->getDn())->get();
     }
 
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\LdapConnector::findUserByCredentials()
+     */
+    public function findUserByCredentials($data)
+    {
+        $phone = new Phone(['phone' => $data]);
+        $email = new Email(['email' => $data]);
+        return $this->ldap->getProvider('admin')->search()
+            ->orWhere('uid', '=', $data)
+            ->orWhere('mail', '=', $email->email)
+            ->orWhere('telephonenumber', '=', $phone->phone)
+            ->get();
+    }
+    
+    public function getPwLock(LdapUser $user)
+    {
+        $time = $user->getLockoutTime();
+        if(empty($time)) {
+            return false;
+        }
+        $unlocktime = new Carbon($time);
+        if($unlocktime->isPast()) {
+            return false;
+        }
+        return $unlocktime;
+    }
+    
     protected function _mapUser(User $user) {
         if(empty($user->last_name)) {
             $data = [
