@@ -35,5 +35,9 @@ interface LdapConnector
     public function findUserByExtSource(ExtSource $source, $id);
     
     public function listChildren(LdapUser $user);
+    
+    public function findUserByCredentials($data);
+    
+    public function getPwLock(LdapUser $user);
 }
 

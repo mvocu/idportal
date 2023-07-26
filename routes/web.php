@@ -78,6 +78,14 @@ Route::get('/voting/get', 'VotingCodeController@getCode')->name('voting.get');
 
 Route::post('/voting/declare', 'VotingCodeController@declare')->name('voting.declare');
 
+Route::name('account.')
+    ->prefix('account')
+    ->group(function() {
+        Route::get('/status', 'AccountController@status')->name('status');
+        Route::post('/search', 'AccountController@search')->name('search');
+        Route::get('/status/{user}', 'AccountController@show')->name('status.show');
+    });
+
 Route::name('admin.')
     ->prefix('admin')
     ->namespace('Admin')

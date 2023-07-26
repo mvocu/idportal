@@ -46,7 +46,11 @@ class ForgotPasswordController extends Controller
         if($request->input('auto')) {
             return view('auth.passwords.autosend', $request->only('phone'));
         }
-        return view('auth.passwords.send', [ 'idp' => $this->ext_source_mgr->listAuthenticators()->pluck('name') ]);
+        $user = $request->input('uid');
+        return view('auth.passwords.send', [ 
+            'user' => $user, 
+            'idp' => $this->ext_source_mgr->listAuthenticators()->pluck('name') 
+        ]);
     }
 
     public function sendResetCode(Request $request) {

@@ -171,6 +171,17 @@
   "validation.phone" : "Telefonní číslo nemá správný formát",
   
   "account.ext.submission": "Požadavek na zřízení přístupu v systému ':source' bude odeslán odpovědnému pracovníkovi MěÚ Úvaly. O jeho vyřízení budete informováni e-mailem.",
-  "account.ext.info" : "Abychom vám mohli zřídit účet v systému ':source', potřebujeme ověřit vaši totožnost. Prosíme, dostavte se za pověřeným pracovníkem MěÚ Úvaly."
+  "account.ext.info" : "Abychom vám mohli zřídit účet v systému ':source', potřebujeme ověřit vaši totožnost. Prosíme, dostavte se za pověřeným pracovníkem MěÚ Úvaly.",
+  
+  "Account status" : "Stav účtu",
+  "This account is ACTIVE." : "Tento účet je AKTIVNÍ.",
+  "This account is LOCKED." : "Tento účet je UZAMČENÝ.",
+  "This account is locked temporarily due to too many failed login attempts." : "Tento účet je dočasně uzamčen kvůli překročení počtu pokusů o přihlášení.",
+  "Account will be unlocked on :time." : "Účet bude odemčen :time.",
+  "The consent with terms of usage has expired and needs to be renewed." : "Souhlas s pravidly použití expiroval a je nutné ho prodloužit.",
+  "Please contact administrators at address" : "Prosím kontaktujte správce na adrese",
+  "Reset account" : "Odblokovat účet",
+  
+  "_END_" : "_KONEC_"
 }
 

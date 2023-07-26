@@ -69,7 +69,7 @@
                         
                         <div class="form-group">
                         	<div class="col-md-4">{{ __('Login') }}:</div>
-                        	<div class="col-md-6"><b>{{ $uid }}</b></div>
+                        	<div class="col-md-6"><b>{{ $uid ?? old('uid') }}</b></div>
                         </div>
                         
                         @endif

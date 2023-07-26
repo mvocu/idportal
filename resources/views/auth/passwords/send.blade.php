@@ -23,6 +23,7 @@
                     <form class="form-horizontal" method="POST" action="{{ route('password.send') }}">
                         {{ csrf_field() }}
 
+						@if (empty($user))
                         <div class="form-group{{ $errors->has('uid') ? ' has-error' : '' }}">
                             <label for="uid" class="col-md-4 control-label">{{ __('Phone or email') }}</label>
 
@@ -36,6 +37,9 @@
                                 @endif
                             </div>
                         </div>
+                        @else
+                        	<input type="hidden" name="uid" value="{{ $user }}" />
+                        @endif
                         
                         <div class="form-group row">
 							<label for="preferred" class="col-md-4 control-label">{{ __('Preferred verification method') }}</label>
