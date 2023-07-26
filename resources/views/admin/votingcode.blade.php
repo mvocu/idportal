@@ -16,6 +16,16 @@
 								{{ $user->identifier }}
 						</div>
 					</div>
+					@if (isset($ldapuser)) 
+					<div class="row">
+						<div class="col-xs-4">
+							<strong>{{ __('Login') }}:</strong>
+						</div>
+						<div class="col-xs-8">
+								{{ $ldapuser->getFirstAttribute('uid') }}
+						</div>
+					</div>
+					@endif
 					<div class="row">
 						<div class="col-xs-4">
 							<strong>{{ __('Full name') }}:</strong>
