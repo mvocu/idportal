@@ -32,7 +32,7 @@ class SynchronizeLdap implements ShouldQueue
      */
     public function handle()
     {
-        $this->ldap_mgr->syncUsers(User::where('export_to_ldap', 1)->get()->all());
+        $this->ldap_mgr->syncUsers(collect(User::where('export_to_ldap', 1)->get()->all()));
     }
 
 }

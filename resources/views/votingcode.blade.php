@@ -51,7 +51,9 @@
 							<strong>{{ __('Year of birth') }}:</strong>
 						</div>
 						<div class="col-xs-8">
+							@if (!empty($user->birth_date))
 							{{ $user->birth_date->format('Y') }}
+							@endif
 						</div>
 					</div>
 					@if (0)
@@ -75,7 +77,7 @@
 
 					<div class="row" style="padding-top: 2rem; padding-bottom: 2rem">
 						<div class="col-xs-12 text-center">
-							@if (0)
+							@if (1)
 							<h2>{{ $code->code }}</h2>
 							<p>{{ __('Created at') }} {{ $code->updated_at }}</p>
 							@else

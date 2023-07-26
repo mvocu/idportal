@@ -6,6 +6,7 @@ use App\Interfaces\ExtSourceConnector;
 use App\Models\Database\ExtSource;
 use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Collection;
+use Carbon\Carbon;
 
 class TritiusConnector extends AbstractExtSourceConnector implements ExtSourceConnector
 {
@@ -92,6 +93,9 @@ class TritiusConnector extends AbstractExtSourceConnector implements ExtSourceCo
                     $result['results'][$key]['parent'] = json_encode(['email' => $note[1]]);
                 }
             }
+	    if(!empty($item['birthdate'])) {
+	        $result['results'][$key]['birthdate'] = (new Carbon($item['birthdate']))->addRealHours(3)->startOfDay()->toString();
+	    }
         }
         return $result;
     }

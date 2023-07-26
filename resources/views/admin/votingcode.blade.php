@@ -39,7 +39,9 @@
 							<strong>{{ __('Year of birth') }}:</strong>
 						</div>
 						<div class="col-xs-8">
+							@if (isset($user->birth_date))
 							{{ $user->birth_date->format('Y') }}
+							@endif
 						</div>
 					</div>
 					@if (0)
@@ -59,7 +61,7 @@
 						<div class="col-xs-12">
 							{{ __('I :name born :born declare that I have read the participative budget voting regulation',
 							['name' => "$user->first_name $user->last_name",
-							 'born' => $user->birth_date->format('Y')
+							 'born' => $user->birth_date ? $user->birth_date->format('Y') : "[...]"
 							]) }} <a href="https://mojeobec.kr-stredocesky.cz/portal/paroz/uvaly/zasady">https://mojeobec.kr-stredocesky.cz/portal/paroz/uvaly/zasady</a>
 							{{ __('and I will adhere to the stated conditions.') }} 
 						</div>

@@ -184,7 +184,7 @@ class IdentityManager implements IdentityManagerInterface
                 } else {
                     // we are adding to the more trustworthy identity:
                     // update user with new data
-                    $this->user_mgr->updateUserWithContacts($user, $user_ext, $data);
+                    $this->user_mgr->updateUserWithContacts($user, $user_ext, $data, null);
                 }
             } elseif (!empty($parent) and $user->id == $parent->id) {
                 // child record contains the same contact data as parent
