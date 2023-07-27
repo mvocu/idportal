@@ -40,7 +40,7 @@ class AccountController extends Controller
         $login = $request->input('uid');
         $users = $this->ldap_mgr->findUserByCredentials($login);
         if($users->isEmpty()) {
-            return back()->withErrors(['failure' => __('No account found.')]);
+            return back()->withErrors(['failure' => __('No account found. You can register new account with this identifier.')]);
         } elseif ($users->count() > 1) {
             return back()->withErrors(['failure' => __('More than one account found.')]);
         }
