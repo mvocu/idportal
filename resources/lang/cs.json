@@ -181,7 +181,7 @@
   "The consent with terms of usage has expired and needs to be renewed." : "Souhlas s pravidly použití expiroval a je nutné ho prodloužit.",
   "Please contact administrators at address" : "Prosím kontaktujte správce na adrese",
   "Reset account" : "Odblokovat účet",
-  "No account found. You can register new account with this identifier." : "Účet nebyl nalezen. Můžete si registrovat nový účet s danými údaji.",
+  "No account found. You can register new account with this identifier" : "Účet nebyl nalezen. Můžete si registrovat nový účet s danými údaji",
   "More than one account found." : "Zadaným údajům odpovídá více než jeden účet.",
   
   "_END_" : "_KONEC_"
