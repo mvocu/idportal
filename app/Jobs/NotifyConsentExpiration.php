@@ -28,8 +28,7 @@ class NotifyConsentExpiration implements ShouldQueue
     
     public function handle()
     {
-        #$users = User::all();
-        $users = [ User::find(2611) ] ;
+        $users = User::all();
         foreach($users as $dbuser) {
             if($this->consent_mgr->expiresSoon($dbuser)) {
                 $requested = new Carbon($dbuser->consent_requested);
