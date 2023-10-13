@@ -185,6 +185,10 @@
   "No account found. You can register new account with this identifier" : "Účet nebyl nalezen. Můžete si registrovat nový účet s danými údaji",
   "More than one account found." : "Zadaným údajům odpovídá více než jeden účet.",
   "Renew" : "Obnovit",
+  "Uvaly - account consent expiration" : "Úvaly - expirace souhlasu s pravidly použití",
+  "Please renew your consent by visiting the link below." : "Prosíme obnovte svůj souhlas kliknutím na níže uvedený odkaz",
+  "Renew Consent" : "Obnovit souhlas",
+  "If you do not renew your consent, your account will be disabled." : "Pokud souhlas neobnovíte, váš účet bude zablokován.",
   
   "_END_" : "_KONEC_"
 }

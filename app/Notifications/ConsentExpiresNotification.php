@@ -46,7 +46,7 @@ class ConsentExpiresNotification extends Notification
         ->subject(Lang::getFromJson('Uvaly - account consent expiration'))
         ->line(Lang::getFromJson('Your consent with terms of usage will expire soon and needs to be renewed.') . " " .
             Lang::getFromJson('Please renew your consent by visiting the link below.'))
-        ->action(Lang::getFromJson('Renew Consent'), url(config('app.url').route('consent.ask')))
+        ->action(Lang::getFromJson('Renew Consent'), route('consent.ask')))
             ->line(Lang::getFromJson('If you do not renew your consent, your account will be disabled.'));
     }
     
