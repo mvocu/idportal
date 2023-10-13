@@ -13,8 +13,8 @@ use Carbon\Carbon;
 
 class ConsentManager implements ConsentManagerInterface
 {
-    public const CONSENT_VALIDITY = 365;
-    public const CONSENT_EXPIRES_SOON = 30;
+    const CONSENT_VALIDITY = 365;
+    const CONSENT_EXPIRES_SOON = 30;
     
     /**
      * {@inheritDoc}
@@ -94,7 +94,7 @@ class ConsentManager implements ConsentManagerInterface
      * {@inheritDoc}
      * @see \App\Interfaces\ConsentManager::getExpiryDate()
      */
-    public function getExpiryDate($user)
+    public function getExpiryDate(User $user)
     {
         $consent_date = new Carbon($user->consent_at);
         $consent_date->addDays(self::CONSENT_VALIDITY);
@@ -105,7 +105,7 @@ class ConsentManager implements ConsentManagerInterface
      * {@inheritDoc}
      * @see \App\Interfaces\ConsentManager::getExpiryDate()
      */
-    public function expiresSoon($user) 
+    public function expiresSoon(User $user) 
     {
         if(!$this->hasActiveConsent($user)) {
             return false;
