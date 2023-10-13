@@ -41,7 +41,7 @@ class NotifyConsentExpiration implements ShouldQueue
                 $user->setRawAttributes($ldapuser->getAttributes());
                 $user->notify(new ConsentExpiresNotification($user));
                 
-                $this->consent_mgr->setConsentRequested($user, true);
+                $this->consent_mgr->setConsentRequested($dbuser, true);
                 
                 Log::info('Consent expiration warning sent to ' + $user->getEmail());
             }
