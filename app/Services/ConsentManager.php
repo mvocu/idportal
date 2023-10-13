@@ -13,6 +13,9 @@ use Carbon\Carbon;
 
 class ConsentManager implements ConsentManagerInterface
 {
+    public const CONSENT_VALIDITY = 365;
+    public const CONSENT_EXPIRES_SOON = 30;
+    
     /**
      * {@inheritDoc}
      * @see \App\Interfaces\ConsentManager::isAllowed()
@@ -37,7 +40,7 @@ class ConsentManager implements ConsentManagerInterface
         }
         
         $consent_date = new Carbon($user->consent_at);
-        return $consent_date->diffInDays(Carbon::now(), true) < 365;
+        return $consent_date->diffInDays(Carbon::now(), true) < self::CONSENT_VALIDITY;
     }
 
     /**
@@ -86,6 +89,31 @@ class ConsentManager implements ConsentManagerInterface
         event(new UserUpdatedEvent($user->id));
     }
 
+    
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\ConsentManager::getExpiryDate()
+     */
+    public function getExpiryDate($user)
+    {
+        $consent_date = new Carbon($user->consent_at);
+        $consent_date->addDays(self::CONSENT_VALIDITY);
+        return $consent_date;
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\ConsentManager::getExpiryDate()
+     */
+    public function expiresSoon($user) 
+    {
+        if(!$this->hasActiveConsent($user)) {
+            return false;
+        }
+        $consent_date = $this->getExpiryDate($user);
+        return $consent_date->diffInDays(Carbon::now()) < self::CONSENT_EXPIRES_SOON;
+    }
+    
     protected function isAllowedUserAttr(User $user, $attr, $value) {
         // get all values of these attributes from consented sources for the particular user
         $attrs = UserExtAttribute::whereHas('user', function($query) {

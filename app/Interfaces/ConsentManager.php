@@ -15,5 +15,9 @@ interface ConsentManager
     public function setConsent(User $user, $active);
     
     public function setConsentRequested(User $user, $active);
+    
+    public function getExpiryDate(User $user);
+    
+    public function expiresSoon(User $user);
 }
 

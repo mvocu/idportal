@@ -179,10 +179,12 @@
   "This account is locked temporarily due to too many failed login attempts." : "Tento účet je dočasně uzamčen kvůli překročení počtu pokusů o přihlášení.",
   "Account will be unlocked on :time." : "Účet bude odemčen :time.",
   "The consent with terms of usage has expired and needs to be renewed." : "Souhlas s pravidly použití expiroval a je nutné ho prodloužit.",
+  "Your consent with terms of usage will expire soon and needs to be renewed." : "Souhlas s pravidly použití brzy expiruje a je nutné ho obnovit.",
   "Please contact administrators at address" : "Prosím kontaktujte správce na adrese",
   "Reset account" : "Odblokovat účet",
   "No account found. You can register new account with this identifier" : "Účet nebyl nalezen. Můžete si registrovat nový účet s danými údaji",
   "More than one account found." : "Zadaným údajům odpovídá více než jeden účet.",
+  "Renew" : "Obnovit",
   
   "_END_" : "_KONEC_"
 }

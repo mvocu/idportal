@@ -25,8 +25,20 @@
                             {{ $errors->first('failure') }}
                         </div>
                     @endif
-
+	
                     @if ( isset($user) )
+                    
+                    @if ( $expires )
+                    	<div class="alert alert-danger" role="alert">
+                    	{{ __('Your consent with terms of usage will expire soon and needs to be renewed.') }}
+	                    	<div class="row">
+	                    		<div class="col-xs-3 col-xs-offset-9 text-right">
+	                    			<a class="btn btn-primary" href="{{ route('consent.ask') }}"><span class="">{{ __('Renew') }}</span></a>
+	                    		</div> 
+    	                	</div>
+                    	</div>
+                    @endif
+                    
                     	<div class="row">
                     		<div class="col-xs-3 text-right">{{ __('Login') }}</div>
                     		<div class="col-xs-9">{{ implode(",", $user->uid) }}</div>

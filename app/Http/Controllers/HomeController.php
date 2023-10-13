@@ -76,7 +76,8 @@ class HomeController extends Controller
             'user' => Auth::user(), 
             'accounts' => $accounts, 
             'children' => $this->ldap_mgr->listChildren(Auth::user()), 
-            'voting' => $this->voting_code_mgr->hasActiveVotingCode($user)
+            'voting' => $this->voting_code_mgr->hasActiveVotingCode($user),
+            'expires' => $this->consent_mgr->expiresSoon($user)
         ]);
     }
 }
