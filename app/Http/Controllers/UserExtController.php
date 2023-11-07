@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use App\Auth\OidcUser;
 use App\Models\Ldap\User as LdapUser;
 use App\Models\User;
@@ -29,7 +30,9 @@ class UserExtController extends Controller
     
     public function showOverview(Request $request) {
         $user = Auth::user();
+        #Log::debug("Session1: ", ['session' => session()->all() ]);
         if(empty($user)) {
+	    $request->session()->flush();
             redirect()->setIntendedUrl(route('ext.home'));
             return view('ext.overview');
         }
@@ -41,8 +44,10 @@ class UserExtController extends Controller
             $ldap_user = $user->getLdapUser();
             $auth_user = $user->getAuthUser();
         }
+        #Log::debug("Session2: ", ['session' => session()->all() ]);
         if(empty($ldap_user)) {
             $this->rememberRemoteUser($user);
+            Log::info("Logged in user: ", ['user' => $user->getDisplayName(),  'auth' => $auth_user->getAuthIdentifier() ]);
             return view('ext.unlinked', ['auth_user' => $user, 'attrs' => $user->getAttributes() ]);
             $ext_ids = [];
         } else {
@@ -55,6 +60,9 @@ class UserExtController extends Controller
         #echo "<br><br><br><br>";
         #echo "<pre>", print_r($user), "</pre>";
         #echo "<pre>", print_r(session()->all()), "</pre>";
+
+	Log::info("Logged in user: ", ['user' => $user->getId(), 'ldap' => $ldap_user->getDn(), 'auth' => $auth_user->getAuthIdentifier() ]);
+
         return view('ext.overview', [
             'user' => $user, 
             'ldap_user' => $ldap_user, 
@@ -81,6 +89,7 @@ class UserExtController extends Controller
 	    $provider = 'NIA';
         }
         $local_user = $this->rememberLocalUser($user);
+        #Log::debug("Session: ", ['session' => session()->all() ]);
         return redirect()->route('ext.confirm', ['provider' => $provider]);
         //$remote_user = session(self::REMOTE_USER_KEY);
         //return view('ext.confirm', [ 'local' => $local_user, 'remote' => $remote_user , 'provider' => $provider ]);
@@ -94,6 +103,7 @@ class UserExtController extends Controller
 	if(empty($remote_user)) {
 	    return redirect()->route('ext.home')->withErrors(['failure' => __('No external identity found.')]);
 	}
+        #Log::debug("Session: ", ['session' => session()->all() ]);
         return redirect()->route('ext.confirm', ['provider' => $provider]);
         //$local_user = session(self::LOCAL_USER_KEY);
         //return view('ext.confirm', [ 'local' => $local_user, 'remote' => $remote_user, 'provider' => $provider ]);
@@ -102,6 +112,8 @@ class UserExtController extends Controller
     public function confirmIdentity(Request $request, $provider) {
         $remote_user = session(self::REMOTE_USER_KEY);
         $local_user = session(self::LOCAL_USER_KEY);
+	Log::debug("Local and remote user: ", ['local' => $local_user, 'remote' => $remote_user]);
+        #Log::debug("Session: ", ['session' => session()->all() ]);
         return view('ext.confirm', [ 'local' => $local_user, 'remote' => $remote_user, 'provider' => $provider ]);
     }
     
@@ -159,6 +171,9 @@ class UserExtController extends Controller
         if(array_key_exists('nia_identifier', $attrs)) {
             $id = $attrs['nia_identifier'];
             $provider = "NIA";
+        } else {
+	    $id = $user->getAuthIdentifier();
+	    $provider = "NIA";
         }
 	if(empty($id)) {
 		return null;

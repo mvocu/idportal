@@ -38,13 +38,17 @@ class OidcConnector implements IdentityProvider
                 'prompt' => 'login'
             ]);
         }
-        if($this->oidc->authenticate()) {
-            $claims = $this->oidc->getVerifiedClaims(); // claims from id_token
-            $info = $this->oidc->requestUserInfo();
-            $accessToken = $this->oidc->getAccessToken();
-            $idToken = $this->oidc->getIdToken();
-            return new OidcUser($idToken, $accessToken, $claims, get_object_vars($info));
-        }
+	try {
+        	if($this->oidc->authenticate()) {
+            		$claims = $this->oidc->getVerifiedClaims(); // claims from id_token
+            		$info = $this->oidc->requestUserInfo();
+            		$accessToken = $this->oidc->getAccessToken();
+            		$idToken = $this->oidc->getIdToken();
+            		return new OidcUser($idToken, $accessToken, $claims, get_object_vars($info));
+        	}
+	} catch (Exception $e) {
+		Log::error("Error when authenticating: " + $e->getMessage());
+	}
         return null;
     }
     
