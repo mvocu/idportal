@@ -50,7 +50,7 @@ class HomeController extends Controller
     {
 
         $user = Auth::user()->getDatabaseUser();
-        if(!$this->consent_mgr->hasActiveConsent($user)) {
+        if(!empty($user) && !$this->consent_mgr->hasActiveConsent($user)) {
             return redirect()->route('consent.ask');
         }
         $accounts = array();
@@ -76,8 +76,8 @@ class HomeController extends Controller
             'user' => Auth::user(), 
             'accounts' => $accounts, 
             'children' => $this->ldap_mgr->listChildren(Auth::user()), 
-            'voting' => $this->voting_code_mgr->hasActiveVotingCode($user),
-            'expires' => $this->consent_mgr->expiresSoon($user)
+            'voting' => empty($user) ? false : $this->voting_code_mgr->hasActiveVotingCode($user),
+            'expires' => empty($user) ? "" : $this->consent_mgr->expiresSoon($user)
         ]);
     }
 }
