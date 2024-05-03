@@ -4,7 +4,7 @@ namespace App\Auth;
 use Illuminate\Contracts\Auth\Authenticatable;
 use App\Interfaces\AuthenticationInfo;
 
-class OidcUser implements Authenticatable, AuthenticationInfo
+class OidcUser implements Authenticatable, AuthenticationInfo, \JsonSerializable
 {
     protected $idToken;
     protected $accessToken;
@@ -75,5 +75,11 @@ class OidcUser implements Authenticatable, AuthenticationInfo
         }
         return isset($this->info[$name]) ? $this->info[$name] : null; 
     }
+
+    public function jsonSerialize()
+    {
+        return $this->claims;
+    }
+    
 }
 
