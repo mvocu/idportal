@@ -48,7 +48,6 @@ class OidcConnector implements IdentityProvider
             		$claims = $this->oidc->getVerifiedClaims(); // claims from id_token
             		$info = $this->oidc->requestUserInfo();
             		$accessToken = $this->oidc->getAccessToken();
-                    dd($accessToken);
             		$idToken = $this->oidc->getIdToken();
             		return new OidcUser($idToken, $accessToken, $claims, get_object_vars($info));
         	}
@@ -99,8 +98,8 @@ class OidcConnector implements IdentityProvider
         if(empty($token_info->client_id) || $token_info->client_id != $this->config['client_id']) {
             return null;
         }
-        
-        return new OidcUser(null, $ac_token, [ 'sub' => $token_info->username ], $token_info);
+        Log::debug("token info: " . print_r($token_info, true));
+        return new OidcUser(null, $ac_token, $token_info, null);
     }
     
     public function logout($id_token, $redirect = null) {
