@@ -47,6 +47,13 @@ return [
             'client_id' => env('OIDC_CLIENT_ID'),
             'client_secret' => env('OIDC_CLIENT_SECRET'),
         ],
+        'api' => [
+            'driver' => 'oauth2_token',
+            'idp' => 'cas.idp',
+            'url' => 'https://' . env('OIDC_SERVER', 'localhost') . '/cas/oidc/',
+            'client_id' => env('OIDC_CLIENT_ID'),
+            'client_secret' => env('OIDC_CLIENT_SECRET'),
+        ],
     ],
 
     /*
