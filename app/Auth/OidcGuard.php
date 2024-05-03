@@ -102,6 +102,10 @@ class OidcGuard implements Guard
         return 'login_'.$this->name.'_'.sha1(static::class);
     }
     
+    public function getLastError()
+    {
+        return $this->authenticator->getLastError();
+    }
     
     protected function updateSession($id_token, $ac_token)
     {

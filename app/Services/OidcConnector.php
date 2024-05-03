@@ -2,9 +2,12 @@
 namespace App\Services;
 
 use App\Interfaces\IdentityProvider;
+use Exception;
 use Jumbojett\OpenIDConnectClient as OidcClient;
 use App\Auth\OidcUser;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use GuzzleHttp\Psr7\Uri;
 
@@ -12,6 +15,7 @@ class OidcConnector implements IdentityProvider
 {
     protected $config;
     protected $oidc;
+    protected $last_error;
     
     public function __construct($config) {
         $this->config = $config;
@@ -25,7 +29,8 @@ class OidcConnector implements IdentityProvider
         $this->oidc->providerConfigParam(['token_endpoint_auth_methods_supported' => ['client_secret_post']]);
     }
 
-    public function authenticate(array $params) : Authenticatable {
+    public function authenticate(array $params) {
+        $this->last_error = "";
         if(is_array($params) && isset($params['mfa'])) {
             $this->oidc->addAuthParam([
                 'acr_values' => $params['mfa'],
@@ -38,21 +43,24 @@ class OidcConnector implements IdentityProvider
                 'prompt' => 'login'
             ]);
         }
-	try {
+	   try {
         	if($this->oidc->authenticate()) {
             		$claims = $this->oidc->getVerifiedClaims(); // claims from id_token
             		$info = $this->oidc->requestUserInfo();
             		$accessToken = $this->oidc->getAccessToken();
+                    dd($accessToken);
             		$idToken = $this->oidc->getIdToken();
             		return new OidcUser($idToken, $accessToken, $claims, get_object_vars($info));
         	}
-	} catch (Exception $e) {
-		Log::error("Error when authenticating: " + $e->getMessage());
-	}
-        return null;
+	   } catch (Exception $e) {
+	       $this->last_error = $e->getMessage();
+	       Log::error("Error when authenticating: " . $e->getTraceAsString());
+       }
+       return null;
     }
     
     public function validate($id_token, $ac_token) {
+        $this->last_error = "";
         if(empty($id_token)) {
             if(isset($_REQUEST['code']))
                 unset($_REQUEST['code']);
@@ -64,6 +72,7 @@ class OidcConnector implements IdentityProvider
         try {
             $info = $this->oidc->requestUserInfo();
         } catch(\Exception $e) {
+            $this->last_error = $e->getMessage();
             return null;
         }
         // TODO: check audience, expiration, nbf
@@ -75,11 +84,34 @@ class OidcConnector implements IdentityProvider
         return new OidcUser($id_token, $ac_token, get_object_vars($claims), get_object_vars($info));
     }
     
+    public function introspect($ac_token) {
+        $this->last_error = "";
+        $token_info = $this->oidc->introspectToken($ac_token);
+        if(empty($token_info->active)) {
+            return null;
+        }
+        if(!empty($token_info->exp)) {
+            $exp = new Carbon($token_info->exp);
+            if($exp->isBefore(Carbon::now())) {
+                return null;
+            }
+        }
+        if(empty($token_info->client_id) || $token_info->client_id != $this->config['client_id']) {
+            return null;
+        }
+        
+        return new OidcUser(null, $ac_token, [ 'sub' => $token_info->username ], $token_info);
+    }
+    
     public function logout($id_token, $redirect = null) {
         $url = new Uri($this->config['url']);
         $logout_url = "https://" . $url->getHost() . "/cas/logout?service=" . urlencode($redirect);
         return $this->oidc->redirect($logout_url);
         //return $this->oidc->signOut($id_token, $redirect);
+    }
+    
+    public function getLastError() {
+        return $this->last_error;
     }
     
     protected function parseInfo($info, &$result, $prefix) {

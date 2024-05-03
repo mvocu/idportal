@@ -6,6 +6,7 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvid
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Request;
+use App\Auth\OAuth2TokenGuard;
 use App\Auth\OidcGuard;
 
 class AuthServiceProvider extends ServiceProvider
@@ -32,6 +33,10 @@ class AuthServiceProvider extends ServiceProvider
         if(!$this->app->runningInConsole()) {
             Auth::extend('oidc', function($app, $name, $config) {
                 return new OidcGuard($name, $this->app->makeWith($config['idp'], ['config' => $config]), Request::getSession());
+            });
+
+            Auth::extend('oauth2_token', function($app, $name, $config) {
+                return new OAuth2TokenGuard(Request::instance(), $this->app->makeWith($config['idp'], ['config' => $config]));
             });
         }
 

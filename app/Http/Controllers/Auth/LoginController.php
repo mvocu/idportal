@@ -11,6 +11,8 @@ use Illuminate\Http\JsonResponse;
 class LoginController extends Controller
 {
     
+    private const SESSION_KEY = "login.auth_attempt"; 
+    
     public function __construct()
     {
     }
@@ -24,9 +26,16 @@ class LoginController extends Controller
     public function login(Request $request, $method = null)
     {
         if(Auth::attempt($method ? ['delegate' => $method ]: [])) {
+            $request->session()->forget(self::SESSION_KEY);
             $request->session()->regenerate();
             
             return redirect()->intended();
+        }
+        $count = $request->session()->get(self::SESSION_KEY, 0);
+        $request->session()->put(self::SESSION_KEY, $count + 1);
+        
+        if($count > 0) {
+            return view('auth/loginError');
         }
         
         return back()->withErrors([]);
