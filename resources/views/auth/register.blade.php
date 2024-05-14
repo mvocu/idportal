@@ -129,7 +129,7 @@
 							<div class="col-md-4">
 								<a class="btn btn-social" href="{{ route('register.eidp', ['client' => $name ]) }}">
 								   <span class="fa fa-openid"></span> 
-								   {{ $name }}
+								   {{ __($name) }}
 								</a>
 							</div>
 						@endforeach

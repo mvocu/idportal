@@ -95,7 +95,7 @@
 									<a href="{{ route('ext.account.show', [ 'user' => $user->getDatabaseUser(), 'source' => $account_id ] ) }}" class="pull-right btn btn-sm btn-small btn-default"><span class="fa fa-search-plus">&nbsp;</span></a>
 								</div>
 					@else
-								<div class="col-xs-8"><a href="{{ route('register.eidp', [ 'client' => $account['name'] ] ) }}" class="btn btn-social"><span class="fa fa-openid fa-{{ $account['name'] }}">&nbsp;</span>{{ $account['name'] }} - {{ __("Add identity") }} </a></div>
+								<div class="col-xs-8"><a href="{{ route('register.eidp', [ 'client' => $account['name'] ] ) }}" class="btn btn-social"><span class="fa fa-openid fa-{{ $account['name'] }}">&nbsp;</span>{{ __($account['name']) }} - {{ __("Add identity") }} </a></div>
 					@endif
                         </div>
                     @endif

@@ -85,7 +85,7 @@
   "List of users": "Seznam uživatelů",
   "User detail - :user": "Podrobnosti o uživateli - :user",
   "Login using": "Přihlášení pomocí",
-  "External identity is not registered.": "Externí účet není registrován.",
+  "External identity is not registered. Please register your account here.": "Externí účet není registrován. Prosíme, zaregistrujte si svůj účet zde.",
   "Managed accounts": "Vámi spravované účty",
   "Attribute value": "Hodnota atributu",
   "Only missing": "Bez identity",
@@ -189,6 +189,8 @@
   "Please renew your consent by visiting the link below." : "Prosíme obnovte svůj souhlas kliknutím na níže uvedený odkaz",
   "Renew Consent" : "Obnovit souhlas",
   "If you do not renew your consent, your account will be disabled." : "Pokud souhlas neobnovíte, váš účet bude zablokován.",
+
+  "eIdentita" : "IdentitaObčana",
   
   "_END_" : "_KONEC_"
 }

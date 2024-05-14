@@ -111,7 +111,7 @@ class LdapConnector implements LdapConnectorInterface
         $entry->save();
         event(new LdapUserUpdatedEvent($entry->getDn()));
         if($this->consent_mgr->hasDeniedConsent($user)) {
-            $this->setUserLock($entry, true);
+            //$this->setUserLock($entry, true);
         }
         return $entry;
     }

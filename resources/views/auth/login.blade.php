@@ -93,7 +93,7 @@
 							<div class="col-md-3">
 								<a class="btn btn-social" href="{{ route('login.eidp', ['client' => $name ]) }}">
 								   <span class="fa fa-{{ empty($icon = array('openid' => 'openid', 'saml2' => 'key')[strtolower($type)]) ? 'lock' : $icon }}"></span> 
-								   {{ $name }}
+								   {{ __($name) }}
 								</a>
 							</div>
 						@endforeach
