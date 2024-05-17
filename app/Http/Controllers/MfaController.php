@@ -159,7 +159,7 @@ class MfaController extends Controller
      */
     public function importGauth(Request $request) {
         $user = Auth::user();
-        $gauth = GauthRecord::from($request->json());
+        $gauth = GauthRecord::from($request->json()->all());
         if($user->getAuthIdentifier() != $gauth->getOwner()) {
             return json_encode(['error' => 'Owner does not match authenticated user']);
         }
