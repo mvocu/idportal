@@ -3,6 +3,7 @@ namespace App\Models\Cas;
 
 use stdClass;
 use Illuminate\Support\Facades\Date;
+use function GuzzleHttp\json_encode;
 
 /*
  * JSON string:
@@ -25,6 +26,8 @@ class GauthRecord extends Model implements \JsonSerializable
     protected $scratchCodes;
     
     protected $secretKey;
+    
+    protected $validationCode;
     
     protected $username;
     
@@ -64,18 +67,32 @@ class GauthRecord extends Model implements \JsonSerializable
         return $this->scratchCodes;
     }
 
+    public function save() {
+        if(!self::$booted) {
+            self::boot();
+        }
+        
+        return self::$cas->importGauthCredentials($this);
+    }
+    
     public function jsonSerialize(): mixed
     {
         return [
             '@class' => 'org.apereo.cas.gauth.credential.GoogleAuthenticatorAccount',
             'id' => $this->id,
-            'scratchCodes' => $this->scratchCodes,
+            'scratchCodes' => $this->serializeScratchCodes(),
             'secretKey' => $this->secretKey,
+            'validationCode' => $this->validationCode,
             'username' => $this->username,
             'name' => $this->name,
             'registrattionDate' => $this->registrationDate
         ];
     }
 
+    protected function serializeScratchCodes() 
+    {
+        $codes = json_encode($this->scratchCodes);
+        return '[ "java.util.ArrayList", ' . $codes . ']'; 
+    }
 }
 

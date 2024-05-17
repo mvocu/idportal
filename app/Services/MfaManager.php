@@ -9,6 +9,7 @@ use App\Models\Cas\WebAuthnDevice;
 use App\Util\Base64Url;
 use App\Models\Cas\TrustedDevice;
 use App\Interfaces\CasServer;
+use Illuminate\Support\Facades\Date;
 
 class MfaManager implements MfaManagerInterface
 {
@@ -40,7 +41,11 @@ class MfaManager implements MfaManagerInterface
      */
     public function importGauthCredentials(GauthRecord $gauth)
     {
-        dd($gauth);
+        $gauth->fill([
+           'id' => -1,
+           'registrationDate' => Date::now()->toJSON()
+        ]);
+        $gauth->save();
     }
 
     /**
