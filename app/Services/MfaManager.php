@@ -39,10 +39,11 @@ class MfaManager implements MfaManagerInterface
      * {@inheritDoc}
      * @see \App\Interfaces\MfaManager::importGauthCredentials()
      */
-    public function importGauthCredentials(GauthRecord $gauth)
+    public function importGauthCredentials(User $user, GauthRecord $gauth)
     {
+        $this->deleteGauthCredentials($user);
         $gauth->setId(-1);
-	$gauth->setRegistrationDate(Date::now());
+	    $gauth->setRegistrationDate(Date::now());
         $gauth->save();
     }
 

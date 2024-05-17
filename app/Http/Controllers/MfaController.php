@@ -163,7 +163,7 @@ class MfaController extends Controller
         if($user->getAuthIdentifier() != $gauth->getOwner()) {
             return json_encode(['error' => 'Owner does not match authenticated user']);
         }
-        $this->mfa->importGauthCredentials($gauth);
+        $this->mfa->importGauthCredentials($user, $gauth);
         return json_encode(['success' => true]);
     }
 }

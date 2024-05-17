@@ -22,8 +22,8 @@ class OAuth2TokenGuard implements Guard
         $this->authenticator = $authenticator;
     }
     
-    public function login() {
-        # no-op here
+    public function login($user) {
+        $this->user = $user;
     } 
 
     public function user()
