@@ -3,6 +3,7 @@ namespace App\Interfaces;
 
 use App\Models\Cas\MfaPolicy;
 use App\Models\Ldap\User;
+use App\Models\Cas\GauthRecord;
 
 interface MfaManager
 {
@@ -11,6 +12,8 @@ interface MfaManager
     public function setPolicy(User $user, MfaPolicy $policy);
     
     public function getGauthCredentials(User $user);
+    
+    public function importGauthCredentials(GauthRecord $gauth);
     
     public function getPagerNumber(User $user);
     

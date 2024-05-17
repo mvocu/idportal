@@ -9,10 +9,13 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Interfaces\MfaManager;
 use App\Models\Cas\MfaPolicy;
 use App\Auth\OidcUser;
+use App\Models\Cas\GauthRecord;
+use App\Interfaces\CasServer;
 
 class MfaController extends Controller
 {
     protected $mfa;
+    protected $cas;
     
     public function __construct(MfaManager $mfa) {
         $this->mfa = $mfa;
@@ -149,5 +152,18 @@ class MfaController extends Controller
         } catch(Exception $e){
             return back()->withErrors(['failure' => __('Error removing device records.')]);
         }
+    }
+    
+    /**
+     *  API methods
+     */
+    public function importGauth(Request $request) {
+        $user = Auth::user();
+        $gauth = GauthRecord::from($request->json());
+        if($user->getAuthIdentifier() != $gauth->getOwner()) {
+            return json_encode(['error' => 'Owner does not match authenticated user']);
+        }
+        $this->mfa->importGauthCredentials($gauth);
+        return json_encode(['success' => true]);
     }
 }

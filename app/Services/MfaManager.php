@@ -8,10 +8,10 @@ use App\Models\Cas\MfaPolicy;
 use App\Models\Cas\WebAuthnDevice;
 use App\Util\Base64Url;
 use App\Models\Cas\TrustedDevice;
+use App\Interfaces\CasServer;
 
 class MfaManager implements MfaManagerInterface
 {
-
     /**
      * {@inheritDoc}
      * @see \App\Interfaces\MfaManager::getGauthCredentials()
@@ -32,6 +32,15 @@ class MfaManager implements MfaManagerInterface
     {
         $user->deleteAttribute('casgauthrecord');
         $user->save();
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\MfaManager::importGauthCredentials()
+     */
+    public function importGauthCredentials(GauthRecord $gauth)
+    {
+        dd($gauth);
     }
 
     /**

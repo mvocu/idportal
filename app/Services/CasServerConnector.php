@@ -29,9 +29,13 @@ class CasServerConnector implements CasServerInterface
         $this->password = $config->get('cas.connection.password');
     }
     
-    public function request($method, $uri)
+    public function request($method, $uri, $data = null)
     {
-        $response = $this->client->request($method, $uri, ['auth' => [$this->username, $this->password]]);
+        $options = ['auth' => [$this->username, $this->password]];
+        if(!empty($data)) {
+            $options['json'] = $data;
+        }
+        $response = $this->client->request($method, $uri, $options);
         if($response->getStatusCode() != 200) {
             return null;
         }
@@ -42,6 +46,11 @@ class CasServerConnector implements CasServerInterface
         return $this->collect($this->request('GET', self::GAUTH_ENDPOINT . '/' . $id));
     }
     
+    public function importGauthCredentials($gauth)
+    {
+        return $this->collect($this->request('POST', self::GAUTH_ENDPOINT . '/import', $gauth));        
+    }
+
     public function getWebAuthnDevices($id) {
         return $this->collect($this->request('GET', self::WEBAUTHN_ENDPOINT . '/' . $id));
     }

@@ -7,6 +7,8 @@ interface CasServer
     
     public function getGauthCredentials($id);
     
+    public function importGauthCredentials($gauth);
+    
     public function getWebAuthnDevices($id);
     
     public function getTrustedDevices($id);

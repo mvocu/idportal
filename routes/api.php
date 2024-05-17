@@ -17,3 +17,10 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return json_encode($request->user());
 });
+
+Route::name('gauth')
+    ->prefix('gauth')
+    ->middleware('auth:api')
+    ->group(function() {
+        Route::post('/import', 'App\Http\Controllers\MfaController@importGauth')->name('import');
+});

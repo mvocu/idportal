@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Date;
  *  "registrationDate":"2022-11-09T15:28:39.86727Z"
  *  }]
  */
-class GauthRecord extends Model
+class GauthRecord extends Model implements \JsonSerializable
 {
     protected $id;
     
@@ -63,5 +63,19 @@ class GauthRecord extends Model
     public function getScratchCodes() {
         return $this->scratchCodes;
     }
+
+    public function jsonSerialize(): mixed
+    {
+        return [
+            '@class' => 'org.apereo.cas.gauth.credential.GoogleAuthenticatorAccount',
+            'id' => $this->id,
+            'scratchCodes' => $this->scratchCodes,
+            'secretKey' => $this->secretKey,
+            'username' => $this->username,
+            'name' => $this->name,
+            'registrattionDate' => $this->registrationDate
+        ];
+    }
+
 }
 
