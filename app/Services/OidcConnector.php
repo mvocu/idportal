@@ -95,7 +95,7 @@ class OidcConnector implements IdentityProvider
                 return null;
             }
         }
-        Log::debug("token info: " . print_r($token_info, true));
+        #Log::debug("token info: " . print_r($token_info, true));
         return new OidcUser(null, $ac_token, $token_info, null);
     }
     

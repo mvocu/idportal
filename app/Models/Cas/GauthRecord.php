@@ -50,7 +50,11 @@ class GauthRecord extends Model implements \JsonSerializable
     public function getId() {
         return $this->id;
     }
-    
+
+    public function setId($id) {
+	return $this->id = $id;
+    }
+
     public function getName() {
         return $this->name;
     }
@@ -61,6 +65,10 @@ class GauthRecord extends Model implements \JsonSerializable
     
     public function getRegistrationDate() {
         return Date::createFromTimeString($this->registrationDate);
+    }
+
+    public function setRegistrationDate($date) {
+	return $this->registrationDate = $date->toJSON();
     }
     
     public function getScratchCodes() {
@@ -75,24 +83,19 @@ class GauthRecord extends Model implements \JsonSerializable
         return self::$cas->importGauthCredentials($this);
     }
     
-    public function jsonSerialize(): mixed
+    public function jsonSerialize()
     {
         return [
             '@class' => 'org.apereo.cas.gauth.credential.GoogleAuthenticatorAccount',
             'id' => $this->id,
-            'scratchCodes' => $this->serializeScratchCodes(),
+            'scratchCodes' => [ "java.util.ArrayList", $this->scratchCodes ],
             'secretKey' => $this->secretKey,
             'validationCode' => $this->validationCode,
             'username' => $this->username,
             'name' => $this->name,
-            'registrattionDate' => $this->registrationDate
+            'registrationDate' => $this->registrationDate
         ];
     }
 
-    protected function serializeScratchCodes() 
-    {
-        $codes = json_encode($this->scratchCodes);
-        return '[ "java.util.ArrayList", ' . $codes . ']'; 
-    }
 }
 

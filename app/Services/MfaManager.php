@@ -41,10 +41,8 @@ class MfaManager implements MfaManagerInterface
      */
     public function importGauthCredentials(GauthRecord $gauth)
     {
-        $gauth->fill([
-           'id' => -1,
-           'registrationDate' => Date::now()->toJSON()
-        ]);
+        $gauth->setId(-1);
+	$gauth->setRegistrationDate(Date::now());
         $gauth->save();
     }
 
