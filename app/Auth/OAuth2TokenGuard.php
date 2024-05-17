@@ -22,7 +22,10 @@ class OAuth2TokenGuard implements Guard
         $this->authenticator = $authenticator;
     }
     
-    
+    public function login() {
+        # no-op here
+    } 
+
     public function user()
     {
         if(!is_null($this->user)) {
