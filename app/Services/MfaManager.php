@@ -31,8 +31,10 @@ class MfaManager implements MfaManagerInterface
      */
     public function deleteGauthCredentials(User $user, $id = null)
     {
-        $user->deleteAttribute('casgauthrecord');
-        $user->save();
+        if($user->hasAttribute('casgauthrecord')) {
+            $user->deleteAttribute('casgauthrecord');
+            $user->save();
+        }
     }
 
     /**
@@ -77,8 +79,10 @@ class MfaManager implements MfaManagerInterface
      */
     public function deleteWebAuthnDevices(User $user, $id = null)
     {
-        $user->deleteAttribute('caswebauthnrecord');
-        $user->save();
+        if($user->hasAttribute('caswebauthnrecord')) {
+            $user->deleteAttribute('caswebauthnrecord');
+            $user->save();
+        }
     }
 
     /**
