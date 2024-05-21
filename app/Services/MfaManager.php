@@ -44,7 +44,7 @@ class MfaManager implements MfaManagerInterface
     public function importGauthCredentials(User $user, GauthRecord $gauth)
     {
         $this->deleteGauthCredentials($user);
-        $gauth->setId(-1);
+        $gauth->setId(Date::now()->getTimestamp());
 	    $gauth->setRegistrationDate(Date::now());
         $gauth->save();
     }

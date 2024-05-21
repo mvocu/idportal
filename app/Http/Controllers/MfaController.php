@@ -159,11 +159,12 @@ class MfaController extends Controller
      */
     public function importGauth(Request $request) {
         $user = Auth::user();
+        $ldap_user = $user->getLdapUser();
         $gauth = GauthRecord::from($request->json()->all());
         if($user->getAuthIdentifier() != $gauth->getOwner()) {
             return json_encode(['error' => 'Owner does not match authenticated user']);
         }
-        $this->mfa->importGauthCredentials($user, $gauth);
+        $this->mfa->importGauthCredentials($ldap_user, $gauth);
         return json_encode(['success' => true]);
     }
 }
