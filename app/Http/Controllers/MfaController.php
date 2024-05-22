@@ -158,13 +158,17 @@ class MfaController extends Controller
      *  API methods
      */
     public function importGauth(Request $request) {
-        $user = Auth::user();
-        $ldap_user = $user->getLdapUser();
-        $gauth = GauthRecord::from($request->json()->all());
-        if($user->getAuthIdentifier() != $gauth->getOwner()) {
-            return json_encode(['error' => 'Owner does not match authenticated user']);
+        try {
+            $user = Auth::user();
+            $ldap_user = $user->getLdapUser();
+            $gauth = GauthRecord::from($request->json()->all());
+            if($user->getAuthIdentifier() != $gauth->getOwner()) {
+                return json_encode(['result' => 'error', 'message' => 'TOTP owner does not match authenticated user']);
+            }
+            $this->mfa->importGauthCredentials($ldap_user, $gauth);
+        } catch(Exception $e) {
+            return json_encode(['result' => 'error', 'message' => $e->getMessage()]);
         }
-        $this->mfa->importGauthCredentials($ldap_user, $gauth);
-        return json_encode(['success' => true]);
+        return json_encode(['result' => 'success']);
     }
 }
