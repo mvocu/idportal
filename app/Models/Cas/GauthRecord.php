@@ -64,7 +64,11 @@ class GauthRecord extends Model implements \JsonSerializable
     }
     
     public function getRegistrationDate() {
-        return Date::createFromTimeString($this->registrationDate);
+	try {
+           return Date::createFromFormat('Y-m-d\TH:i:s+', $this->registrationDate);
+        } catch (\Exception $e) {
+	   return $this->registrationDate;
+        }
     }
 
     public function setRegistrationDate($date) {

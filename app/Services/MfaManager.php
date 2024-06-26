@@ -32,7 +32,7 @@ class MfaManager implements MfaManagerInterface
     public function deleteGauthCredentials(User $user, $id = null)
     {
         if($user->hasAttribute('casgauthrecord')) {
-            $user->deleteAttribute('casgauthrecord');
+            $user->updateAttribute('casgauthrecord', []);
             $user->save();
         }
     }

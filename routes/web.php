@@ -17,9 +17,9 @@ Route::get('/', function () {
     return view('welcome');
 })->middleware(['auth', 'model'])->name('home');
 
-#Route::get('/myinfo', function() {
-#    return session(Auth::guard()->getName() . "_ac");
-#})->middleware(['auth']);
+Route::get('/myinfo', function() {
+    return session(Auth::guard()->getName() . "_ac");
+})->middleware(['auth']);
 
 Route::get('/login', 'App\Http\Controllers\Auth\LoginController@login')->name('login');
 Route::get('/stepup/{method}', 'App\Http\Controllers\Auth\LoginController@stepup')->name('stepup');
