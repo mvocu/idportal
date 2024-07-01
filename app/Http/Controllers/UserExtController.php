@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Interfaces\UserExtManager;
 use App\Services\OidcConnector;
 use Illuminate\Validation\Rule;
+use SebastianBergmann\Type\TrueType;
 
 class UserExtController extends Controller
 {
@@ -100,9 +101,9 @@ class UserExtController extends Controller
             return redirect()->route('ext.home')->withErrors(['failure' => __('External login failed.')]);
         }
         $remote_user = $this->rememberRemoteUser(Auth::user(), $provider);
-	if(empty($remote_user)) {
-	    return redirect()->route('ext.home')->withErrors(['failure' => __('No external identity found.')]);
-	}
+        if(empty($remote_user)) {
+	       return redirect()->route('ext.home')->withErrors(['failure' => __('No external identity found.')]);
+	    }
         #Log::debug("Session: ", ['session' => session()->all() ]);
         return redirect()->route('ext.confirm', ['provider' => $provider]);
         //$local_user = session(self::LOCAL_USER_KEY);
@@ -112,7 +113,7 @@ class UserExtController extends Controller
     public function confirmIdentity(Request $request, $provider) {
         $remote_user = session(self::REMOTE_USER_KEY);
         $local_user = session(self::LOCAL_USER_KEY);
-	Log::debug("Local and remote user: ", ['local' => $local_user, 'remote' => $remote_user]);
+	    Log::debug("Local and remote user: ", ['local' => $local_user, 'remote' => $remote_user]);
         #Log::debug("Session: ", ['session' => session()->all() ]);
         return view('ext.confirm', [ 'local' => $local_user, 'remote' => $remote_user, 'provider' => $provider ]);
     }
