@@ -97,6 +97,10 @@ class UserExtController extends Controller
     }
     
     public function loginRemote(Request $request, $provider) {
+        if(Auth::hasUser() && !$request->hasAny(['code', 'cont'])) {
+            # redirects and exits
+            Auth::logout(route('ext.login.ext', ['provider' => $provider, 'cont' => 'true'], true));
+        }
         if(!Auth::attempt(['delegate' => $provider])) {
             return redirect()->route('ext.home')->withErrors(['failure' => __('External login failed.')]);
         }
