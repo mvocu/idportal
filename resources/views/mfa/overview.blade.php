@@ -135,7 +135,7 @@
 						
 					<input type="hidden" name="device" value="all" />
 						
-					<button class="btn btn-danger" role="button"><i class="fa fa-times me-2"></i>{{ __('Clear all') }}</button>
+					<button class="btn btn-primary" role="button"><i class="fa fa-times me-2"></i>{{ __('Clear all') }}</button>
 				</form>
 			</div>
 		</div>
