@@ -89,6 +89,8 @@ class AppServiceProvider extends ServiceProvider
            if(empty($other)) return true;
            $other_date = new Carbon($other);
            if(!($value instanceof Carbon)) $value = new Carbon($value);
+           // ignore New Year dates
+           if($value->dayOfYear == 1 or $other_date->dayOfYear == 1) return true;
            return $other_date->isSameDay($value);
         });
         Validator::extend('phone', function ($attribute, $value, $parameters, $validator) {
