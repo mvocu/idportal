@@ -67,6 +67,11 @@ class OidcUser implements Authenticatable, AuthenticationInfo, \JsonSerializable
         return empty($this->name) ? $this->sub : $this->name;
     }
     
+    public function getLevelOfAuthority()
+    { 
+        return $this->claims['auth_loa'];
+    }
+    
     public function __get($name)
     {
         $attrs = $this->getAttributes();
@@ -79,6 +84,25 @@ class OidcUser implements Authenticatable, AuthenticationInfo, \JsonSerializable
     public function jsonSerialize()
     {
         return $this->claims;
+    }
+
+    public function getRemoteClient()
+    {
+        #$method = $this->getAuthMethod();
+        #if(is_array($method) && in_array("DelegatedClientAuthenticationHandler", $method)) {
+        $attrs = $this->getAttributes();
+        return isset($attrs['auth_delegated_client']) ? $attrs['auth_delegated_client'] : null;
+        #}
+        #return null;
+    }
+  
+    public function getRemoteAuthenticationMethod()
+    {
+        $client = $this->getRemoteClient();
+        if(empty($client)) {
+            return null;
+        }
+        return $this->claims['auth_amr'];
     }
     
 }

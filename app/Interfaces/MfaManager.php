@@ -14,6 +14,8 @@ interface MfaManager
     public function getGauthCredentials(User $user);
     
     public function importGauthCredentials(User $user, GauthRecord $gauth);
+	
+	public function exportGauthCredentials(User $user);
     
     public function getPagerNumber(User $user);
     

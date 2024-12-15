@@ -52,10 +52,38 @@ Route::name('ext.')
 ->prefix('ext')
 ->group(function() {
     Route::get('/', 'App\Http\Controllers\UserExtController@showOverview')->name('home');
-    Route::get('/login/{provider}', 'App\Http\Controllers\UserExtController@loginRemote')->name('login.ext'); 
+    Route::get('/login/{client}', 'App\Http\Controllers\UserExtController@loginRemote')->name('login.ext'); 
     Route::get('/login', 'App\Http\Controllers\UserExtController@loginLocal')->name('login');
-    Route::get('/confirm/{provider}', 'App\Http\Controllers\UserExtController@confirmIdentity')->name('confirm');
-    Route::post('/add/{provider}', 'App\Http\Controllers\UserExtController@addIdentity')->name('add');
-    Route::post('/remove/{provider}', 'App\Http\Controllers\UserExtController@removeIdentity')->name('remove');    
+    Route::get('/confirm/{client}', 'App\Http\Controllers\UserExtController@confirmIdentity')->name('confirm');
+    Route::post('/add/{client}', 'App\Http\Controllers\UserExtController@addIdentity')->name('add');
+    Route::post('/remove/{client}', 'App\Http\Controllers\UserExtController@removeIdentity')->name('remove');    
     Route::get('/ssoinfo', 'App\Http\Controllers\UserExtController@ssoInfo')->name('ssoinfo');
+});
+
+Route::name('reset.')
+->prefix('reset')
+->group(function() {
+   Route::get('/', 'App\Http\Controllers\ResetController@showMethods')->name('home');
+   Route::get('/search', 'App\Http\Controllers\ResetController@showSearch')->name('find');
+   Route::post('/search', 'App\Http\Controllers\ResetController@findUser')->name('search');
+   Route::get('/methods', 'App\Http\Controllers\ResetController@showMethods')->name('methods');
+   Route::get('/verify/{method}', 'App\Http\Controllers\ResetController@verifyUser')->name('verify');
+   Route::get('/unverified', 'App\Http\Controllers\ResetController@warnUnverified')->name('unverified');
+   Route::get('/inquiry', 'App\Http\Controllers\ResetController@showInquiry')->name('inquiry');
+   Route::post('/merge', 'App\Http\Controllers\ResetController@mergeData')->name('merge');
+   Route::get('/idcheck', 'App\Http\Controllers\ResetController@checkIdentity')->name('idcheck');
+   Route::get('/failed', 'App\Http\Controllers\ResetController@checkFailed')->name('failed');
+});
+
+Route::name('challenge.')
+->prefix('challenge')
+->group(function() {
+    Route::post('/phone', 'App\Http\Controllers\ChallengeController@createPhoneChallenge')->name('phone');
+    Route::post('/mail', 'App\Http\Controllers\ChallengeController@createMailChallenge')->name('mail');
+});
+
+Route::name('password.')
+->prefix('password')
+->group(function() {
+    Route::get('/', 'App\Http\Controllers\PasswordController@showPasswordForm')->name('home');
 });

@@ -25,7 +25,7 @@ class OidcConnector implements IdentityProvider
             $this->config['client_secret']
         );
         $this->oidc->setResponseTypes(['code']);
-        $this->oidc->addScope(['openid', 'phone', 'email', 'profile', 'address', 'nia', 'cuni']);
+        $this->oidc->addScope(['openid', 'phone', 'email', 'profile', 'address', 'nia', 'cuni', 'auth', 'edu', 'svipeid']);
         $this->oidc->providerConfigParam(['token_endpoint_auth_methods_supported' => ['client_secret_post']]);
     }
 

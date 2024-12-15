@@ -17,5 +17,9 @@ trait HasLdapUser
         return $this->ldap_user->getAttribute($name);
     }
     
+    public function hasLdapUser()
+    {
+        return $this->ldap_user instanceof LdapUser;
+    }
 }
 

@@ -14,4 +14,18 @@ class User extends Entry
     public static $objectClasses = [
         'cuniPerson'
     ];
+    
+    public function toFlatArray() {
+        $data = $this->getAttributes();
+        $result = [];
+        
+        foreach($data as $key => $value) {
+            if(is_array($value) && count($value) == 1) {
+                $result[$key] = $value[0];
+            } else {
+                $result[$key] = $value;
+            }
+        }
+        return $result;
+    }
 }

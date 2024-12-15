@@ -49,6 +49,16 @@ class MfaManager implements MfaManagerInterface
         $gauth->save();
     }
 
+	public function exportGauthCredentials(User $user)
+	{
+	    $records = $this->getGauthCredentials($user);
+	    if($records->isEmpty()) {
+	        return null;
+	    }
+	    $gauth = $records->first();
+	    
+	}
+	
     /**
      * {@inheritDoc}
      * @see \App\Interfaces\MfaManager::getWebAuthnDevices()

@@ -3,6 +3,20 @@
 @section('content')
 
 <div class="d-flex flex-column col-lg-7" style="max-width: 720px">	
+         @if (session('status') || $errors->has('failure'))
+	         @if (session('status'))
+	      	<div class="alert alert-success" role="alert">
+    	        {{ session('status') }}
+             </div>
+             @endif
+
+             @if ($errors->has('failure'))
+             <div class="alert alert-danger" role="alert">
+             	{{ $errors->first('failure') }}
+             </div>
+             @endif
+		@endif
+
 	<div class="card mt-5">
 		<div class="card-body">
 			<h4 class="card-title">{{ __('Multifactor authentication') }}</h4>
@@ -98,22 +112,6 @@
 		<p>{{ __('You will not be asked to use second factor when authenticating from one of those devices.') }}</p>
 	</div>
 	<div class="card mt-4 mb-5">
-
-         @if (session('status') || $errors->has('failure'))
-		<div class="card-body">
-	         @if (session('status'))
-	      	<div class="alert alert-success" role="alert">
-    	        {{ session('status') }}
-             </div>
-             @endif
-
-             @if ($errors->has('failure'))
-             <div class="alert alert-danger" role="alert">
-             	{{ $errors->first('failure') }}
-             </div>
-             @endif
-		</div>
-		@endif
 
 		@if (!empty($trusted) && !$trusted->isEmpty())
 		<ul class="list-group list-group-light">

@@ -42,6 +42,7 @@ return [
         ],
         'cas' => [
             'driver' => 'oidc', // driver is registered in AuthServiceProvider
+            'provider' => 'users', // not used in app
             'idp' => 'cas.idp', // idp is bound into container in AppServiceProvider
             'url' => 'https://' . env('OIDC_SERVER', 'localhost') . '/cas/oidc/',
             'client_id' => env('OIDC_CLIENT_ID'),

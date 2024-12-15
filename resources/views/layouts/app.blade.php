@@ -10,16 +10,17 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
-	@stack('app.scripts')
-	
-    <!-- Fonts -->
-    
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/theme.css') }}" rel="stylesheet">
 
+    <!-- Scripts -->
+    <script src="{{ asset('js/app.js') }}" defer></script>
+	@stack('app.scripts')
+	<script>
+	</script>
+
+    <!-- Fonts -->
 	
 </head>
 <body>
@@ -40,8 +41,8 @@
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav me-auto">
-
+                    <ul class="navbar-nav ms-5 me-auto align-items-center">
+						@yield('header')
                     </ul>
 
                     <!-- Right Side Of Navbar -->

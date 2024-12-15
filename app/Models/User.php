@@ -7,13 +7,14 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable;
 use App\Interfaces\AuthenticationInfo;
 use App\Models\Ldap\User as LdapUser;
+use Illuminate\Foundation\Auth\Access\Authorizable as HasAuthorizations;
 use App\Traits\HasAuthUser;
 use App\Traits\HasLdapUser;
 use App\Auth\OidcUser;
 
 class User implements Authenticatable, AuthenticationInfo, Authorizable
 {
-    use  Notifiable, HasAuthUser, HasLdapUser;
+    use  Notifiable, HasAuthUser, HasLdapUser, HasAuthorizations;
     
     public function __construct(Authenticatable $auth_user, LdapUser $model)
     {
@@ -46,11 +47,6 @@ class User implements Authenticatable, AuthenticationInfo, Authorizable
                 
             return $this->auth_user->claims['sub'];
         }
-    }
-    
-    public function can($abilities, $arguments = [])
-    {
-        return false;
     }
 
 }

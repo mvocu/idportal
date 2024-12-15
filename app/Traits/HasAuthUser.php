@@ -47,5 +47,26 @@ trait HasAuthUser
     {
         return $this->auth_user;
     }
+    
+    public function getRemoteClient()
+    {
+        return $this->auth_user->getRemoteClient();
+    }
+    
+    public function getRemoteProvider()
+    {
+        return $this->auth_user->getRemoteProvider();
+    }
+    
+    public function getLevelOfAuthority()
+    {
+        return $this->auth_user->getLevelOfAuthority();
+    }
+    
+    public function getRemoteAuthenticationMethod()
+    {
+        return $this->auth_user->getRemoteAuthenticationMethod();
+    }
+    
 }
 

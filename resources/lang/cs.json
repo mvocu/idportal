@@ -3,7 +3,9 @@
 	"Central Authentication Service" : "Centrální autentizační služba",
 	
 	
-	"Submit" : "Uložit",
+	"Save" : "Uložit",
+	"Submit" : "Odeslat",
+	"Proceed" : "Pokračovat",
 	"Back" : "Zpět",
 	"Test" : "Otestovat",
 	"Remove all" : "Odstranit vše",
@@ -59,11 +61,13 @@
 	"mfa.webauthn-description" : "Při druhém kroku ověření budete vyzváni k připojení bezpečnostního klíče k vašemu zařízení, případně můžete použít mobilní telefon s podporou biometrického přihlášení.",
 	"mfa.sms-description" : "Na vaše telefonní číslo bude odeslána textová zpráva s kódem, který zadáte při druhém kroku přihlášení pro ověření vaší totožnosti.",
 	
-	"External identities" : "Externí identity",
+	"Registered external identities" : "Zaregistrované externí identity",
 	"This application is still being developed. Please come back later." : "Tato aplikace se ještě připravuje. Prosíme o trpělivost.", 
 	
 	"You are not signed in. Please login to continue." : "Zatím nejste přihlášeni. Abyste mohli pokračovat, prosím, přihlaste se.", 
-	"These external identy providers are available to login with CAS:" : "Pro přihlášení k CAS jsou k dispozici následující způsoby přihlášení:",
+	"You have registered these external identities for login using CAS:" : "Pro přihlášení k CAS máte zaregistrované následující identity:",
+	"External identity providers": "Dostupné metody přihlášení",
+	"These external identity providers are available:" : "Můžete si zaregistrovat některou z uvedených metod přihlášení:",
 	"Add external identity" : "Přidání externí identity",
 	"Add external ID" : "Přidat externí identitu",
 	"Remove external ID" : "Odebrat externí identitu",
@@ -74,6 +78,7 @@
 	"Identity from external provider" : "Identifikace od externího poskytovatele",
 	"Unregistered external identity" : "Neregistrovaný externí účet",		
 	"You have signed in using account that is not yet registered with CAS. You have to register this account with CAS to continue." : "Účet, kterým jste se přihlásili, dosud není v CAS registrovaný. Abyste mohli pokračovat dále, prosíme zaregistrujte jej.",
+	"You have signed in using account that is not yet registered with CAS. Unfortunately the information provided by external provider is not eligible for registration." : "Účet, kterým jste se přihlásili, dosud není v CAS registrovaný. Bohužel údaje poskytnuté k tomuto účtu nelze zaregistrovat.",
 	"Information about external account" : "Informace o externím účtu",
 	"Data displayed above is only for your information, it will not be stored and further processed except the anonymous identifier." : "Výše zobrazené údaje jsou jen pro vaši kontrolu. S výjimkou anonymního identifikátoru nebudou zde dále uloženy ani zpracovávány.",
 	"To register this account, you have to sign-in using your CAS account to continue." : "Abyste mohli tento účet zaregistrovat v CAS, prosím přihlašte se vaším CAS účtem.",
@@ -91,13 +96,63 @@
 	"External identity removed." : "Externí identita odstraněna.",
 	"No external identity found." : "Nebyla nalezena externí identita.",
 	
+	"Getting new password for CAS" : "Nastavení nového hesla pro CAS",
+	"Locate your account" : "Vyhledání účtu",
+	"Fill information necessary to identify your account:" : "Vyplňte informace potřebné k nalezení vašeho účtu:",
+	"Search by identifier" : "Hledání podle identifikátoru",
+	"Search by personal data" : "Hledání podle osobních údajů",
+	"OR" : "NEBO",
+	"Use your personal number, login name, e-mail address or phone number as an identifier." : "Jako identifikátor můžete použít osobní číslo, přihlašovací jméno, e-mailovou adresu nebo telefonní číslo.",
+	"Date of birth" : "Datum narození",
+	"Verify your identity" : "Ověření totožnosti",
+	"Choose the most appropriate identification method:" : "Vyberte způsob, jakým si přejete ověřit svoji totožnost:",
+	
+	"Identity provider": "Poskytovatel identity",
 	"NIA" : "Identita občana",
 	"NIA-desc" : "Elektronická identita poskytovaná státem (včetně bankovní identity).",
+	
+	"eduid": "Federace eduID.cz",
+	"eduid-desc": "Přihlášení pomocí účtu akademické instituce zapojené do eduID.cz",
+	
+	"edugain": "Inter-federace eduGAIN",
+	"edugain-desc" : "Přihlášení pomocí účtu akademické nebo výzkumné instituce zapojené do eduGAIN",
+	
+	"svipeid": "Elektronické ověření dokumentů",
+	"svipeid-desc": "Ověření identity pomocí informací dostupných na identifikačních dokumentech (pas, občanský průkaz)",
+	
+	"sms-challenge" : "Ověření pomocí SMS",
+	"sms-challenge-desc" : "Na telefonní číslo uložené v databázi odešleme SMS zprávu s kódem pro ověření totožnosti.",
+	
+	"mail-challenge" : "Ověření pomocí osobních údajů",
+	"mail-challenge-desc" : "Zeptáme se vás na vybrané osobní údaje a požádáme o potvrzení přes vaši e-mailovou schránku.",
+
+	"sms-authorization-code" : "Váš autorizační kód: :token",
 
 	"Identifier" : "Identifikátor",
 	"First name" : "Křestní jméno",
 	"Last name" : "Příjmení",
 	"Address" : "Adresa",	
+	
+	"given_name" : "Křestní jméno",
+	"family_name" : "Příjmení",
+	"middle_name" : "Druhé jméno",
+	"name" : "Celé jméno",
+	"nickname" : "Přezdívka",
+	"gender" : "Pohlaví/gender",
+	"nationality" : "Národnost",
+	"document_type" : "Typ dokladu",
+	"document_number" : "Číslo dokladu",
+	"administrative_number" : "Identifikační číslo",
+	"birthdate" : "Datum narození",
+	"email" : "E-mailová adresa",
+	"phone_number" : "Telefon",
+	"address.street" : "Ulice",
+	"address.evidence_number" : "Číslo evidenční",
+	"address.street_number" : "Číslo popisné",
+	"address.city" : "Město",
+	"address.city_part" : "Lokalita",
+	"address.country" : "Země",
+	"address.postal_code" : "PSČ",
 	
 	"__END_" : "__KONEC__"
 }

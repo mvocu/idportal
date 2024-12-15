@@ -41,7 +41,7 @@
 			</div>
 			<div class="d-flex flex-row align-items-start mt-1">
 				<div class="col-sm-4">
-					<span class="fw-bold">{{ $local }}</spanp>
+					<span class="fw-bold">{{ $local }}</span>
 				</div>
 	      		<div class="col-sm-8">
 					<span class="fw-bold">{{ $remote }}</span>
@@ -49,7 +49,7 @@
 			</div>
 			
 			<div class="d-flex flex-row justify-content-end align-items-start mt-4">
-				<form method="POST"  action="{{ route('ext.add', [ 'provider' => $provider ] ); }}">
+				<form method="POST"  action="{{ route('ext.add', [ 'client' => $client ] ); }}">
 					@csrf
 					<input type="hidden" name="local" value="{{$local}}"/>
 					<input type="hidden" name="remote" value="{{$remote}}"/>

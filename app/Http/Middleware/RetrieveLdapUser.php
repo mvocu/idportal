@@ -32,7 +32,7 @@ class RetrieveLdapUser
         if(is_null($auth_user)) {
             return;
         }
-        
+
         $user_id = $auth_user->getAuthIdentifier();
         
         $ldap_user = User::findBy('cunipersonalid',  $user_id);
