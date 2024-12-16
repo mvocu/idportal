@@ -114,7 +114,8 @@ class IdentityManager implements IdentityManagerInterface
     {
         if(isset($user[IdentityResource::CUNIPERSONALID]) && isset($candidate[IdentityResource::CUNIPERSONALID])) {
             // both records have known identity
-            return $user[IdentityResource::CUNIPERSONALID] == $candidate[IdentityResource::CUNIPERSONALID];
+	    return ($user[IdentityResource::CUNIPERSONALID] == $candidate[IdentityResource::CUNIPERSONALID]) 
+		? self::IDENTITY_RESULT_SAME : self::IDENTITY_RESULT_DIFFERENT;
         }
         // check base identity data are present
         $validator = Validator::make($candidate, self::BASE_IDENTITY_RULES);
@@ -155,8 +156,8 @@ class IdentityManager implements IdentityManagerInterface
             }
         }
         
-        $this->last_score = $score;
-        
+	$this->last_score = $score;
+
         return ($score >= self::REQUIRED_SCORES[$purpose]) ? self::IDENTITY_RESULT_SAME : self::IDENTITY_RESULT_UNKNOWN;
     }
 

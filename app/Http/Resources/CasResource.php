@@ -9,7 +9,8 @@ abstract class CasResource extends JsonResource implements IdentityResource
 
     protected static $_baseAttributeMap = [
         'auth_loa' => IdentityResource::LOA,
-        'cunipersonalid' => IdentityResource::CUNIPERSONALID,
+	'cuni_personalid' => IdentityResource::CUNIPERSONALID,
+	'cunipersonalid' => IdentityResource::CUNIPERSONALID,
     ];
     
     protected function getAttributeMap()
