@@ -13,7 +13,6 @@ use App\Notifications\Channels\SmsChannel;
 
 class ChallengeController extends Controller
 {
-    const PHONE_CHALLENGE_KEY = "phone_number";
     
     protected $store = null;
     protected $mgr = null;
@@ -33,7 +32,7 @@ class ChallengeController extends Controller
             return json_encode(['error' => $validator->errors()->first(), "reason" => $validator->errors() ]);
         }
         $data = $validator->validated();
-        $token = $this->mgr->createToken(self::PHONE_CHALLENGE_KEY, $this->store);
+        $token = $this->mgr->createToken(ChallengeManager::PHONE_CHALLENGE_KEY, $this->store);
         $phone = $this->_sanitizePhone($data['address']);
         Notification::route('sms', $phone)->notifyNow(new SmsAuthorizationCode($token));
         // we have to get the delivery status directly from SmsChannel object managed by notifications dispatcher

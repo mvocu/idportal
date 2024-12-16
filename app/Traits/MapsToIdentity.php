@@ -29,6 +29,8 @@ trait MapsToIdentity
             $data[IdentityResource::ATTR_EXTERNAL_ID] = $this->resource->getAuthIdentifier();
         } else if($this->resource instanceof LdapUser) {
             $attrs = $this->resource->toArray();
+        } else if(is_array($this->resource)) {
+            $attrs = $this->resource;
         } else {
             $attrs = $this->resource->toArray();
         }

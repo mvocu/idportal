@@ -12,6 +12,9 @@ use App\Interfaces\ResetManager;
 use App\Models\User;
 use App\Interfaces\IdentityManager;
 use App\Interfaces\UserManager;
+use App\Interfaces\ChallengeManager;
+use App\Interfaces\ChallengeStore;
+use App\Http\Resources\FormResource;
 
 class ResetController extends Controller
 {
@@ -41,17 +44,29 @@ class ResetController extends Controller
     
     const TARGET_USER_KEY = "reset_target";
     const REMOTE_IDENTITY_KEY = "reset_ext_id";
+    const METHOD_KEY = "reset_method";
     
     protected $u_mgr;
     protected $auth_mgr;
     protected $reset_mgr;
     protected $id_mgr;
+    protected $ch_mgr;
+    protected $ch_store;
     
-    public function __construct(UserManager $u_mgr, AuthenticationManager $auth_mgr, ResetManager $reset_mgr, IdentityManager $id_mgr) {
+    public function __construct(
+            UserManager $u_mgr, 
+            AuthenticationManager $auth_mgr, 
+            ResetManager $reset_mgr, 
+            IdentityManager $id_mgr,
+            ChallengeManager $ch_mgr,
+            ChallengeStore $ch_store
+        ) {
         $this->u_mgr = $u_mgr;
         $this->auth_mgr = $auth_mgr;
         $this->reset_mgr = $reset_mgr;
         $this->id_mgr = $id_mgr;
+        $this->ch_mgr = $ch_mgr;
+        $this->ch_store = $ch_store;
         $this->middleware(['model'])->only(['showSearch']);
     }
     
@@ -133,18 +148,32 @@ class ResetController extends Controller
     }
     
     public function mergeData(Request $request) {
-        $data = $request->only(['given_name', 'family_name', 'birthdate', 'phone_number', 'email']);
-        $address = $request->only(['street', 'street_number', 'evidence_number', 'city', 'postal_code', 'country']);
+        $form = new FormResource($request->all());
+        $data = $form->toArray($request);
+        #$data = $request->only(['given_name', 'family_name', 'birthdate', 'phone_number', 'email']);
+        #$address = $request->only(['street', 'street_number', 'evidence_number', 'city', 'postal_code', 'country']);
         $validator = Validator::make($data, self::PERSON_VALIDATION_RULES);
         if(!$validator->passes()) {
-            return redirect()->back()->withErrors($validator->errors());
+            return redirect()->back()->withInput()->withErrors($validator->errors());
         }
-        if(!empty(array_filter($address, function ($val) { return !empty($val); }))) {
-            $validator = Validator::make($address, self::ADDRESS_VALIDATION_RULES);
-            if(!$validator->passes()) {
-                return redirect()->back()->withErrors($validator->errors());
+        // verify phone_number token with phone_number
+        if(!empty($data['phone_number'])) {
+            if(!$this->ch_mgr->verifyToken(ChallengeManager::PHONE_CHALLENGE_KEY, $this->ch_store, 
+                $request->input('phone_challenge'))) {
+                    return redirect()->back()->withInput()->withErrors([
+                        'failure' => __('Unverified phone number.'),
+                        'phone_number' => [ __('Phone number must be verified.') ]
+                    ]);
             }
-            $data['address'] = $address;
+            $data['phone_number_verified'] = 1;
+        }
+        #if(!empty(array_filter($address, function ($val) { return !empty($val); }))) {
+        if(!empty($data['address'])) {
+            $validator = Validator::make($data['address'], self::ADDRESS_VALIDATION_RULES);
+            if(!$validator->passes()) {
+                return redirect()->back()->withInput()->withErrors($validator->errors());
+            }
+            #$data['address'] = $address;
         }
         $identity = $this->_retrieveRemoteIdentity($request);
         if($this->_mergeInputToIdentity($identity, $data)) {
@@ -319,6 +348,18 @@ class ResetController extends Controller
         $request->session()->forget(self::REMOTE_IDENTITY_KEY);
     }
 
+    protected function _saveMethod(Request $request, $method) {
+        $request->session()->put(self::METHOD_KEY, $method);    
+    }
+    
+    protected function _retrieveMethod(Request $request) {
+        return $request->session()->get(self::METHOD_KEY);
+    }
+    
+    protected function _forgetMethod(Request $request) {
+        $request->session()->forget(self::METHOD_KEY);
+    }
+    
     protected function _mergeInputToIdentity(&$identity, $data) {
         $changed = false;
         
