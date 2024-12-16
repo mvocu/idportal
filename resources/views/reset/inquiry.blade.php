@@ -57,6 +57,11 @@
 			</div>
 			@else			
 			<x-identity :identity="$identity" />
+
+            <div class="text-center mt-4">
+				<a href="{{ route('reset.restart') }}" class="btn btn-secondary">{{ __('Reset data') }}</a> 
+			</div>
+			
 			@endif
 		</div>
 
@@ -86,7 +91,9 @@
 	            </div>
 				<div class="col-sm-6">
 				@guest
+        		@if (empty($identity['phone_number']) || empty($identity['email']))
 					<x-captcha />
+				@endif
 				@endguest
 				</div>
 				</div>	

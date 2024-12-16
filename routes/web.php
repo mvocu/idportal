@@ -73,6 +73,7 @@ Route::name('reset.')
    Route::post('/merge', 'App\Http\Controllers\ResetController@mergeData')->name('merge');
    Route::get('/idcheck', 'App\Http\Controllers\ResetController@checkIdentity')->name('idcheck');
    Route::get('/failed', 'App\Http\Controllers\ResetController@checkFailed')->name('failed');
+   Route::get('/restart', 'App\Http\Controllers\ResetController@cleanRemote')->name('restart');
 });
 
 Route::name('challenge.')

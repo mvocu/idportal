@@ -34,7 +34,8 @@ class ChallengeController extends Controller
         }
         $data = $validator->validated();
         $token = $this->mgr->createToken(self::PHONE_CHALLENGE_KEY, $this->store);
-        Notification::route('sms', $data['address'])->notifyNow(new SmsAuthorizationCode($token));
+        $phone = $this->_sanitizePhone($data['address']);
+        Notification::route('sms', $phone)->notifyNow(new SmsAuthorizationCode($token));
         // we have to get the delivery status directly from SmsChannel object managed by notifications dispatcher
         $channel = app(Dispatcher::class)->driver(SmsChannel::class);
         if(!empty($channel->status_msg)) {
@@ -46,5 +47,14 @@ class ChallengeController extends Controller
         
     }
     
+    protected function _sanitizePhone($number) {
+        if($number[0] == '+') {
+            return $number;
+        }
+        if(strlen($number) == 9) {
+            return "+420$number";
+        }
+        return "+$number";
+    }
 }
 

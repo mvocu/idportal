@@ -56,7 +56,7 @@ class SmsChannel
         $res = false;
         if (is_object($result)) {
             $this->status = trim($result->status);
-            $this->status_msg = trim($result->message);
+            $this->status_msg = ""; #trim($result->message);
             $this->msg_id = trim($result->smsid);
             if (trim($result->status) == "200") {
                 $res = true;

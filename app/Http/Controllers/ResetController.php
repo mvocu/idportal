@@ -139,7 +139,7 @@ class ResetController extends Controller
         if(!$validator->passes()) {
             return redirect()->back()->withErrors($validator->errors());
         }
-        if(!empty($address)) {
+        if(!empty(array_filter($address, function ($val) { return !empty($val); }))) {
             $validator = Validator::make($address, self::ADDRESS_VALIDATION_RULES);
             if(!$validator->passes()) {
                 return redirect()->back()->withErrors($validator->errors());
@@ -221,6 +221,11 @@ class ResetController extends Controller
         $this->_forgetTargetUser($request);
         $request->session()->put('url.intended', route('reset.home'));
         return view('reset.failed', ['model' => $model, 'identity' => $identity ]);
+    }
+    
+    public function cleanRemote(Request $request) {
+        $this->_forgetRemoteIdentity($request);
+        return redirect()->route('reset.inquiry')->with(['status' => __('Collected data have been cleaned.')]);
     }
     
     protected function _verifyUserByRemoteClient(Request $request, $client, $model) {
