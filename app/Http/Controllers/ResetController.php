@@ -218,7 +218,11 @@ class ResetController extends Controller
                 
             case IdentityManager::IDENTITY_RESULT_DIFFERENT:
                 return redirect()->route('reset.failed')
-                    ->withErrors(['failure' => __('The identity presented does not match target account.')]);
+                    ->withErrors(['failure' => __('The identity presented does not match target account.', 
+                        [ 
+                            'score' => $this->id_mgr->getLastScore(),
+                            'error' => $this->id_mgr->getLastError(),
+                        ])]);
                 
             case IdentityManager::IDENTITY_RESULT_UNKNOWN:
                 break;

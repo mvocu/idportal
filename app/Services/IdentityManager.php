@@ -5,10 +5,12 @@ use App\Interfaces\IdentityManager as IdentityManagerInterface;
 use App\Interfaces\IdentityResource;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Arr;
+use Illuminate\Support\MessageBag;
 
 class IdentityManager implements IdentityManagerInterface
 {
     private $last_score = 0;
+    private $last_errors = null;
     
     const BASE_IDENTITY_RULES = [
         IdentityResource::ATTR_GIVEN_NAME => 'required|string',
@@ -106,12 +108,18 @@ class IdentityManager implements IdentityManagerInterface
         return $this->last_score;
     }
 
+    public function getLastError()
+    {
+        return empty($this->last_errors) ? "" : $this->last_errors->first();
+    }
+    
     /**
      * {@inheritDoc}
      * @see \App\Interfaces\IdentityManager::compareIdentity()
      */
     public function compareIdentity($user, $candidate, $purpose)
     {
+        $this->last_errors = null;
         if(isset($user[IdentityResource::CUNIPERSONALID]) && isset($candidate[IdentityResource::CUNIPERSONALID])) {
             // both records have known identity
             return $user[IdentityResource::CUNIPERSONALID] == $candidate[IdentityResource::CUNIPERSONALID];
@@ -120,12 +128,14 @@ class IdentityManager implements IdentityManagerInterface
         $validator = Validator::make($candidate, self::BASE_IDENTITY_RULES);
         if($validator->fails()) {
             // can not go on without those
+            $this->last_errors = $validator->errors();
             return self::IDENTITY_RESULT_UNKNOWN;
         }
         $data = [ 'user' => $user, 'candidate' => $candidate];
         // required rules (may not be sufficient)
         $validator = Validator::make($data, self::SAME_IDENTITY_RULES);
         if($validator->fails()) {
+            $this->last_errors = $validator->errors();
             return self::IDENTITY_RESULT_DIFFERENT;
         }
 
@@ -149,6 +159,7 @@ class IdentityManager implements IdentityManagerInterface
                     $score += self::ATTR_SCORES[$attr];
                 } else {
                     if(self::ATTR_MATCH_REQUIRED[$attr]) {
+                        $this->last_errors = new MessageBag([ $attr => "$attr failed to match."]);
                         return self::IDENTITY_RESULT_DIFFERENT;
                     }
                 }
