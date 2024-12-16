@@ -19,6 +19,8 @@ interface IdentityManager
  
     public function getLastScore(); 
     
+    public function getLastError();
+    
     public function hasAllInformation($data);
 }
 

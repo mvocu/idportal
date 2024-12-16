@@ -46,6 +46,8 @@
 
 	"sms-authorization-code" : "Authorization code: :token",
 	
+	"The identity presented does not match target account." : "The identity presented does not match target account (score :score) (:error).",
+	
 	"__END__" : "THE END"
 
 }

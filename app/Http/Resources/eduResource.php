@@ -18,8 +18,8 @@ class eduResource extends CasResource implements IdentityResource
         "edu_email" => IdentityResource::ATTR_EMAIL,
         #"edu_home_organization" => "edu_home_organization",
         "edu_sn" => IdentityResource::ATTR_FAMILY_NAME,
-        "edu_unstructured_name" => IdentityResource::ATTR_ADMINISTRATIVE_NUMBER,
-        "edu_unique_id" => IdentityResource::ATTR_ADMINISTRATIVE_NUMBER,
+        #"edu_unstructured_name" => IdentityResource::ATTR_ADMINISTRATIVE_NUMBER,
+        #"edu_unique_id" => IdentityResource::ATTR_ADMINISTRATIVE_NUMBER,
         #"edu_personal_unique_code" => "edu_personal_unique_code",
     ];
     
