@@ -206,6 +206,10 @@ class ResetController extends Controller
             $identity = $this->auth_mgr->getIdentity(Auth::user());
         }
         if(empty($identity)) {
+            $method = $this->_retrieveMethod($request);
+            if($method == 'mail-challenge') {
+                return redirect()->route('reset.inquiry')->withInput($request->only(['given_name', 'family_name', 'birthdate']));
+            }
             return redirect()->route('reset.methods')->withErrors(['failure' => __('No identity established yet.')]);
         }
         if(empty($model)) {
