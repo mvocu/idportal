@@ -46,7 +46,7 @@
 	
 		<h4 class="card-title mt-4 text-center">{{ __('Review personal data') }}</h4>
 		<div class="card-body">
-			<em>{{ __('Some important data about you are still missing, and we are not able to establish your identity. Please provide us with more data by filling in some of the requested information below') }}</em>
+			<em>{{ __('Some important data about you are missing, and we are not able to establish your identity. Please provide us with more data by filling in some of the requested information below') }}</em>
 		</div>
 
 		<div class="card-body">
@@ -59,7 +59,7 @@
 			<x-identity :identity="$identity" />
 
             <div class="text-center mt-4">
-				<a href="{{ route('reset.restart') }}" class="btn btn-secondary">{{ __('Reset data') }}</a> 
+				<a href="{{ route('reset.restart') }}" class="btn btn-secondary">{{ __('Clean collected data') }}</a> 
 			</div>
 			
 			@endif
