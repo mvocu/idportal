@@ -21,6 +21,8 @@ interface IdentityManager
     
     public function getLastError();
     
+    public function getRequiredScore($purpose);
+        
     public function hasAllInformation($data);
 }
 

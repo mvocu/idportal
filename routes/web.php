@@ -80,7 +80,7 @@ Route::name('challenge.')
 ->prefix('challenge')
 ->group(function() {
     Route::post('/phone', 'App\Http\Controllers\ChallengeController@createPhoneChallenge')->name('phone');
-    Route::post('/mail', 'App\Http\Controllers\ChallengeController@createMailChallenge')->name('mail');
+    Route::post('/email', 'App\Http\Controllers\ChallengeController@createMailChallenge')->name('email');
 });
 
 Route::name('password.')

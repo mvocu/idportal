@@ -83,6 +83,11 @@ body {
   margin-top: -1rem !important;
 }
 
+input[required]::before {
+  display: inline-block;
+  content: "*";
+}
+
 /* fix VueSelect CSS */
 .menu-option.focused:hover {
   background-color: var(--vs-option-hover-color) !important;

@@ -73,7 +73,7 @@ class IdentityManager implements IdentityManagerInterface
     const ATTR_MATCH_REQUIRED = [
         IdentityResource::ATTR_EMAIL => 0,
         IdentityResource::ATTR_PHONE_NUMBER => 0,
-        IdentityResource::ATTR_ADMINISTRATIVE_NUMBER => 1,
+        IdentityResource::ATTR_ADMINISTRATIVE_NUMBER => 0,
         IdentityResource::ATTR_ADDRESS => 1,
         // IdentityResource::ATTR_GENDER => 1,
         // IdentityResource::ATTR_NATIONALITY => 1,
@@ -111,6 +111,10 @@ class IdentityManager implements IdentityManagerInterface
     public function getLastError()
     {
         return empty($this->last_errors) ? "" : $this->last_errors->first();
+    }
+    
+    public function getRequiredScore($purpose) {
+        return self::REQUIRED_SCORES[$purpose];    
     }
     
     /**
@@ -167,7 +171,7 @@ class IdentityManager implements IdentityManagerInterface
             }
         }
         
-	$this->last_score = $score;
+	   $this->last_score = $score;
 
         return ($score >= self::REQUIRED_SCORES[$purpose]) ? self::IDENTITY_RESULT_SAME : self::IDENTITY_RESULT_UNKNOWN;
     }

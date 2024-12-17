@@ -53,7 +53,7 @@
 			<h5>{{ __('Currently known data') }}</h5>
 			@if (empty($identity))
 			<div class="alert alert-info">
-				{{ __('There is no established identity data available.') }}
+				{{ __('There are no established identity data available.') }}
 			</div>
 			@else			
 			<x-identity :identity="$identity" />
@@ -76,24 +76,22 @@
 				<div class="row g-3">
 				<div class="col-sm-12">
 					@if (empty($identity['given_name']))
-					<x-input type="text" name="given_name" :input="$identity" :errors="$errors" text="First name" required="true" />
+					<x-input type="text" name="given_name" :value="old('given_name')" :errors="$errors" text="First name" required="true" />
             		@endif
             	</div>
 				<div class="col-sm-12">
 		            @if (empty($identity['family_name']))
-					<x-input type="text" name="family_name" :input="$identity" :errors="$errors" text="Last name" required="true" />
+					<x-input type="text" name="family_name" :value="old('family_name')" :errors="$errors" text="Last name" required="true" />
 		            @endif
 				</div>
 				<div class="col-sm-6">
 		            @if (empty($identity['birthdate']))
-					<x-input type="date" name="birthdate" :input="$identity" :errors="$errors" text="Date of birth" required="true" />
+					<x-input type="date" name="birthdate" :value="old('birthdate')" :errors="$errors" text="Date of birth" required="true" />
             		@endif
 	            </div>
 				<div class="col-sm-6">
 				@guest
-        		@if (empty($identity['phone_number']) || empty($identity['email']))
 					<x-captcha />
-				@endif
 				@endguest
 				</div>
 				</div>	
@@ -125,22 +123,22 @@
 @endif
             
 			<div class="mb-3">
-				<label for="phone_number" class="form-label form-text">{{ __('Contacts') }}</label>
+				<label for="phone_number" class="form-label form-text">{{ __('Add contacts') }}</label>
 				<div class="row g-3">
-        		@if (empty($identity['phone_number']))
 				<div class="col-5">
-					<x-input type="tel" name="phone_number" :input="$identity" :errors="$errors" text="Phone number" />
+					<x-input type="tel" name="phone_number" :value="old('phone_number')" :errors="$errors" text="Phone number" />
 				</div>					
 				<div class="col-7">
 					<x-challenge id="phone_challenge" for="phone_number" name="phone_challenge" text="Verify phone number" 
 						url="{{ route('challenge.phone') }}" />
 				</div>
-        		@endif
-            	@if (empty($identity['email']))
 				<div class="col-5">
-					<x-input type="text" name="email" :input="$identity" :errors="$errors" text="E-mail" />
+					<x-input type="text" name="email" :value="old('email')" :errors="$errors" text="E-mail" />
 				</div>
-	            @endif
+				<div class="col-7">
+					<x-challenge id="email_challenge" for="email" name="email_challenge" text="Verify email address" 
+						url="{{ route('challenge.email') }}" />
+				</div>
             	</div>
 			</div>            
 			            
@@ -150,19 +148,19 @@
 				<label for="street" class="form-label form-text">{{ __('Address of permanent residency') }}</label>
 				<div class="row g-3">
 				<div class="col-sm-6">
-					<x-input type="text" name="street" :input="$identity['address']" :errors="$errors" text="Street" />
+					<x-input type="text" name="street" :value="old('street')" :errors="$errors" text="Street" />
 				</div>
 				<div class="col-sm-3">
-					<x-input type="text" name="street_number" :input="$identity['address']" :errors="$errors" text="Street number" />
+					<x-input type="text" name="street_number" :value="old('street_number')" :errors="$errors" text="Street number" />
 				</div>
 				<div class="col-sm-3">
-					<x-input type="text" name="evidence_number" :input="$identity['address']" :errors="$errors" text="Ev. number" />
+					<x-input type="text" name="evidence_number" :value="old('evidence_number')" :errors="$errors" text="Ev. number" />
 				</div>
 				<div class="col-sm-8">
-					<x-input type="text" name="city" :input="$identity['address']" :errors="$errors" text="City" />
+					<x-input type="text" name="city" :value="old('city')" :errors="$errors" text="City" />
 				</div>
 				<div class="col-sm-4">
-					<x-input type="text" name="postal_code" :input="$identity['address']" :errors="$errors" text="Postal code" />
+					<x-input type="text" name="postal_code" :value="old('postal_code')" :errors="$errors" text="Postal code" />
 				</div>
 				<div class="col-sm-12">
 					<div class="form-outline">

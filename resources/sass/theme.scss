@@ -100,6 +100,12 @@ body {
 	margin-top: -1rem !important;
 }
 
+// form required input
+input[required]::before {
+	display: inline-block;
+	content: '*';
+}
+
 /* fix VueSelect CSS */ 
 .menu-option.focused:hover {
 	background-color: var(--vs-option-hover-color) !important;

@@ -121,13 +121,15 @@ class ResetController extends Controller
             case 'svipeid':
             case 'eduid':
             case 'edugain':
+                $this->_saveMethod($request, $method);
                 return $this->_verifyUserByRemoteClient($request, $method, $model);
                 
             case 'sms-challenge':
                 break;
                 
             case 'mail-challenge':
-                break;
+                $this->_saveMethod($request, $method);
+                return redirect()->route('reset.search');
         }
         return back()->withErrors(['failure' => __('Selected method is not supported.')]);
     }
@@ -167,6 +169,17 @@ class ResetController extends Controller
             }
             $data['phone_number_verified'] = 1;
         }
+        // verify email_ token with phone_number
+        if(!empty($data['email'])) {
+            if(!$this->ch_mgr->verifyToken(ChallengeManager::EMAIL_CHALLENGE_KEY, $this->ch_store,
+                $request->input('email_challenge'))) {
+                    return redirect()->back()->withInput()->withErrors([
+                        'failure' => __('Unverified email address.'),
+                        'email' => [ __('Email address must be verified.') ]
+                    ]);
+                }
+                $data['email_verified'] = 1;
+        }
         #if(!empty(array_filter($address, function ($val) { return !empty($val); }))) {
         if(!empty($data['address'])) {
             $validator = Validator::make($data['address'], self::ADDRESS_VALIDATION_RULES);
@@ -201,12 +214,10 @@ class ResetController extends Controller
                 ->with(['warning' => __('You have to specify target account first.') ]);
         }
         $user_r = $this->u_mgr->getIdentity($model);
-        if($this->auth_mgr->hasAuthentication($model)) {
-            $same = $this->id_mgr->compareIdentity($user_r, $identity, IdentityManager::COMPARISON_PURPOSE_MERGE);
-            
-        } else {
-            $same = $this->id_mgr->compareIdentity($user_r, $identity, IdentityManager::COMPARISON_PURPOSE_INITIAL);
-        }
+        $purpose = $this->auth_mgr->hasAuthentication($model) 
+            ? IdentityManager::COMPARISON_PURPOSE_MERGE 
+            : IdentityManager::COMPARISON_PURPOSE_INITIAL;
+        $same = $this->id_mgr->compareIdentity($user_r, $identity, $purpose);
         #echo "<br><br><br><br>";
         #echo "<pre>", print_r($user_r, true), "</pre>";
         #echo "<pre>", print_r($model, true), "</pre>";
@@ -221,6 +232,7 @@ class ResetController extends Controller
                     ->withErrors(['failure' => __('The identity presented does not match target account.', 
                         [ 
                             'score' => $this->id_mgr->getLastScore(),
+                            'required' => $this->id_mgr->getRequiredScore($purpose),
                             'error' => $this->id_mgr->getLastError(),
                         ])]);
                 
@@ -231,8 +243,14 @@ class ResetController extends Controller
             return redirect()->route('reset.failed')->withErrors(['failure' => __('Identity check could not be completed.')]);
         }
         return redirect()->route('reset.inquiry')
-            ->withInput($identity)
-            ->with(['warning' => __('More information is required to verify your identity.')]);
+            #->withInput($identity)
+            ->with(['warning' => __('More information is required to verify your identity.',
+                [
+                    'score' => $this->id_mgr->getLastScore(),
+                    'required' => $this->id_mgr->getRequiredScore($purpose),
+                    'error' => $this->id_mgr->getLastError()
+                ]
+            )]);
     }
 
     public function checkFailed(Request $request) {
@@ -364,6 +382,7 @@ class ResetController extends Controller
         $request->session()->forget(self::METHOD_KEY);
     }
     
+    # possibly move this to IdentityManager and ad more intelligence
     protected function _mergeInputToIdentity(&$identity, $data) {
         $changed = false;
         
@@ -380,8 +399,10 @@ class ResetController extends Controller
                 } else if(!is_array($identity[$key])) {
                     $identity[$key] = [ $identity[$key] ];
                 }
-                $changed = true;
-                $identity[$key][] = $data[$key];
+                if(!in_array($data[$key], $identity[$key])) {
+                    $changed = true;
+                    $identity[$key][] = $data[$key];
+                }
             }
         }
         if(isset($data['address'])) {

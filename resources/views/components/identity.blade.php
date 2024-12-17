@@ -9,7 +9,15 @@
 		@if (null !== data_get($identity, $name))
 		<div class="d-flex flex-row row">
 			<div class="col-sm-4">{{ __($name) }}</div>
-			<div class="col-sm-8 fw-bold">{{ is_array($value = data_get($identity, $name)) ? join("<br/>", $value) : $value }}</div>
+			<div class="col-sm-8 fw-bold">
+				@if (is_array($value = data_get($identity, $name)))
+					@foreach ($value as $oneval)
+					 	{{ $oneval }}<br/>
+					@endforeach
+				@else
+					{{ $value }}
+				@endif
+			</div>
 		</div>
 		@endif
 	@endforeach

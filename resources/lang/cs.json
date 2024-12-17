@@ -127,7 +127,10 @@
 	"mail-challenge-desc" : "Zeptáme se vás na vybrané osobní údaje a požádáme o potvrzení přes vaši e-mailovou schránku.",
 
 	"sms-authorization-code" : "Váš autorizační kód: :token",
-	"The identity presented does not match target account." : "Předložená identita neodpovídá zadanému účtu (skóre :score) (:error)", 
+	"email-authorization-code" : "Váš autorizační kód: :token",
+
+	"The identity presented does not match target account." : "Předložená identita neodpovídá zadanému účtu (skóre :score/:required) (:error)", 
+	"More information is required to verify your identity." : "Ke spolehlivému ověření identity potřebujeme více informací (skóre :score/:required).",
 	
 	"Identifier" : "Identifikátor",
 	"First name" : "Křestní jméno",

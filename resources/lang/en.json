@@ -45,8 +45,10 @@
 	"address.postal_code" : "Postal code",
 
 	"sms-authorization-code" : "Authorization code: :token",
+	"email-authorization-code" : "Authorization code: :token",
 	
-	"The identity presented does not match target account." : "The identity presented does not match target account (score :score) (:error).",
+	"The identity presented does not match target account." : "The identity presented does not match target account (score :score/:required) (:error).",
+	"More information is required to verify your identity." : "More information is required to verify your identity (score :score/:required).",
 	
 	"__END__" : "THE END"
 

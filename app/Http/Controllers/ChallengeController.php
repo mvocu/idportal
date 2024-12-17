@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Interfaces\ChallengeStore;
 use Illuminate\Support\Facades\Notification;
+use App\Notifications\EmailAuthorizationCode;
 use App\Notifications\SmsAuthorizationCode;
 use App\Interfaces\ChallengeManager;
 use Illuminate\Contracts\Notifications\Dispatcher;
@@ -43,7 +44,18 @@ class ChallengeController extends Controller
     }
     
     public function createMailChallenge(Request $request) {
-        
+        $rules = ['address' => 'required|email'];
+        if(!Auth::check()) {
+            $rules['recaptcha'] = 'required|recaptcha';
+        }
+        $validator = Validator::make($request->all(), $rules);
+        if($validator->fails()) {
+            return json_encode(['error' => $validator->errors()->first(), "reason" => $validator->errors() ]);
+        }
+        $data = $validator->validated();
+        $token = $this->mgr->createToken(ChallengeManager::EMAIL_CHALLENGE_KEY, $this->store);
+        $email = $data['address'];
+        Notification::route('mail', $email)->notifyNow(new EmailAuthorizationCode($token));
     }
     
     protected function _sanitizePhone($number) {
