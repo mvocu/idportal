@@ -229,7 +229,7 @@ class ResetController extends Controller
         #echo "<pre>", print_r($same, true), "</pre>";
         switch($same) {
             case IdentityManager::IDENTITY_RESULT_SAME:
-                return redirect()->route('password.home')->with(['status' => __('Your identity has been verified.')]);
+                return redirect()->route('reset.password')->with(['status' => __('Your identity has been verified.')]);
                 
             case IdentityManager::IDENTITY_RESULT_DIFFERENT:
                 return redirect()->route('reset.failed')
@@ -282,6 +282,11 @@ class ResetController extends Controller
         $this->_forgetRemoteIdentity($request);
         return redirect()->route('reset.inquiry')->with(['status' => __('Collected data have been cleaned.')]);
     }
+
+    public function showPasswordForm(Request $request) {
+        return view('reset.passwordform');
+    }
+    
     
     protected function _verifyUserByRemoteClient(Request $request, $client, $model) {
         # see UserExtController::loginRemote()

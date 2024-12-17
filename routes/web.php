@@ -74,6 +74,7 @@ Route::name('reset.')
    Route::get('/idcheck', 'App\Http\Controllers\ResetController@checkIdentity')->name('idcheck');
    Route::get('/failed', 'App\Http\Controllers\ResetController@checkFailed')->name('failed');
    Route::get('/restart', 'App\Http\Controllers\ResetController@cleanRemote')->name('restart');
+   Route::get('/password', 'App\Http\Controllers\ResetController@showPasswordForm')->name('password');
 });
 
 Route::name('challenge.')

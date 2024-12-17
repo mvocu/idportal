@@ -59,6 +59,7 @@ class ChallengeController extends Controller
     }
     
     protected function _sanitizePhone($number) {
+        $number = preg_replace("/\s+/", "", $number);
         if($number[0] == '+') {
             return $number;
         }

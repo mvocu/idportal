@@ -42,6 +42,7 @@ class FormResource extends JsonResource implements IdentityResource
     }
     
     public function translatePhoneNumber($number) {
+        $number = preg_replace("/\s+/", "", $number);
         if(empty($number)) {
             return $number;
         }
