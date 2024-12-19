@@ -20,8 +20,9 @@ abstract class CasResource extends JsonResource implements IdentityResource
     
     public function computeLoa($data) {
         // take into account all identity attributes and LOA presented by external source
-        if(empty($data[IdentityResource::ATTR_FAMILY_NAME]) || 
-            empty($data[IdentityResource::ATTR_GIVEN_NAME])) {
+        if(empty($data[IdentityResource::CUNIPERSONALID]) && 
+            ( empty($data[IdentityResource::ATTR_FAMILY_NAME]) || empty($data[IdentityResource::ATTR_GIVEN_NAME]) )
+            ) {
             return null;                
         }
         return isset($data[IdentityResource::LOA]) ? $data[IdentityResource::LOA] : null;        
