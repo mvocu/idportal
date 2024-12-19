@@ -45,6 +45,7 @@ trait MapsToIdentity
                 $data[$attr] = $value;
             }
         }
+        $data[IdentityResource::LOA] = $this->computeLoa($data);
         return $data;
     }
     

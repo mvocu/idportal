@@ -23,4 +23,7 @@ class eduResource extends CasResource implements IdentityResource
         #"edu_personal_unique_code" => "edu_personal_unique_code",
     ];
     
+    public function computeLoa($data) {
+        return parent::computeLoa($data);
+    }
 }

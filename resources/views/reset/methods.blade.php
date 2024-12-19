@@ -37,8 +37,8 @@
 		@foreach ($methods as $method)
 		<div class="col-sm-3 mb-5 me-2" style="min-width: 175px">
 			<div class="card d-flex flex-column align-items-stretch h-100">
-			<div class="bg-image">
-				<img src="{{ asset('images/'.$method.'-logo.png') }}" class="card-img-top" alt="{{$method}} logo" />
+			<div class="bg-image text-center">
+				<img src="{{ asset('images/'.$method.'-logo.png') }}" class="x-card-img-top" alt="{{$method}} logo" />
 			</div>					
 			<div class="card-body">
 				<p class="card-text">

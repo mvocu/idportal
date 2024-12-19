@@ -129,13 +129,14 @@
 	"sms-authorization-code" : "Váš autorizační kód: :token",
 	"email-authorization-code" : "Váš autorizační kód: :token",
 
-	"The identity presented does not match target account." : "Předložená identita neodpovídá zadanému účtu (skóre :score/:required) (:error)", 
-	"More information is required to verify your identity." : "Ke spolehlivému ověření identity potřebujeme více informací (skóre :score/:required).",
+	"The identity presented does not match target account." : "Předložená identita neodpovídá zadanému účtu (dosažené skóre :score/:required) (:error)", 
+	"More information is required to verify your identity." : "Ke spolehlivému ověření identity potřebujeme více informací (dosažené skóre :score/:required).",
 	
 	"Identifier" : "Identifikátor",
 	"First name" : "Křestní jméno",
 	"Last name" : "Příjmení",
 	"Address" : "Adresa",	
+	"Administrative number" : "Rodné číslo",
 	
 	"given_name" : "Křestní jméno",
 	"family_name" : "Příjmení",
@@ -157,6 +158,13 @@
 	"address.city_part" : "Lokalita",
 	"address.country" : "Země",
 	"address.postal_code" : "PSČ",
+	"loa" : "Úroveň ověření totožnosti",
+
+	"None": "Nulová",	
+	"http://cas.cuni.cz/LoA/none" : "Velmi nízká",
+	"http://cas.cuni.cz/LoA/low" : "Nízká",
+	"http://cas.cuni.cz/LoA/substantial" : "Dostatečná",
+	"http://cas.cuni.cz/LoA/high" : "Vysoká",
 	
 	"__END_" : "__KONEC__"
 }

@@ -66,7 +66,7 @@ class AuthenticationManager implements UserExtManagerInterface
     {
         $client = $user->getRemoteClient();
         if(empty($client)) {
-            return ["bubu" => "baf"];
+            return [];
         }
         $identityResource = App::makeWith('ext.idp.' . $client, [ 'resource' => $user ]);
         return $identityResource->toArray(null);

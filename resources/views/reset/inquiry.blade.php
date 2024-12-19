@@ -74,26 +74,35 @@
 			<div class="mb-3">
 				<label for="given_name" class="form-label form-text">{{ __('Personal data') }}</label>
 				<div class="row g-3">
+				@if (empty($identity['given_name']))
 				<div class="col-sm-12">
-					@if (empty($identity['given_name']))
-					<x-input type="text" name="given_name" :value="old('given_name')" :errors="$errors" text="First name" required="true" />
-            		@endif
+					<x-input type="text" name="given_name" :value="old('given_name')" :errors="$errors" 
+						text="First name" required="true" />
             	</div>
+        		@endif
+	            @if (empty($identity['family_name']))
 				<div class="col-sm-12">
-		            @if (empty($identity['family_name']))
-					<x-input type="text" name="family_name" :value="old('family_name')" :errors="$errors" text="Last name" required="true" />
-		            @endif
+					<x-input type="text" name="family_name" :value="old('family_name')" :errors="$errors" 
+						text="Last name" required="true" />
 				</div>
+	            @endif
+	            @if (empty($identity['birthdate']))
 				<div class="col-sm-6">
-		            @if (empty($identity['birthdate']))
-					<x-input type="date" name="birthdate" :value="old('birthdate')" :errors="$errors" text="Date of birth" required="true" />
-            		@endif
+					<x-input type="date" name="birthdate" :value="old('birthdate')" :errors="$errors" 
+						text="Date of birth" required="true" />
 	            </div>
-				<div class="col-sm-6">
-				@guest
-					<x-captcha />
-				@endguest
+        		@endif
+	            @if (empty($identity['administrative_number']))
+				<div class="col-sm-6 mb-4">
+					<x-input type="text" name="administrative_number" :value="old('administrative_number')" :errors="$errors" 
+						maxlen="10" pattern="\d{6}\w{3,4}" helper="YYMMDDXXX(X)" text="Administrative number"/>
 				</div>
+        		@endif
+				@guest
+				<div class="col-sm-6">
+					<x-captcha />
+				</div>
+				@endguest
 				</div>	
 		</div>
 @if (0)
@@ -133,7 +142,7 @@
 						url="{{ route('challenge.phone') }}" />
 				</div>
 				<div class="col-5">
-					<x-input type="text" name="email" :value="old('email')" :errors="$errors" text="E-mail" />
+					<x-input type="email" name="email" :value="old('email')" :errors="$errors" text="E-mail" />
 				</div>
 				<div class="col-7">
 					<x-challenge id="email_challenge" for="email" name="email_challenge" text="Verify email address" 
@@ -154,13 +163,13 @@
 					<x-input type="text" name="street_number" :value="old('street_number')" :errors="$errors" text="Street number" />
 				</div>
 				<div class="col-sm-3">
-					<x-input type="text" name="evidence_number" :value="old('evidence_number')" :errors="$errors" text="Ev. number" />
+					<x-input type="number" name="evidence_number" :value="old('evidence_number')" :errors="$errors" text="Ev. number" />
 				</div>
 				<div class="col-sm-8">
 					<x-input type="text" name="city" :value="old('city')" :errors="$errors" text="City" />
 				</div>
 				<div class="col-sm-4">
-					<x-input type="text" name="postal_code" :value="old('postal_code')" :errors="$errors" text="Postal code" />
+					<x-input type="number" name="postal_code" :value="old('postal_code')" :errors="$errors" text="Postal code" />
 				</div>
 				<div class="col-sm-12">
 					<div class="form-outline">

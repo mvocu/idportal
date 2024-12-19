@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Interfaces\ResetManager;
 use App\Models\User;
 use App\Interfaces\IdentityManager;
+use App\Interfaces\IdentityResource;
 use App\Interfaces\UserManager;
 use App\Interfaces\ChallengeManager;
 use App\Interfaces\ChallengeStore;
@@ -45,6 +46,7 @@ class ResetController extends Controller
     const TARGET_USER_KEY = "reset_target";
     const REMOTE_IDENTITY_KEY = "reset_ext_id";
     const METHOD_KEY = "reset_method";
+    const VERIFICATION_KEY = "reset_verification";
     
     protected $u_mgr;
     protected $auth_mgr;
@@ -142,6 +144,7 @@ class ResetController extends Controller
         $identity = $this->_retrieveRemoteIdentity($request);
         if(empty($identity) && Auth::check()) {
             $identity = $this->auth_mgr->getIdentity($user);
+            $this->_rememberRemoteIdentity($request, $identity);
         }
         #echo "<br><br><br><br>";
         #echo "<pre>", print_r($user, true), "</pre>";
@@ -192,7 +195,7 @@ class ResetController extends Controller
         if($this->_mergeInputToIdentity($identity, $data)) {
             $this->_rememberRemoteIdentity($request, $identity);
         }
-        #echo "<pre>", var_dump($identity), "</pre>";
+        #echo "<pre>", var_dump($identity), "</pre>"; exit;
         return redirect()->route('reset.idcheck');
     }
     
@@ -204,13 +207,20 @@ class ResetController extends Controller
         $identity = $this->_retrieveRemoteIdentity($request);
         if(empty($identity) && Auth::check()) {
             $identity = $this->auth_mgr->getIdentity(Auth::user());
+            $this->_rememberRemoteIdentity($request, $identity);
         }
         if(empty($identity)) {
             $method = $this->_retrieveMethod($request);
             if($method == 'mail-challenge') {
-                return redirect()->route('reset.inquiry')->withInput($request->only(['given_name', 'family_name', 'birthdate']));
+                return redirect()->route('reset.inquiry')->withInput(
+                    $request->only(['given_name', 'family_name', 'birthdate', 'administrative_number']));
             }
             return redirect()->route('reset.methods')->withErrors(['failure' => __('No identity established yet.')]);
+        }
+        if(empty($identity[IdentityResource::LOA])) {
+            return redirect()->route('reset.inquiry')->withInput()
+                ->withErrors(['failure' => 
+                    __('The identity presented has no verifiable information. Please add at least one verified contact.')]);            
         }
         if(empty($model)) {
             return redirect()->route('reset.find')
@@ -229,9 +239,11 @@ class ResetController extends Controller
         #echo "<pre>", print_r($same, true), "</pre>";
         switch($same) {
             case IdentityManager::IDENTITY_RESULT_SAME:
+                $this->_saveVerificationResult($request, true);
                 return redirect()->route('reset.password')->with(['status' => __('Your identity has been verified.')]);
                 
             case IdentityManager::IDENTITY_RESULT_DIFFERENT:
+                $this->_saveVerificationResult($request, false);
                 return redirect()->route('reset.failed')
                     ->withErrors(['failure' => __('The identity presented does not match target account.', 
                         [ 
@@ -284,6 +296,7 @@ class ResetController extends Controller
     }
 
     public function showPasswordForm(Request $request) {
+        # TODO: check identity and verification result
         return view('reset.passwordform');
     }
     
@@ -365,6 +378,7 @@ class ResetController extends Controller
     
     protected function _forgetTargetUser(Request $request) {
         $request->session()->forget(self::TARGET_USER_KEY);
+        $this->_forgetVerificationResult($request);
     }
     
     protected function _rememberRemoteIdentity(Request $request, $identity) {
@@ -377,6 +391,7 @@ class ResetController extends Controller
     
     protected function _forgetRemoteIdentity(Request $request) {
         $request->session()->forget(self::REMOTE_IDENTITY_KEY);
+        $this->_forgetVerificationResult($request);
     }
 
     protected function _saveMethod(Request $request, $method) {
@@ -389,20 +404,43 @@ class ResetController extends Controller
     
     protected function _forgetMethod(Request $request) {
         $request->session()->forget(self::METHOD_KEY);
+        $this->_forgetVerificationResult($request);
+    }
+    
+    protected function _saveVerificationResult(Request $request, $result) {
+        $request->session()->put(self::VERIFICATION_KEY, $result);
+    }
+    
+    protected function _retrieveVerificationResult(Request $request) {
+        return $request->session()->get(self::VERIFICATION_KEY);
+    }
+    
+    protected function _forgetVerificationResult(Request $request) {
+        $request->session()->forget(self::VERIFICATION_KEY);
     }
     
     # possibly move this to IdentityManager and ad more intelligence
     protected function _mergeInputToIdentity(&$identity, $data) {
         $changed = false;
         
-        foreach(['given_name', 'family_name', 'birthdate'] as $key) {
+        # XXX: use attr names from IdentityResource, as we are dealing with resources here
+        foreach(['given_name', 'family_name', 'birthdate', 'administrative_number'] as $key) {
             if(!isset($identity[$key]) && isset($data[$key])) {
                 $changed = true;
                 $identity[$key] = $data[$key];
             }
         }
+        if($changed) {
+            // changing personal data reset LoA
+            if(empty($data['loa'])) {
+                unset($identity['loa']);
+            } else {
+                $identity['loa'] = $data['loa'];
+            }
+        }
+        $added = false;
         foreach(['email', 'phone_number'] as $key) {
-            if(isset($data[$key])) {
+            if(!empty($data[$key])) {
                 if(!isset($identity[$key])) {
                     $identity[$key] = [] ;
                 } else if(!is_array($identity[$key])) {
@@ -410,9 +448,14 @@ class ResetController extends Controller
                 }
                 if(!in_array($data[$key], $identity[$key])) {
                     $changed = true;
+                    $added = true;
                     $identity[$key][] = $data[$key];
                 }
             }
+        }
+        if($added && empty($identity['loa'])) {
+            // adding verified contacts may increase LoA
+            $identity['loa'] = $data['loa'];
         }
         if(isset($data['address'])) {
             foreach($data['address'] as $key => $value) {

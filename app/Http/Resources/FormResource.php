@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 use App\Interfaces\IdentityResource;
 use App\Traits\MapsToIdentity;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Interfaces\IdentityManager;
 
 class FormResource extends JsonResource implements IdentityResource
 {
@@ -13,6 +14,7 @@ class FormResource extends JsonResource implements IdentityResource
         'given_name' => IdentityResource::ATTR_GIVEN_NAME, 
         'family_name' => IdentityResource::ATTR_FAMILY_NAME, 
         'birthdate' => IdentityResource::ATTR_BIRTHDATE, 
+        'administrative_number' => IdentityResource::ATTR_ADMINISTRATIVE_NUMBER,
         'phone_number' => IdentityResource::ATTR_PHONE_NUMBER, 
         'email' => IdentityResource::ATTR_EMAIL,
         'address' => IdentityResource::ATTR_ADDRESS,
@@ -53,6 +55,14 @@ class FormResource extends JsonResource implements IdentityResource
             return "+420$number";
         }
         return "+$number";
+    }
+    
+    public function computeLoa($data) {
+        #echo "<pre>", var_dump($data), "</pre>";
+        if(empty($data[IdentityResource::ATTR_EMAIL]) && empty($data[IdentityResource::ATTR_PHONE_NUMBER])) {
+            return null;
+        }
+        return IdentityManager::LOA_NONE;
     }
     
 }

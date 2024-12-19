@@ -161,6 +161,7 @@ class IdentityManager implements IdentityManagerInterface
                 }
                 $validator = Validator::make($data, self::ATTR_RULES[$attr]);
                 if($validator->passes()) {
+                    # XXX: base score on loa of input data?
                     $score += self::ATTR_SCORES[$attr];
                 } else {
                     if(self::ATTR_MATCH_REQUIRED[$attr]) {

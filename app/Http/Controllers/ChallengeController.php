@@ -21,6 +21,7 @@ class ChallengeController extends Controller
     public function __construct(ChallengeStore $store, ChallengeManager $mgr) {
         $this->store = $store;
         $this->mgr = $mgr;
+        $this->middleware('throttle:6,1');
     }
 
     public function createPhoneChallenge(Request $request) {
