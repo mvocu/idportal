@@ -152,7 +152,7 @@
 					</div>
 					</div>	
 					<div class="col-6 text-center">
-						<img src="{{ asset('images/isic_help_cs.png') }}" alt="ISIC card help" />
+						<img src="{{ asset('images/isic_help_'.app()->getLocale().'.png') }}" alt="ISIC card help" />
 					</div>
 				</div>
 			</div>
