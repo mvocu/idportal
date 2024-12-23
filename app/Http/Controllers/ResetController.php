@@ -74,7 +74,6 @@ class ResetController extends Controller
     }
     
     public function showSearch(Request $request) {
-        echo "<pre>", print_r(Session::get('switch_locale_key'), true), "</pre>";
         if(Auth::check() && Auth::user() instanceof User && Auth::user()->hasLdapUser()) {
             return redirect()->route('password.home');
         }
@@ -84,7 +83,7 @@ class ResetController extends Controller
     public function findUser(Request $request) {
         $data = $this->validate($request, self::FIND_VALIDATION_RULES);
         $results = $this->_findUser($data);
-        echo "<br><br><br><br>";
+        #echo "<br><br><br><br>";
         #echo "<pre>", $query->getUnescapedQuery(), "</pre>"; exit;
         #echo "<pre>", print_r(session(), true), "</pre>";
         switch($results->count()) {
@@ -151,8 +150,7 @@ class ResetController extends Controller
             $identity = $this->auth_mgr->getIdentity($user);
             $this->_rememberRemoteIdentity($request, $identity);
         }
-        echo "<br><br><br><br>";
-        echo "<pre>", print_r(session(), true), "</pre>";
+        #echo "<br><br><br><br>";
         #echo "<pre>", print_r($user, true), "</pre>";
         #echo "<pre>", print_r($identity, true), "</pre>";
         return view('reset.inquiry', ['user' => $user, 'identity' => $identity,
