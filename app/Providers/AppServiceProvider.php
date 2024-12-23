@@ -92,6 +92,17 @@ class AppServiceProvider extends ServiceProvider
             $other = Arr::get($validator->getData(), $parameters[0]);
             return $value == $other;
         });
+        Validator::extend('sameCardNumber', function ($attribute, $value, $parameters, $validator) {
+            $value = strstr($value, "@", true) ?: $value;
+            $other = Arr::get($validator->getData(), $parameters[0]);
+            if(is_array($other)) {
+                return in_array($value, array_map(function ($it) { return strstr($it, "@", true) ?: $it; }, $other));
+            } else {
+                $other = strstr($other, "@", true);
+                return $value == $other;
+            }
+            return false;
+        });
         Validator::extend('phone', function ($attribute, $value, $parameters, $validator) {
             $value = preg_replace("/\s+/", "", $value);
             return preg_match("/^[+]?\d{9,12}$/", $value);

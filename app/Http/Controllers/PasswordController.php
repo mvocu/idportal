@@ -8,7 +8,7 @@ class PasswordController extends Controller
 {
 
     public function __construct() {
-        #$this->middleware(['auth', 'model']);
+        $this->middleware(['auth', 'model']);
     }
     
     public function showPasswordForm(Request $request) {

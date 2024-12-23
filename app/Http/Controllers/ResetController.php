@@ -69,7 +69,7 @@ class ResetController extends Controller
         $this->id_mgr = $id_mgr;
         $this->ch_mgr = $ch_mgr;
         $this->ch_store = $ch_store;
-        $this->middleware(['model'])->only(['showSearch']);
+        $this->middleware(['model'])->only(['showSearch', 'verifyUser']);
     }
     
     public function showSearch(Request $request) {
@@ -141,6 +141,8 @@ class ResetController extends Controller
      */
     public function showInquiry(Request $request) {
         $user = Auth::user();
+        $model = $this->_retrieveTargetUser($request);
+        $user_r = empty($model) ? [] : $this->u_mgr->getIdentity($model);
         $identity = $this->_retrieveRemoteIdentity($request);
         if(empty($identity) && Auth::check()) {
             $identity = $this->auth_mgr->getIdentity($user);
@@ -149,7 +151,9 @@ class ResetController extends Controller
         #echo "<br><br><br><br>";
         #echo "<pre>", print_r($user, true), "</pre>";
         #echo "<pre>", print_r($identity, true), "</pre>";
-        return view('reset.inquiry', ['user' => $user, 'identity' => $identity, 'score' => $this->id_mgr->getLastScore()]);
+        return view('reset.inquiry', ['user' => $user, 'identity' => $identity,
+            'target' => $user_r,
+            'score' => $this->id_mgr->getLastScore()]);
     }
     
     public function mergeData(Request $request) {
@@ -157,6 +161,7 @@ class ResetController extends Controller
         $data = $form->toArray($request);
         #$data = $request->only(['given_name', 'family_name', 'birthdate', 'phone_number', 'email']);
         #$address = $request->only(['street', 'street_number', 'evidence_number', 'city', 'postal_code', 'country']);
+        #echo "<pre>", print_r($data, true), "</pre>";
         $validator = Validator::make($data, self::PERSON_VALIDATION_RULES);
         if(!$validator->passes()) {
             return redirect()->back()->withInput()->withErrors($validator->errors());
@@ -314,6 +319,11 @@ class ResetController extends Controller
             }
         }
         $user = Auth::user();
+        // if we have got user with ldap model, it means the external identity is registered 
+        // and we may proceed directly to password
+        if($user instanceof User && $user->hasLdapUser()) {
+            return redirect()->route('password.home');
+        }
         $identity = $this->auth_mgr->getIdentity($user);
         $this->_rememberRemoteIdentity($request, $identity);
         #echo "<br><br><br><br>";
@@ -424,7 +434,7 @@ class ResetController extends Controller
         $changed = false;
         
         # XXX: use attr names from IdentityResource, as we are dealing with resources here
-        foreach(['given_name', 'family_name', 'birthdate', 'administrative_number'] as $key) {
+        foreach(['given_name', 'family_name', 'birthdate'] as $key) {
             if(!isset($identity[$key]) && isset($data[$key])) {
                 $changed = true;
                 $identity[$key] = $data[$key];
@@ -454,7 +464,7 @@ class ResetController extends Controller
             }
         }
         if($added && empty($identity['loa'])) {
-            // adding verified contacts may increase LoA
+            // adding verified contacts may set some LoA
             $identity['loa'] = $data['loa'];
         }
         if(isset($data['address'])) {
@@ -463,6 +473,12 @@ class ResetController extends Controller
                     $changed = true;
                     $identity['address'][$key] = $value;
                 }
+            }
+        }
+        foreach(['administrative_number', 'cuni_personalid', 'cuni_card_id'] as $key) {
+            if(!isset($identity[$key]) && isset($data[$key])) {
+                $changed = true;
+                $identity[$key] = $data[$key];
             }
         }
         return $changed;

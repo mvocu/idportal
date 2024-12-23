@@ -9,7 +9,7 @@ class LdapResource extends CasResource implements IdentityResource
     use MapsToIdentity;
 
     protected $_attributeMap = [
-        #'cunipersonalid' => IdentityResource::CUNIPERSONALID,
+        'cunipersonalid' => IdentityResource::CUNIPERSONALID,
         'givenname' => IdentityResource::ATTR_GIVEN_NAME,
         'sn' => IdentityResource::ATTR_FAMILY_NAME,
         'cunibirthdate' => IdentityResource::ATTR_BIRTHDATE,
@@ -18,6 +18,7 @@ class LdapResource extends CasResource implements IdentityResource
         'st' => IdentityResource::ATTR_NATIONALITY,
         'pager' => IdentityResource::ATTR_PHONE_NUMBER,
         'mail' => IdentityResource::ATTR_EMAIL,
+        'cuniidcardnumber' => IdentityResource::CARD_NUMBER,
         // TODO: add emails and phones
     ];
     

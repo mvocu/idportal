@@ -92,7 +92,7 @@
 						text="Date of birth" required="true" />
 	            </div>
         		@endif
-	            @if (empty($identity['administrative_number']))
+	            @if (false && empty($identity['administrative_number']))
 				<div class="col-sm-6 mb-4">
 					<x-input type="text" name="administrative_number" :value="old('administrative_number')" :errors="$errors" 
 						maxlen="10" pattern="\d{6}\w{3,4}" helper="YYMMDDXXX(X)" text="Administrative number"/>
@@ -131,6 +131,33 @@
             </div>
 @endif
             
+			@if (empty($identity['cuni_card_id']) || empty($identity['cuni_personalid']))
+			<div class="mb-3">
+				<label class="form-label form-text">{{ __('ID card info') }}</label>
+				<div class="row g-3">
+					<div class="col-6">
+					<div class="row g-3">
+					@if (empty($identity['cuni_personalid']))
+					<div class="col-12">
+						<x-input type="string" name="cunipersonalid" :value="old('cunipersonalid')" :errors="$errors"
+							text="Personal number" helper="" />
+					</div>
+					@endif
+					@if (empty($identity['cuni_card_id']) && !empty($target['cuni_card_id']))
+					<div class="col-12">
+						<x-input type="string" name="cuniidcardnumber" :value="old('cuniidcardnumber')" :errors="$errors"
+							text="Student/staff card number" helper="" />
+					</div>
+					@endif
+					</div>
+					</div>	
+					<div class="col-6 text-center">
+						<img src="{{ asset('images/isic_help_cs.png') }}" alt="ISIC card help" />
+					</div>
+				</div>
+			</div>
+			@endif
+			
 			<div class="mb-3">
 				<label for="phone_number" class="form-label form-text">{{ __('Add contacts') }}</label>
 				<div class="row g-3">

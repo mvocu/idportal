@@ -26,4 +26,10 @@ class SvipeIdResource extends CasResource implements IdentityResource
         'com.svipe:document_administrative_number' => IdentityResource::ATTR_ADMINISTRATIVE_NUMBER,
     ];
     
+    public function transformGender($value) {
+        if(strlen($value) > 1) {
+            return $value[0];
+        }
+        return $value;
+    }
 }

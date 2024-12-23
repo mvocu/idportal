@@ -45,6 +45,13 @@ class IdentityManager implements IdentityManagerInterface
         'candidate.'.IdentityResource::ATTR_NATIONALITY => 'required|string|size:2|same:user.'.IdentityResource::ATTR_NATIONALITY,  
     ];
     
+    const IDCARD_RULES = [
+        'candidate.'.IdentityResource::CARD_NUMBER => 'required|string|same_card_number:user.'.IdentityResource::CARD_NUMBER,        
+    ];
+    
+    const CUNIPERSONALID_RULES = [
+        'candidate.'.IdentityResource::CUNIPERSONALID => 'required|string|same:user.'.IdentityResource::CUNIPERSONALID,
+    ];
     
     // scores required by the same identity comparison for given purpose
     const REQUIRED_SCORES = [
@@ -56,8 +63,12 @@ class IdentityManager implements IdentityManagerInterface
     const ATTR_SCORES = [
         IdentityResource::ATTR_EMAIL => 25,
         IdentityResource::ATTR_PHONE_NUMBER => 50,
+        // administrative_number is taken only from trusted sources
         IdentityResource::ATTR_ADMINISTRATIVE_NUMBER => 75,
         IdentityResource::ATTR_ADDRESS => 25,
+        // these are taken only from the user input, untrusted
+        IdentityResource::CARD_NUMBER => 25,
+        IdentityResource::CUNIPERSONALID => 25,
         // IdentityResource::ATTR_GENDER => 0,
         // IdentityResource::ATTR_NATIONALITY => 5,
     ];
@@ -66,6 +77,8 @@ class IdentityManager implements IdentityManagerInterface
         IdentityResource::ATTR_EMAIL => self::MAIL_RULES,
         IdentityResource::ATTR_PHONE_NUMBER => self::PHONE_RULES,
         IdentityResource::ATTR_ADMINISTRATIVE_NUMBER => self::ADMIN_NUMBER_RULES,
+        IdentityResource::CARD_NUMBER => self::IDCARD_RULES,
+        IdentityResource::CUNIPERSONALID => self::CUNIPERSONALID_RULES,
         // IdentityResource::ATTR_GENDER => self::GENDER_RULES,
         // IdentityResource::ATTR_NATIONALITY => self::NATIONALITY_RULES,
     ];
@@ -75,6 +88,8 @@ class IdentityManager implements IdentityManagerInterface
         IdentityResource::ATTR_PHONE_NUMBER => 0,
         IdentityResource::ATTR_ADMINISTRATIVE_NUMBER => 0,
         IdentityResource::ATTR_ADDRESS => 1,
+        IdentityResource::CARD_NUMBER => 1,
+        IdentityResource::CUNIPERSONALID => 1,
         // IdentityResource::ATTR_GENDER => 1,
         // IdentityResource::ATTR_NATIONALITY => 1,
     ];
@@ -96,7 +111,9 @@ class IdentityManager implements IdentityManagerInterface
             => 'required_without:'.IdentityResource::ATTR_ADDRESS.".".IdentityResource::ATTR_ADDRESS_EV_NUMBER,
         IdentityResource::ATTR_ADDRESS.".".IdentityResource::ATTR_ADDRESS_POSTAL_CODE,
         IdentityResource::ATTR_ADDRESS.".".IdentityResource::ATTR_ADDRESS_CITY,
-        IdentityResource::ATTR_ADDRESS.".".IdentityResource::ATTR_ADDRESS_COUNTRY
+        IdentityResource::ATTR_ADDRESS.".".IdentityResource::ATTR_ADDRESS_COUNTRY,
+        IdentityResource::CARD_NUMBER => 'required',
+        IdentityResource::CUNIPERSONALID => 'required',
     ]; 
     
     /**
@@ -124,11 +141,19 @@ class IdentityManager implements IdentityManagerInterface
     public function compareIdentity($user, $candidate, $purpose)
     {
         $this->last_errors = null;
-        if(isset($user[IdentityResource::CUNIPERSONALID]) && isset($candidate[IdentityResource::CUNIPERSONALID])) {
-            // both records have known identity
-	    return ($user[IdentityResource::CUNIPERSONALID] == $candidate[IdentityResource::CUNIPERSONALID]) 
-		? self::IDENTITY_RESULT_SAME : self::IDENTITY_RESULT_DIFFERENT;
-        }
+        #
+        # Scratch this. CAS users with registered external identities, which were supposed to be handled by this crap,
+        # are better off managed much earlier, immediately after authentication. They should not touch this codepath.
+        #
+        #if(isset($user[IdentityResource::CUNIPERSONALID]) 
+        #    && isset($candidate[IdentityResource::CUNIPERSONALID])
+        #    && !empty($candidate['loa'])
+        #    # XXX: make sure that cunipersonalid comes from authentication and not from form!
+        #    && true) {
+        #    // both records have known identity
+	    #   return ($user[IdentityResource::CUNIPERSONALID] == $candidate[IdentityResource::CUNIPERSONALID]) 
+		#      ? self::IDENTITY_RESULT_SAME : self::IDENTITY_RESULT_DIFFERENT;
+        #}
         // check base identity data are present
         $validator = Validator::make($candidate, self::BASE_IDENTITY_RULES);
         if($validator->fails()) {

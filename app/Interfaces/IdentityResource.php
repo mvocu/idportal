@@ -35,7 +35,9 @@ interface IdentityResource
     
     /* CAS cuni claims */
     const LOA = "loa";
-    const CUNIPERSONALID = "cunipersonalid";
+    const CUNIPERSONALID = "cuni_personalid";
+    const CARD_NUMBER = "cuni_card_id";
+    const CARD_CHIP = "cuni_card_chip";
     
     const IDENTITY_ATTR_KEYS = [
         self::LOA,
@@ -54,7 +56,8 @@ interface IdentityResource
         self::ATTR_ADDRESS.".".self::ATTR_ADDRESS_POSTAL_CODE,
         self::ATTR_ADDRESS.".".self::ATTR_ADDRESS_CITY_PART,
         self::ATTR_ADDRESS.".".self::ATTR_ADDRESS_CITY,
-        self::ATTR_ADDRESS.".".self::ATTR_ADDRESS_COUNTRY
+        self::ATTR_ADDRESS.".".self::ATTR_ADDRESS_COUNTRY,
+        self::CARD_NUMBER,
     ];
     
 }

@@ -13,11 +13,14 @@ class FormResource extends JsonResource implements IdentityResource
     const FORM_ATTRIBUTES = [
         'given_name' => IdentityResource::ATTR_GIVEN_NAME, 
         'family_name' => IdentityResource::ATTR_FAMILY_NAME, 
-        'birthdate' => IdentityResource::ATTR_BIRTHDATE, 
-        'administrative_number' => IdentityResource::ATTR_ADMINISTRATIVE_NUMBER,
+        'birthdate' => IdentityResource::ATTR_BIRTHDATE,
+        # Do not use administrative number (privacy concerns)
+        #'administrative_number' => IdentityResource::ATTR_ADMINISTRATIVE_NUMBER,
         'phone_number' => IdentityResource::ATTR_PHONE_NUMBER, 
         'email' => IdentityResource::ATTR_EMAIL,
         'address' => IdentityResource::ATTR_ADDRESS,
+        'cuniidcardnumber' => IdentityResource::CARD_NUMBER,
+        'cunipersonalid' => IdentityResource::CUNIPERSONALID,
     ]; 
     
     const FORM_ADDRESS_ATTRIBUTES = [
@@ -59,6 +62,14 @@ class FormResource extends JsonResource implements IdentityResource
     
     public function computeLoa($data) {
         #echo "<pre>", var_dump($data), "</pre>";
+        // if the form contains other data then email and phone number, unset LoA
+        #$other = array_diff_key($data, [
+        #    IdentityResource::ATTR_EMAIL => 1, 
+        #    IdentityResource::ATTR_PHONE_NUMBER => 1,
+        #]);
+        #if(!empty($other)) {
+        #    return null;
+        #}
         if(empty($data[IdentityResource::ATTR_EMAIL]) && empty($data[IdentityResource::ATTR_PHONE_NUMBER])) {
             return null;
         }

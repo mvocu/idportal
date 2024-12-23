@@ -24,6 +24,7 @@ trait MapsToIdentity
     public function toArray($request)
     {
         $data = [];
+        # XXX: does this work for User?
         if($this->resource instanceof OidcUser) {
             $attrs = $this->resource->getAttributes();
             $data[IdentityResource::ATTR_EXTERNAL_ID] = $this->resource->getAuthIdentifier();
