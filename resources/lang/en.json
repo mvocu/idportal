@@ -23,6 +23,15 @@
 	"svipeid": "Electronical document verification",
 	"svipeid-desc": "Verify your biometric identity document (passport, ID card) with mobile phone app.",
 
+	"sms-challenge" : "Verification by SMS",
+	"sms-challenge-desc" : "We will use the phone number stored in your account to send verification code by SMS.",
+
+	"mail-challenge" : "Verification by personal form",
+	"mail-challenge-desc" : "We will ask you to fill in some personal data and confirm via e-mail message.",
+	
+	"sms-authorization-code" : "Váš autorizační kód: :token",
+	"email-authorization-code" : "Váš autorizační kód: :token",
+	
 	"given_name" : "Given name",
 	"family_name" : "Family name",
 	"middle_name" : "Middle name",

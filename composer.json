@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
+        "alkhatibdev/language-switcher": "^0.0.2",
         "chillerlan/php-qrcode": "^5.0",
         "directorytree/ldaprecord-laravel": "^2.7",
         "fruitcake/laravel-cors": "^2.0",

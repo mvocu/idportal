@@ -47,6 +47,16 @@
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
+						<!--  Language switch -->
+						<li class="nav-item">
+							@if (app()->getLocale() === 'cs')
+								<a class="nav-link btn btn-floating d-flex align-items-center" href="?lang=en">
+									<img src="{{ asset('images/en.jpg') }}" class="img-fluid" alt="English" aria-label="Switch to English"/></a>
+							@else
+								<a class="nav-link btn btn-floating d-flex align-items-center" href="?lang=cs">
+									<img src="{{ asset('images/cs.jpg') }}" class="img-fluid" alt="Czech" aria-label="Switch to Czech"/></a>
+							@endif
+						</li>
                         <!-- Authentication Links -->
                         @guest
                             @if (Route::has('login'))
