@@ -68,7 +68,7 @@ class IdentityManager implements IdentityManagerInterface
         IdentityResource::ATTR_ADDRESS => 25,
         // these are taken only from the user input, untrusted
         IdentityResource::CARD_NUMBER => 25,
-        IdentityResource::CUNIPERSONALID => 25,
+        IdentityResource::CUNIPERSONALID => 0,
         // IdentityResource::ATTR_GENDER => 0,
         // IdentityResource::ATTR_NATIONALITY => 5,
     ];
@@ -174,8 +174,10 @@ class IdentityManager implements IdentityManagerInterface
             && in_array($candidate[IdentityResource::LOA], [ self::LOA_SUBSTANTIAL, self::LOA_HIGH ])) 
         {
             $score = 50;
+            $trusted = 1;
         } else {
             $score = 0;
+            $trusted = 0; 
         }
         
         // go through attributes, perform match and calculate score
@@ -186,8 +188,7 @@ class IdentityManager implements IdentityManagerInterface
                 }
                 $validator = Validator::make($data, self::ATTR_RULES[$attr]);
                 if($validator->passes()) {
-                    # XXX: base score on loa of input data?
-                    $score += self::ATTR_SCORES[$attr];
+                    $score += is_array(self::ATTR_SCORES[$attr]) ? self::ATTR_SCORES[$attr][$trusted] : self::ATTR_SCORES[$attr];
                 } else {
                     if(self::ATTR_MATCH_REQUIRED[$attr]) {
                         $this->last_errors = new MessageBag([ $attr => "$attr failed to match."]);

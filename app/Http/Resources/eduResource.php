@@ -24,6 +24,8 @@ class eduResource extends CasResource implements IdentityResource
     ];
     
     public function computeLoa($data) {
-        return parent::computeLoa($data);
+        $loa = parent::computeLoa($data);
+        // 
+        return $loa;
     }
 }

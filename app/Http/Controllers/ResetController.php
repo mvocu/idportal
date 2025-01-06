@@ -442,14 +442,14 @@ class ResetController extends Controller
                 $identity[$key] = $data[$key];
             }
         }
-        if($changed) {
-            // changing personal data reset LoA
-            if(empty($data['loa'])) {
-                unset($identity['loa']);
-            } else {
-                $identity['loa'] = $data['loa'];
-            }
-        }
+        #if($changed) {
+        #    // changing personal data resets LoA
+        #    if(empty($data['loa'])) {
+        #        unset($identity['loa']);
+        #    } else {
+        #        $identity['loa'] = $data['loa'];
+        #    }
+        #}
         $added = false;
         foreach(['email', 'phone_number'] as $key) {
             if(!empty($data[$key])) {

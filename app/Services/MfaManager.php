@@ -56,7 +56,7 @@ class MfaManager implements MfaManagerInterface
 	        return null;
 	    }
 	    $gauth = $records->first();
-	    
+	    return $gauth;
 	}
 	
     /**

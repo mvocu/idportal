@@ -200,10 +200,16 @@
 				</div>
 				<div class="col-sm-12">
 					<div class="form-outline">
-						<x-select id="country" name="country" text="Select country" :value="old('address.country')" options="[
-							{ value: 'cs', label: 'Czech Republic' },
-							{ value: 'gb', label: 'United Kingdom' },
-							]" />
+						@php
+						  $countries = Symfony\Component\Intl\Countries::getNames(app()->getLocale());
+						  $countrylist = "[ ";
+						  foreach ($countries as $key => $name) {
+						  	$countrylist .= "{ value: '$key', label: '$name' }, ";
+						  }
+						  $countrylist .= " ]";
+						@endphp
+						<x-select id="country" name="country" text="Select country" :value="old('address.country')" 
+							:options="$countrylist" />
             		</div>
 				</div>
 				</div>
