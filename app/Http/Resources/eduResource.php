@@ -28,4 +28,7 @@ class eduResource extends CasResource implements IdentityResource
         // 
         return $loa;
     }
+    
+    # XXX: keep only e-mail addresses from the scope of IdP
+    
 }

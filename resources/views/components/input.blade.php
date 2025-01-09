@@ -1,7 +1,7 @@
 @props([ 'type', 'name', 'value' => null, 'errors', 'text', 
 	'required' => false, 'maxlen' => null, 'pattern' => null, 'helper' => null ])
 
-<div class="form-outline data-mdb-input-init">
+<div class="form-outline data-mdb-input-init {{ $required ? 'border-start border-3 rounded-3 border-primary' : '' }}">
 	<input id="{{ $name }}" 
 		type="{{ $type }}" 
 		class="form-control{{ $errors->has($name) ? ' is-invalid' : '' }}" 

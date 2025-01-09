@@ -7,7 +7,6 @@ use App\Models\Ldap\User as LdapUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use App\Interfaces\ResetManager;
 use App\Models\User;
@@ -43,11 +42,6 @@ class ResetController extends Controller
         'email' => 'sometimes|nullable|email',
         'phone_number' => 'sometimes|nullable|phone',
     ];
-    
-    const TARGET_USER_KEY = "reset_target";
-    const REMOTE_IDENTITY_KEY = "reset_ext_id";
-    const METHOD_KEY = "reset_method";
-    const VERIFICATION_KEY = "reset_verification";
     
     protected $u_mgr;
     protected $auth_mgr;
@@ -92,31 +86,27 @@ class ResetController extends Controller
                 
             case 1:
                 $user = $results->first();
-                $this->_rememberTargetUser($request, $user);
+                $this->reset_mgr->rememberTargetUser($user);
                 break;
                 
             default:
                 return redirect()->back()->withErrors(['failure' => __('There is more than one account corresponding to given data.') ]);
         }
         // if possible, fill-in missing data in remote identity
-        $identity = $this->_retrieveRemoteIdentity($request);
+        $identity = $this->reset_mgr->retrieveRemoteIdentity();
         if($this->_mergeInputToIdentity($identity, Arr::only($data, ['given_name', 'family_name', 'birthdate']))) {
-            $this->_rememberRemoteIdentity($request, $identity);
+            $this->reset_mgr->rememberRemoteIdentity($identity);
         }
         return redirect()->route('reset.idcheck');
     }
     
     public function showMethods(Request $request) {
-        $model = $this->_retrieveTargetUser($request);
-        #if(!$model) {
-        #    return redirect()->route('reset.home')->withErrors(['failure' => __('Target user account not specified.')]);
-        #}
-        $methods = $this->reset_mgr->getAvailableMethods($model);
+        $methods = $this->reset_mgr->getAvailableMethods();
         return view('reset.methods', ['methods' => $methods, 'user' => Auth::user()]);
     }
   
     public function verifyUser(Request $request, $method) {
-        $model = $this->_retrieveTargetUser($request);
+        $model = $this->reset_mgr->retrieveTargetUser();
         #if(!$model) {
         #    return redirect()->route('reset.home')->withErrors(['failure' => __('Target user account not specified.')]);
         #}
@@ -125,14 +115,14 @@ class ResetController extends Controller
             case 'svipeid':
             case 'eduid':
             case 'edugain':
-                $this->_saveMethod($request, $method);
+                $this->reset_mgr->saveMethod($method);
                 return $this->_verifyUserByRemoteClient($request, $method, $model);
                 
             case 'sms-challenge':
                 break;
                 
             case 'mail-challenge':
-                $this->_saveMethod($request, $method);
+                $this->reset_mgr->saveMethod($method);
                 return redirect()->route('reset.search');
         }
         return back()->withErrors(['failure' => __('Selected method is not supported.')]);
@@ -143,13 +133,9 @@ class ResetController extends Controller
      */
     public function showInquiry(Request $request) {
         $user = Auth::user();
-        $model = $this->_retrieveTargetUser($request);
+        $model = $this->reset_mgr->retrieveTargetUser();
         $user_r = empty($model) ? [] : $this->u_mgr->getIdentity($model);
-        $identity = $this->_retrieveRemoteIdentity($request);
-        if(empty($identity) && Auth::check()) {
-            $identity = $this->auth_mgr->getIdentity($user);
-            $this->_rememberRemoteIdentity($request, $identity);
-        }
+        $identity = $this->reset_mgr->retrieveRemoteIdentity();
         #echo "<br><br><br><br>";
         #echo "<pre>", print_r($user, true), "</pre>";
         #echo "<pre>", print_r($identity, true), "</pre>";
@@ -198,9 +184,9 @@ class ResetController extends Controller
             }
             #$data['address'] = $address;
         }
-        $identity = $this->_retrieveRemoteIdentity($request);
+        $identity = $this->reset_mgr->retrieveRemoteIdentity();
         if($this->_mergeInputToIdentity($identity, $data)) {
-            $this->_rememberRemoteIdentity($request, $identity);
+            $this->reset_mgr->rememberRemoteIdentity($identity);
         }
         #echo "<pre>", var_dump($identity), "</pre>"; exit;
         return redirect()->route('reset.idcheck');
@@ -210,14 +196,10 @@ class ResetController extends Controller
      * Final (and possibly repeated) stop before heading to password.
      */
     public function checkIdentity(Request $request) {
-        $model = $this->_retrieveTargetUser($request);
-        $identity = $this->_retrieveRemoteIdentity($request);
-        if(empty($identity) && Auth::check()) {
-            $identity = $this->auth_mgr->getIdentity(Auth::user());
-            $this->_rememberRemoteIdentity($request, $identity);
-        }
+        $model = $this->reset_mgr->retrieveTargetUser();
+        $identity = $this->reset_mgr->retrieveRemoteIdentity();
         if(empty($identity)) {
-            $method = $this->_retrieveMethod($request);
+            $method = $this->reset_mgr->retrieveMethod();
             if($method == 'mail-challenge') {
                 return redirect()->route('reset.inquiry')->withInput(
                     $request->only(['given_name', 'family_name', 'birthdate', 'administrative_number']));
@@ -227,7 +209,7 @@ class ResetController extends Controller
         if(empty($identity[IdentityResource::LOA])) {
             return redirect()->route('reset.inquiry')->withInput()
                 ->withErrors(['failure' => 
-                    __('The identity presented has no verifiable information. Please add at least one verified contact.')]);            
+                    __('The identity presented does not contain enough information for identification. Please review and provide additional data.')]);            
         }
         if(empty($model)) {
             return redirect()->route('reset.find')
@@ -235,9 +217,7 @@ class ResetController extends Controller
                 ->with(['warning' => __('You have to specify target account first.') ]);
         }
         $user_r = $this->u_mgr->getIdentity($model);
-        $purpose = $this->auth_mgr->hasAuthentication($model) 
-            ? IdentityManager::COMPARISON_PURPOSE_MERGE 
-            : IdentityManager::COMPARISON_PURPOSE_INITIAL;
+        $purpose = $this->reset_mgr->determineRequiredScore($model);
         $same = $this->id_mgr->compareIdentity($user_r, $identity, $purpose);
         #echo "<br><br><br><br>";
         #echo "<pre>", print_r($user_r, true), "</pre>";
@@ -246,11 +226,11 @@ class ResetController extends Controller
         #echo "<pre>", print_r($same, true), "</pre>";
         switch($same) {
             case IdentityManager::IDENTITY_RESULT_SAME:
-                $this->_saveVerificationResult($request, true);
+                $this->reset_mgr->saveVerificationResult(true);
                 return redirect()->route('reset.password')->with(['status' => __('Your identity has been verified.')]);
                 
             case IdentityManager::IDENTITY_RESULT_DIFFERENT:
-                $this->_saveVerificationResult($request, false);
+                $this->reset_mgr->saveVerificationResult(false);
                 return redirect()->route('reset.failed')
                     ->withErrors(['failure' => __('The identity presented does not match target account.', 
                         [ 
@@ -286,34 +266,50 @@ class ResetController extends Controller
         #echo "<pre>", print_r($model, true), "</pre>";
         #echo "<pre>", print_r(Auth::hasUser(), true), "</pre>";
         #echo "<pre>", print_r($request->has('cont'), true), "</pre>";
-        $model = $this->_retrieveTargetUser($request);
-        $identity = $this->_retrieveRemoteIdentity($request);
-        if(empty($identity) && Auth::check()) {
-            $identity = $this->auth_mgr->getIdentity(Auth::user());
-        }
-        $this->_forgetRemoteIdentity($request);
-        $this->_forgetTargetUser($request);
+        $model = $this->reset_mgr->retrieveTargetUser();
+        $identity = $this->reset_mgr->retrieveRemoteIdentity();
+        $this->reset_mgr->forgetRemoteIdentity();
+        $this->reset_mgr->forgetTargetUser();
         $request->session()->put('url.intended', route('reset.home'));
         return view('reset.failed', ['model' => $model, 'identity' => $identity ]);
     }
     
     public function cleanRemote(Request $request) {
-        $this->_forgetRemoteIdentity($request);
+        $this->reset_mgr->forgetRemoteIdentity();
         return redirect()->route('reset.inquiry')->with(['status' => __('Collected data have been cleaned.')]);
     }
 
     public function showPasswordForm(Request $request) {
         # TODO: check identity and verification result
+        $verified = $this->reset_mgr->retrieveVerificationResult();
+        $model = $this->reset_mgr->retrieveTargetUser();
+        $identity = $this->reset_mgr->retrieveRemoteIdentity();
+        if(!$verified || empty($model) || empty($identity)) {
+            return redirect()->back()->withErrors(['failure' => 'Your identity has not been verified.']);
+        }
+        # XXX: maybe make the above code part of the authorization check in ResetManagerPolicy
+        #$this->authorizeForUser($model, 'password-reset', [ 'identity' => $identity ]);
         return view('reset.passwordform');
     }
     
+    public function changePassword(Request $request) {
+        $verified = $this->reset_mgr->retrieveVerificationResult();
+        $model = $this->reset_mgr->retrieveTargetUser();
+        $identity = $this->reset_mgr->retrieveRemoteIdentity();
+        if(!$verified || empty($model) || empty($identity)) {
+            return redirect()->back()->withErrors(['failure' => 'Your identity has not been verified.']);
+        }
+        #$this->authorizeForUser($model, 'password-reset', [ 'identity' => $identity ]);
+        
+    }
     
     protected function _verifyUserByRemoteClient(Request $request, $client, $model) {
         # see UserExtController::loginRemote()
-        if(($request->session()->has(self::REMOTE_IDENTITY_KEY) || Auth::check()) 
+        $identity = $this->reset_mgr->retrieveRemoteIdentity();
+        if((!empty($identity) || Auth::check()) 
             && !$request->hasAny(['code', 'cont'])) {
             // we already have an identity which we need to replace with a new login
-            $this->_forgetRemoteIdentity($request);
+            $this->reset_mgr->forgetRemoteIdentity();
             Auth::logout(route('reset.verify', ['method' => $client, 'cont' => 'true'], true));
         } else {
             if(!Auth::attempt(['delegate' => $client])) {
@@ -327,7 +323,7 @@ class ResetController extends Controller
             return redirect()->route('password.home');
         }
         $identity = $this->auth_mgr->getIdentity($user);
-        $this->_rememberRemoteIdentity($request, $identity);
+        $this->reset_mgr->rememberRemoteIdentity($identity);
         #echo "<br><br><br><br>";
         #echo "<pre>", print_r($user, true), "</pre>";
         #echo "<pre>", print_r($identity, true), "</pre>"; 
@@ -356,7 +352,7 @@ class ResetController extends Controller
                 
             case 1:
                 $user = $results->first();
-                $this->_rememberTargetUser($request, $user);
+                $this->reset_mgr->rememberTargetUser($user);
                 break;
                 
             default:
@@ -376,61 +372,6 @@ class ResetController extends Controller
         return $results;
     }
     
-    protected function _rememberTargetUser(Request $request, LdapUser $user) {
-        $request->session()->put(self::TARGET_USER_KEY, $user->getDn());
-    }
-    
-    protected function _retrieveTargetUser(Request $request) {
-        $dn = $request->session()->get(self::TARGET_USER_KEY);
-        if(empty($dn)) {
-            return null;
-        }
-        return LdapUser::find($dn);
-    }
-    
-    protected function _forgetTargetUser(Request $request) {
-        $request->session()->forget(self::TARGET_USER_KEY);
-        $this->_forgetVerificationResult($request);
-    }
-    
-    protected function _rememberRemoteIdentity(Request $request, $identity) {
-        $request->session()->put(self::REMOTE_IDENTITY_KEY, $identity);
-    }
-    
-    protected function _retrieveRemoteIdentity(Request $request) {
-        return $request->session()->get(self::REMOTE_IDENTITY_KEY);
-    }
-    
-    protected function _forgetRemoteIdentity(Request $request) {
-        $request->session()->forget(self::REMOTE_IDENTITY_KEY);
-        $this->_forgetVerificationResult($request);
-    }
-
-    protected function _saveMethod(Request $request, $method) {
-        $request->session()->put(self::METHOD_KEY, $method);    
-    }
-    
-    protected function _retrieveMethod(Request $request) {
-        return $request->session()->get(self::METHOD_KEY);
-    }
-    
-    protected function _forgetMethod(Request $request) {
-        $request->session()->forget(self::METHOD_KEY);
-        $this->_forgetVerificationResult($request);
-    }
-    
-    protected function _saveVerificationResult(Request $request, $result) {
-        $request->session()->put(self::VERIFICATION_KEY, $result);
-    }
-    
-    protected function _retrieveVerificationResult(Request $request) {
-        return $request->session()->get(self::VERIFICATION_KEY);
-    }
-    
-    protected function _forgetVerificationResult(Request $request) {
-        $request->session()->forget(self::VERIFICATION_KEY);
-    }
-    
     # possibly move this to IdentityManager and ad more intelligence
     protected function _mergeInputToIdentity(&$identity, $data) {
         $changed = false;
@@ -440,6 +381,13 @@ class ResetController extends Controller
             if(!isset($identity[$key]) && isset($data[$key])) {
                 $changed = true;
                 $identity[$key] = $data[$key];
+            }
+        }
+        if($changed) {
+            if(!empty($identity['email'] || !empty($identity['phone_number']))) {
+                if(empty($identity['loa'])) {
+                    $identity['loa'] = IdentityManager::LOA_NONE;
+                }
             }
         }
         #if($changed) {
@@ -477,7 +425,18 @@ class ResetController extends Controller
                 }
             }
         }
-        foreach(['administrative_number', 'cuni_personalid', 'cuni_card_id'] as $key) {
+        if(!isset($identity['administrative_number']) && isset($data['administrative_number'])) {
+            $changed = true;
+            $identity['administrative_number'] = $data['administrative_number'];
+            if(!empty($identity['loa']) && $identity['loa'] != IdentityManager::LOA_NONE) {
+                if(empty($identity['email'] && empty($identity['phone_number']))) {
+                    $identity['loa'] = null;
+                } else {
+                    $identity['loa'] = IdentityManager::LOA_NONE;
+                }
+            }
+        }
+        foreach(['cuni_personalid', 'cuni_card_id'] as $key) {
             if(!isset($identity[$key]) && isset($data[$key])) {
                 $changed = true;
                 $identity[$key] = $data[$key];

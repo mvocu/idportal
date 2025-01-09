@@ -5,6 +5,7 @@ interface IdentityManager
 {
     const COMPARISON_PURPOSE_INITIAL = 0;
     const COMPARISON_PURPOSE_MERGE = 1;
+    const COMPARISON_PURPOSE_MERGE_TRUSTED = 2;
 
     const LOA_NONE = "http://cas.cuni.cz/LoA/none";
     const LOA_LOW  = "http://cas.cuni.cz/LoA/low";

@@ -2,10 +2,10 @@
 
 @section('header')
 <li class="">
-	<a href="" class="btn btn-floating me-4"><i class="fas fa-arrow-left"></i></a>
+	<a href="{{ route('reset.methods') }}" class="btn btn-floating me-4"><i class="fas fa-arrow-left"></i></a>
 </li>
 <li>
-	<span>{{ __('Change password for CAS') }}</span>
+	<span>{{ __('Getting new password for CAS') }}</span>
 </li>
 @endsection
 
@@ -31,15 +31,35 @@
 			<h5 class="">{{ __('Set new password') }}</h5>
 	</div>
 
-
-	<div class="d-flex flex-sm-row flex-column flex-wrap align-items-stretch justify-content-between mt-5">
-		<div class="col-sm-5 mb-2">
-		    <form class="h-100" method="POST" action="{{ route('reset.search') }}" aria-label="{{ __('Search form') }}">
+	<div class="card mt-5">
+			
+		<div class="card-body">
+			<h5 class="mb-3">{{ __('New password') }}</h5>
+			<div class="row g-4">
+			<div class="col-sm-6">
+		    <form class="h-100" method="POST" action="{{ route('reset.change') }}" aria-label="{{ __('New password') }}">
 			@csrf
+			<div class="row g-3">
+				<div class="col-sm-12">
+					<x-input type="password" name="password" value="" :errors="$errors" 
+						text="Password" required="true" />
+            	</div>
+				<div class="col-sm-12">
+					<x-input type="password" name="password2" value="" :errors="$errors" 
+						text="Password (again)" required="true" />
+            	</div>
+			</div>
+            <div class="text-center mt-4">
+				<button type="submit" class="btn btn-primary mx-auto">{{ __('Submit') }}</button>
+			</div>
 			</form>
-		</div>
-	</div>
-	</form>
+			</div>
+			<div class="col-sm-6">
+			</div>
+			</div>
+		</div>			
+	</div>			
+
 
 </div>
 

@@ -41,6 +41,7 @@ window.{{$id}}_app = idPortal.createApp({
                         // mark failed input if available
                         if(reply.reason.recaptcha) {
                             // find and mark recaptcha field
+                            document.getElementById('recaptcha').classList.add('border', 'border-danger');
                         }
                         if(reply.reason.address) {
                             // find and mark $for field

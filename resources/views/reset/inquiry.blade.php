@@ -13,12 +13,10 @@
 
 <div class="d-flex flex-column col-lg-7" style="max-width: 720px">	
 
-	@if (false)
 	<div class="border-bottom border-2 border-primary mt-5">
-			<h5 class="">{{ __('Additional information') }}</h5>
-			<p>{{ __('More information is required to verify your identity:') }}</p>
+			<h5 class="">{{ __('Identify yourself') }}</h5>
+			<p>{{ __('More information is required to verify your identity') }}</p>
 	</div>
-	@endif
 
 	<div class="card d-flex flex-column align-items-stretch mt-5">
 
@@ -92,7 +90,7 @@
 						text="Date of birth" required="true" />
 	            </div>
         		@endif
-	            @if (false && empty($identity['administrative_number']))
+	            @if (empty($identity['administrative_number']))
 				<div class="col-sm-6 mb-4">
 					<x-input type="text" name="administrative_number" :value="old('administrative_number')" :errors="$errors" 
 						maxlen="10" pattern="\d{6}\w{3,4}" helper="YYMMDDXXX(X)" text="Administrative number"/>

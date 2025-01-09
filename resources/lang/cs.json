@@ -147,7 +147,7 @@
 	"nationality" : "Národnost",
 	"document_type" : "Typ dokladu",
 	"document_number" : "Číslo dokladu",
-	"administrative_number" : "Identifikační číslo",
+	"administrative_number" : "Rodné číslo",
 	"birthdate" : "Datum narození",
 	"email" : "E-mailová adresa",
 	"phone_number" : "Telefon",

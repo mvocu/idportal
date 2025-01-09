@@ -2,7 +2,7 @@
 
 namespace App\Services\Policies;
 
-use App\Models\User;
+use App\Models\Ldap\User;
 use App\Services\ResetManager;
 
 class ResetManagerPolicy
