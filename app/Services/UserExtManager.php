@@ -163,6 +163,7 @@ class UserExtManager implements UserExtManagerInterface
         return $user;
     }
 
+
     /**
      * {@inheritDoc}
      * @see \App\Interfaces\UserExtManager::syncUsers()

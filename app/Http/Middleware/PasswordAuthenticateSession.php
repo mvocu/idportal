@@ -29,7 +29,11 @@ class PasswordAuthenticateSession extends AuthenticateSession
             
             return $response;
         }
-        
+
+        if($request->user()->getIsRegistering()) {
+            return $next($request);    
+        }
+
         if ($this->auth->viaRemember()) {
             $passwordHash = explode('|', $request->cookies->get($this->auth->getRecallerName()))[2];
             
@@ -43,11 +47,14 @@ class PasswordAuthenticateSession extends AuthenticateSession
         }
 
         $password = $request->session()->get('password_hash');
-        if (empty($password) or 
-                !$this->auth->getProvider()->validateCredentials($request->user(), [ 'password' => $password ] )) {
-                $this->logout($request);
+        if (!empty($password)) {
+            if(!$this->auth->getProvider()->validateCredentials($request->user(), [ 'password' => $password ] )) {
+                    $this->logout($request);
+            } else {
+                $request->user()->rememberPassword($password);
+            }
         } else {
-            $request->user()->rememberPassword($password);
+            # user has no password. what should we do now?
         }
         
         return tap($next($request), function () use ($request) {

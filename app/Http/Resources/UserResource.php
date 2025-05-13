@@ -7,6 +7,7 @@ use Illuminate\Support\Arr;
 use App\Models\Database\Contact;
 use App\Models\Database\UserExt;
 use App\Models\Database\User;
+use Illuminate\Support\Collection;
 
 class UserResource extends Resource
 {
@@ -41,6 +42,19 @@ class UserResource extends Resource
             $this->resource->load('phones', 'emails', 'addresses', 'birthPlace', 'residency', 'address', 'addressTmp', 
                 'dataBox', 'uris', 'accounts');
             return parent::toArray($request);
+        } elseif ($this->resource instanceof Collection) {
+            // when created with the result from UserExtManager::mapUserAttributes()
+            $result = array();
+            
+            foreach($this->resource as $attr) {
+                $name = $attr['core_name'];
+                $value = trim($attr['value']);
+                if(empty($name) || empty($value))
+                    continue;
+                    $this->_mapAttribute($name, $value, $result);
+            }
+            return $result;
+            
         } else {
             return parent::toArray($request);
         }

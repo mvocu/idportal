@@ -55,6 +55,12 @@ Route::name('ext.account.')
         Route::get('/remove/{user_ext}', 'UserExtController@removeUserExt')->name('remove');
     });
 
+Route::name('ext.')
+    ->prefix('ext/')
+    ->group(function() {
+       Route::get('/home/{client?}', 'ExtHomeController@index')->name('home');
+    });
+    
 Route::get('/register/eidp/{client}', 'Auth\ExtIdpRegisterController@show')->name('register.eidp');
 
 Route::post('/register/eidp/{client}', 'Auth\ExtIdpRegisterController@register')->name('register.eidp.create');
@@ -72,11 +78,19 @@ Route::get('/consent/ask', 'ConsentController@showConsentForm')->name('consent.a
 
 Route::post('/consent/set', 'ConsentController@setConsent')->name('consent.set');
 
-Route::get('/voting/show', 'VotingCodeController@showCode')->name('voting.show');
+Route::name('voting.')
+    ->prefix('voting')
+    ->group(function() {
+        Route::get('/', 'VotingCodeController@showRegistrationForm')->name('home');
+        Route::post('/register', 'VotingCodeController@checkRegistration')->name('register');
+        Route::get('/register/verify', 'VotingCodeController@showVerificationForm')->name('verificationform');
+        Route::post('/register/verify', 'VotingCodeController@verify')->name('confirm');
+        Route::get('/register/eidp/{client}', 'VotingCodeController@registerExt')->name('register.eidp');
+        Route::get('/show', 'VotingCodeController@showCode')->name('show');
+        Route::get('/get', 'VotingCodeController@getCode')->name('get');
+        Route::post('/declare', 'VotingCodeController@declare')->name('declare');
+    });
 
-Route::get('/voting/get', 'VotingCodeController@getCode')->name('voting.get');
-
-Route::post('/voting/declare', 'VotingCodeController@declare')->name('voting.declare');
 
 Route::name('account.')
     ->prefix('account')

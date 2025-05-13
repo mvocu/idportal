@@ -61,7 +61,9 @@ class LoginController extends Controller
     {
         $auth_user = $this->findExternalAccount(Auth::guard($client)->user(), $client);
         if(is_null($auth_user)) {
-            return redirect()->route('register') #redirect()->back()
+            // external id is not registered, try to find user by provided data 
+            // TODO: redirect to external registration, not generic one
+            return redirect()->route('register.eidp', ['client' => $client]) #redirect()->back()
                 ->withErrors(['failure' => __('External identity is not registered. Please register your account here.')]);
         }
         return redirect()->intended($this->redirectPath());

@@ -7,6 +7,13 @@ use App\Interfaces\LdapConnector;
 use App\User;
 use App\Traits\FindsExternalAccount;
 
+/*
+ * For a given client (guard), check the external identity and set up authenticated user (\App\User)
+ * in the default guard (web) if the external identity is registered with local account.
+ * 
+ * Results in local user identity established in the default guard. 
+ *  
+ */
 class ExternalIdPAuthenticateSession
 {
     use FindsExternalAccount;
@@ -36,7 +43,7 @@ class ExternalIdPAuthenticateSession
             if(!is_null($user = $this->auth->guard($client_name)->user())) {
                 $auth_user = $this->findExternalAccount($user, $client_name);
                 if(is_null($auth_user)) {
-                    $this->auth->guard($client_name)->logout();
+                    #$this->auth->guard($client_name)->logout();
                 } else {
                     $appuser = new User([], $auth_user->getQuery());
                     $appuser->setRawAttributes($auth_user->getAttributes());

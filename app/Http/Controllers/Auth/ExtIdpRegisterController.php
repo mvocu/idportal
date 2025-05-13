@@ -13,9 +13,12 @@ use App\Models\Database\ExtSource;
 use App\Models\Database\UserExt;
 use App\Http\Resources\ExtUserResource;
 use Illuminate\Support\MessageBag;
+use App\Traits\FindsExternalAccount;
 
 class ExtIdpRegisterController extends Controller
 {
+    use FindsExternalAccount;
+    
     protected $user_ext_mgr;
     protected $ext_source_mgr;
     
@@ -203,12 +206,5 @@ class ExtIdpRegisterController extends Controller
         return Validator::make($data, $user->getValidatorRules());
     }
 
-    protected function getExtSource($client) 
-    {
-        return ExtSource::where([
-            ['name', '=', $client],
-            ['identity_provider', '=', 1]
-        ])->get()->first();
-    }
 }
 

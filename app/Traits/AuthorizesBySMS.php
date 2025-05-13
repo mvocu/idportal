@@ -24,11 +24,14 @@ trait AuthorizesBySMS {
         $request->validate(['phone' => 'required|phone', 'g-recaptcha-response' => 'required|recaptcha']);
     }
 
-    public function validateToken(Request $request) {
-        $phone_user = new PhoneOwner($request->input('phone'));
+    public function validateToken(Request $request, $id = null) {
+        if(empty($id)) {
+            $id = $request->input('phone');
+        }
+        $phone_user = new PhoneOwner($id);
         $tokens = $this->broker()->getRepository();
         Validator::make($request->all(), [
-            'phone' => 'required|phone',
+            #'phone' => 'required|phone',
             'token' => [
                 'required',
                 'string',

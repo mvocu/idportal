@@ -1,25 +1,30 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use Adldap\Laravel\Facades\Adldap;
-use Illuminate\Http\Request;
+use App\Interfaces\LdapConnector;
+use App\Interfaces\UserExtManager;
+use App\Interfaces\VotingCodeManager;
+use App\Models\Database\ExtSource;
+use App\Services\ConsentManager;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
-use App\Interfaces\UserExtManager;
-use App\Models\Database\ExtSource;
-use App\Interfaces\ConsentManager;
-use Adldap\AdldapInterface;
-use App\Interfaces\LdapConnector;
-use App\Interfaces\VotingCodeManager;
+use App\Interfaces\UserManager;
+use App\Traits\FindsExternalAccount;
+use Illuminate\Http\Request;
+use App\User;
 
-class HomeController extends Controller
+class ExtHomeController extends Controller
 {
+    
+    use FindsExternalAccount;
+    
+    protected $user_mgr;
+    
     protected $user_ext_mgr;
     
     protected $consent_mgr;
     
-    protected $ldap_mgr; 
+    protected $ldap_mgr;
     
     protected $voting_code_mgr;
     
@@ -29,37 +34,37 @@ class HomeController extends Controller
      * @return void
      */
     public function __construct(
-        UserExtManager $user_ext_mgr, 
+        UserManager $user_mgr,
+        UserExtManager $user_ext_mgr,
         ConsentManager $consent_mgr,
         VotingCodeManager $voting_code_mgr,
         LdapConnector $ldap_mgr)
     {
+        $this->user_mgr = $user_mgr;
         $this->user_ext_mgr = $user_ext_mgr;
         $this->consent_mgr = $consent_mgr;
         $this->voting_code_mgr = $voting_code_mgr;
         $this->ldap_mgr = $ldap_mgr;
         $this->middleware(['auth.eidp:MojeID', 'auth.eidp:eIdentita', 'auth:MojeID,eIdentita,web']);
     }
-
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    
+    public function index(Request $request, $client = null) 
     {
-        if(!Auth::user() instanceof \App\User) {
-            #return redirect()->route('register.eidp', ['client' => Auth::guard()->getClient()])
-            #    ->withErrors(['failure' => __('External identity is not registered. Please register your account here.')]);
-            return redirect()->route('ext.home', ['client' => Auth::guard()->getClient()])
-            ->withErrors(['failure' => __('External identity is not registered.')]);
+        if(Auth::user() instanceof \App\User) {
+            return redirect()->route('home');
         }
-        if(Auth::user()->getIsRegistering()) {
-            # the user is in registration process, no database or ldap record present yet
-            return redirect()->route('ext.home')
-                ->with(['status' => __('You need to register your account before proceeding.')]);
+        # having logged in using external identity, we have to get to the actual user differently
+        #$user = Auth::user()->getDatabaseUser();
+        if(empty($client)) {
+            $client = Auth::guard()->getClient();
         }
-        $user = Auth::user()->getDatabaseUser();
+        $users = $this->findUserByExtIdentity(Auth::user(), $client);
+        if($users->count() == 1) {
+            $user = $users->first();
+        } else {
+            $user = null;
+        }
+        # $user has to be instance of database model
         if(!empty($user) && !$this->consent_mgr->hasActiveConsent($user)) {
             return redirect()->route('consent.ask');
         }
@@ -69,9 +74,9 @@ class HomeController extends Controller
             $tag = Str::kebab(Str::lower(Str::ascii($name)));
             $editable = $source->editable;
             $idp = $source->identity_provider;
-            $accounts[$source->id] = [ 
-                'name' => $name, 'tag' => $tag, 
-                'editable' => $editable , 'creatable' => $source->type != 'Internal', 
+            $accounts[$source->id] = [
+                'name' => $name, 'tag' => $tag,
+                'editable' => $editable , 'creatable' => $source->type != 'Internal',
                 'idp' => $idp];
         }
         if($user != null) {
@@ -81,13 +86,22 @@ class HomeController extends Controller
                 if(array_key_exists('phones', $data)) $accounts[$account->extSource->id]['phone'] = $data['phones'][0]['phone'];
                 if(array_key_exists('emails', $data)) $accounts[$account->extSource->id]['email'] = $data['emails'][0]['email'];
             }
+            $ldap_user = $this->ldap_mgr->findUser($user);
+            # convert to App\User (see middleware ExternalIdpAuthenticateSession) 
+            $appuser = new User([], $ldap_user->getQuery());
+            $appuser->setRawAttributes($ldap_user->getAttributes());
+            $ldap_user = $appuser;
+        } else {
+            $ldap_user = null;
         }
-        return view('home', [
-            'user' => Auth::user(), 
-            'accounts' => $accounts, 
-            'children' => $this->ldap_mgr->listChildren(Auth::user()), 
+        return view('exthome', [
+            'user' => $ldap_user,
+            'accounts' => $accounts,
+            'children' => empty($ldap_user) ? collect([]) : $this->ldap_mgr->listChildren($ldap_user),
             'voting' => empty($user) ? false : $this->voting_code_mgr->hasActiveVotingCode($user),
             'expires' => empty($user) ? "" : $this->consent_mgr->expiresSoon($user)
         ]);
     }
+    
 }
+

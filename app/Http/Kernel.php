@@ -58,7 +58,7 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
+        'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
@@ -67,6 +67,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'eidp' => \App\Http\Middleware\ExternalIdPAuthenticate::class,
         'auth.eidp' => \App\Http\Middleware\ExternalIdPAuthenticateSession::class,
+        'finduser' => \App\Http\Middleware\DetermineUser::class,
         'group' => \App\Http\Middleware\CheckGroup::class,
     ];
     
@@ -76,7 +77,9 @@ class Kernel extends HttpKernel
         \Illuminate\View\Middleware\ShareErrorsFromSession::class,
         \App\Http\Middleware\ExternalIdPAuthenticateSession::class,
         \Illuminate\Auth\Middleware\Authenticate::class,
+        \App\Http\Middleware\DetermineUser::class,
         \Illuminate\Session\Middleware\AuthenticateSession::class,
+        \App\Http\Middleware\PasswordAuthenticateSession::class,
         \Illuminate\Routing\Middleware\SubstituteBindings::class,
         \Illuminate\Auth\Middleware\Authorize::class,
     ];

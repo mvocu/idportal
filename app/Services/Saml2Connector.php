@@ -38,7 +38,7 @@ class Saml2Connector implements IdentityProvider
             // not reached - the above call will redirect
             return null;
         }
-                    
+        
         $user = $this->validate($nameid, session()->pull('saml2_assertion'));
         if($user == null) {
             throw new AuthenticationException("SAML2 authentication failed: " . $this->_validation_error);

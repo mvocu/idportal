@@ -97,6 +97,12 @@ class ExternalIdPGuard implements Guard
     }
 
 
+    public function getClient() 
+    {
+        return $this->name;
+    }
+
+    
     protected function updateSession($id_token, $ac_token)
     {
         $key = $this->getName();

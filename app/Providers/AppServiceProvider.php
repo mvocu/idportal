@@ -38,6 +38,9 @@ use App\Utils\Names;
 use GuzzleHttp\Client;
 use Carbon\Carbon;
 use App\Services\VotingCodeManager;
+use App\Interfaces\RegistrationManager as RegistrationManagerInterface;
+use App\Services\RegistrationManager;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -50,7 +53,8 @@ class AppServiceProvider extends ServiceProvider
         LdapConnectorInterface::class => LdapConnector::class,
         ConsentManagerInterface::class => ConsentManager::class,
         SynchronizationManagerInterface::class => SynchronizationManager::class,
-        VotingCodeManagerInterface::class => VotingCodeManager::class
+        VotingCodeManagerInterface::class => VotingCodeManager::class,
+        RegistrationManagerInterface::class => RegistrationManager::class
     ];
     
     public $bindings = [

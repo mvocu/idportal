@@ -5,6 +5,12 @@ use Closure;
 use Illuminate\Contracts\Auth\Factory as Auth;
 use Illuminate\Auth\AuthenticationException;
 
+/*
+ * For a given client (guard), perform authentication if there is no authenticated user.
+ * 
+ * Results in external user identity established in the given guard and saved in the session.
+ * 
+ */
 class ExternalIdPAuthenticate 
 {
     protected $auth;

@@ -21,6 +21,12 @@
     					</div>
 					@endif
 
+                    @if ($errors->has('failure'))
+                        <div class="alert alert-danger" role="alert">
+                            {{ $errors->first('failure') }}
+                        </div>
+                    @endif
+
 					@if (isset($user))
                     <form method="POST" action="{{ route('register.eidp.add', [ 'client' => $idp ]) }}" aria-label="{{ __('Add identity') }}">
 					@else

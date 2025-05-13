@@ -35,7 +35,7 @@ class Saml2User implements Authenticatable
 
     public function getRememberTokenName()
     {
-        return 'assertion';   
+        return 'nameid';   
     }
 
     public function setRememberToken($value)
@@ -90,7 +90,7 @@ class Saml2User implements Authenticatable
         return [
             'CurrentGivenName' => 'required|string|max:255',
             'CurrentFamilyName' => 'required|string|max:255',
-            'eMail' => 'sometimes|required|string|email|max:255|unique:contact,email',
+            'Email' => 'sometimes|required|string|email|max:255|unique:contact,email',
             'PhoneNumber' => 'sometimes|required|string|phone|max:255|unique:contact,phone',
         ];
     }
