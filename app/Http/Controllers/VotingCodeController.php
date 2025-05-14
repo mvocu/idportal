@@ -260,11 +260,11 @@ class VotingCodeController extends Controller
         $user = Auth::user()->getDatabaseUser();
         if($request->get("consent_check", "no") != "agree") {
             return back()
-                ->withErrors(['failure' => 'You have to agree with the declaration to obtain voting code.']);
+                ->withErrors(['failure' => __('You have to agree with the declaration to obtain voting code.') ]);
         }
         if(!$this->voting_code_mgr->assignVotingCode($user)) {
             return back()
-                ->withErrors(['failure' => 'Could not assign new voting code']);
+                ->withErrors(['failure' => __('Could not assign new voting code') ]);
         }
         return redirect()->route('voting.show')->with(['status' => __('Declaration accepted.')]);
     }
