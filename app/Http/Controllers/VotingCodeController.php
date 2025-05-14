@@ -139,12 +139,12 @@ class VotingCodeController extends Controller
         if($request->input('preferred') == 'sms') {
             # send token by SMS
             # see trait AuthorizesBySMS::sendAuthorizationToken (but that is async, not usable here)
-            $phone_user = new PhoneOwner($request->input('phone'));
+            $phone_user = new PhoneOwner($data['phone']);
             $phone_user->sendPasswordResetNotification($this->broker()->getRepository()->create($phone_user));
         } else {
             # send token by e-mail 
             # see trait SendAccountActivationEmail::sendActivationLink (but we have to use different user with different message) 
-            $user = new VotingUser($request->input('email'));
+            $user = new VotingUser($data['email']);
             $this->activationMgr()->sendActivationLink($user);
         }
         
@@ -190,7 +190,7 @@ class VotingCodeController extends Controller
         if($users->count() == 0) {
             # this user does not exist yet, create
             $user = $this->createUser($source, $user_r);
-            if(false === $user) {
+            if(empty($user)) {
                 return redirect('')
                     ->route('voting.home')
                     ->withInput($request->all())
