@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
-                <div class="panel-heading">{{ __('Voting Registration') }}</div>
+                <div class="panel-heading">{{ __('Voting code for the participative budget') }}</div>
 
 				<!-- 
 				<script src="https://www.google.com/recaptcha/api.js" async defer></script>
@@ -138,16 +138,41 @@
                         <div class="form-group row">
 							<label for="preferred" class="col-md-4 control-label">{{ __('Preferred verification method') }}</label>
 
-							<div class="col-md-6">
+							<div class="col-md-6" style="padding-top: 6px">
 								<input id="preferred_sms" type="radio" name="preferred" value="sms" checked>&nbsp;{{ __('SMS') }}</input>
 								<input id="preferred_email" type="radio" name="preferred" value="email">&nbsp;{{ __('E-mail') }}</input>
 							</div>
                         </div>
 
+						<div class="form-group row">
+						</div>
+
+						<div class="form-group row">
+							<div class="col-md-10 col-md-offset-1"><em>
+								{{ __('Before using this website you are required to agree the terms of usage, which are available') }} 
+								<a href="/documents/terms.pdf">{{ __('here') }}</a>.</em>
+							</div>
+                            <div class="col-md-8 col-md-offset-3 row" style="padding-top: 8px">
+                                <input id="gdpr_check" type="checkbox" class="col-xs-1" style="padding-top: 8px" name="gdpr_check" value="agree" required>
+	                            <label for="gdpr_check" class="col-xs-11">{{ __('I have read the terms above and agree') }}</label>
+							</div>
+						</div>
+                        
+                        <div class="form-group row">
+							<div class="col-md-10 col-md-offset-1"><em>
+								{{ __('I declare that I have read the participative budget voting regulation') }} <a href="https://mojeobec.kr-stredocesky.cz/portal/paroz/uvaly/zasady">{{ __('here') }}</a>
+								{{ __('and I will adhere to the stated conditions.') }}</em> 
+							</div>
+	                        
+                            <div class="col-md-8 col-md-offset-3 row" style="padding-top: 8px">
+	                            <input id="consent_check" type="checkbox" class="col-xs-1" name="consent_check" value="agree" required>
+								<label for="consent_check" class="col-xs-11">{{ __('I confirm the above declaration') }}</label>	                            </div>
+                        </div>
+
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
                                 <button type="submit" class="btn btn-primary">
-                                    {{ __('Register') }}
+                                    {{ __('Obtain voting code') }}
                                 </button>
                             </div>
                         </div>
@@ -157,7 +182,7 @@
 
 				@if (empty($user_r))
 				<div class="panel-heading">
-					{{ __('Register using') }}:
+					{{ __('Ask for voting code using') }}:
 				</div>
 				
 				<div class="panel-body">

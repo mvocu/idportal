@@ -292,6 +292,8 @@ class VotingCodeController extends Controller
             'birth_year' => 'required|date_format:Y',
             'email' => 'sometimes|nullable|required_without:phone|required_if:preferred,email|string|email|max:255',
             'phone' => 'sometimes|nullable|required_without:email|required_if:preferred,sms|string|phone|max:255',
+            'consent_check' => 'required',
+            'gdpr_check' => 'required',
         ]);
     }
     
