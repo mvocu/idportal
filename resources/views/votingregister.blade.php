@@ -155,6 +155,7 @@
                     </form>
                 </div>
 
+				@if (empty($user_r))
 				<div class="panel-heading">
 					{{ __('Register using') }}:
 				</div>
@@ -173,7 +174,9 @@
 						@endif
 					</div>
 				</div>
-				                
+				@else
+				@endif
+								                
             </div>
         </div>
     </div>
