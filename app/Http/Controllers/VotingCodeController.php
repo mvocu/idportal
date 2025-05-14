@@ -19,6 +19,7 @@ use App\Models\Database\Contact;
 use App\Models\Database\ExtSource;
 use App\Interfaces\RegistrationManager;
 use App\Traits\AuthorizesBySMS;
+use App\Interfaces\ConsentManager;
 
 class VotingCodeController extends Controller
 {
@@ -31,6 +32,7 @@ class VotingCodeController extends Controller
     protected $user_ext_mgr;
     protected $user_mgr;
     protected $reg_mgr;
+    protected $consent_mgr;
     
     # declared in FindsExternalAccount:
     #protected $ldap_mgr;
@@ -41,7 +43,8 @@ class VotingCodeController extends Controller
         UserExtManager $user_ext_mgr,
         UserManager $user_mgr,
         LdapConnector $ldap_mgr,
-        RegistrationManager $reg_mgr
+        RegistrationManager $reg_mgr,
+        ConsentManager $consent_mgr
         )
     {
         $this->voting_code_mgr = $voting_code_mgr;
@@ -50,6 +53,7 @@ class VotingCodeController extends Controller
         $this->user_mgr = $user_mgr;
         $this->ldap_mgr = $ldap_mgr;
         $this->reg_mgr = $reg_mgr;
+        $this->consent_mgr = $consent_mgr;
         
         $this
             ->middleware(['auth.eidp:MojeID', 'auth.eidp:eIdentita', 'finduser'])
@@ -128,10 +132,7 @@ class VotingCodeController extends Controller
         }
         $this->validator($data)->validate();
         
-        $resource = $this->reg_mgr->getExtUserResource($data);
-        
         # TODO: check for existence of this user
-        
         
         # we have all the data validated, create validation token and send it by preferred method
         if($request->input('preferred') == 'sms') {
@@ -139,12 +140,16 @@ class VotingCodeController extends Controller
             # see trait AuthorizesBySMS::sendAuthorizationToken (but that is async, not usable here)
             $phone_user = new PhoneOwner($data['phone']);
             $phone_user->sendPasswordResetNotification($this->broker()->getRepository()->create($phone_user));
+            unset($data['email']);
         } else {
             # send token by e-mail 
             # see trait SendAccountActivationEmail::sendActivationLink (but we have to use different user with different message) 
             $user = new VotingUser($data['email']);
             $this->activationMgr()->sendActivationLink($user);
+            unset($data['phone']);
         }
+        
+        $resource = $this->reg_mgr->getExtUserResource($data);
         
         $request->session()->put('voting.user', $resource);
         $request->session()->put('voting.verification', $request->input('preferred'));
@@ -202,12 +207,19 @@ class VotingCodeController extends Controller
         } else if ($users->count() == 1){
             # we have found a user
             $user = $users->first();
+            $ldap_user = $this->ldap_mgr->findUser($user);
+            # convert to App\User (see middleware ExternalIdpAuthenticateSession)
+            $user = new User([], $ldap_user->getQuery());
+            $user->setRawAttributes($ldap_user->getAttributes());
         }
-        $ldap_user = $this->ldap_mgr->findUser($user);
-        # convert to App\User (see middleware ExternalIdpAuthenticateSession)
-        $user = new User([], $ldap_user->getQuery());
-        $user->setRawAttributes($ldap_user->getAttributes());
 
+        # add user consent
+        $this->consent_mgr->setConsent($user->getDatabaseUser(), true);
+        # assign voting code
+        if(!$this->voting_code_mgr->hasActiveVotingCode($user->getDatabaseUser())) {
+            $this->voting_code_mgr->assignVotingCode($user->getDatabaseUser());    
+        }
+        
         Auth::login($user);
         
         if($this->voting_code_mgr->hasActiveVotingCode($user->getDatabaseUser())) {
@@ -224,7 +236,14 @@ class VotingCodeController extends Controller
         # external identity in appropriate guard
         if(Auth::user() instanceof \App\User) {
             # external user with registered identity
-            return redirect()->route('home');
+            # maybe go directly to the code?
+            $user = Auth::user();
+            if($this->voting_code_mgr->hasActiveVotingCode($user->getDatabaseUser())) {
+                return redirect()->route('voting.show');
+            } else {
+                return redirect()->route('voting.get');
+            }
+            #return redirect()->route('home');
         }
         return redirect()->route('voting.home', [ 'client ' => $client ]);
     }
