@@ -50,19 +50,23 @@ class ExtHomeController extends Controller
     
     public function index(Request $request, $client = null) 
     {
-        if(Auth::user() instanceof \App\User) {
+        if(Auth::user() instanceof \App\User && !empty(Auth::user()->getAuthPassword())) {
             return redirect()->route('home');
         }
-        # having logged in using external identity, we have to get to the actual user differently
-        #$user = Auth::user()->getDatabaseUser();
-        if(empty($client)) {
-            $client = Auth::guard()->getClient();
-        }
-        $users = $this->findUserByExtIdentity(Auth::user(), $client);
-        if($users->count() == 1) {
-            $user = $users->first();
+        if(!Auth::user() instanceof \App\User) {
+            # having logged in using external identity, we have to get to the actual user differently
+            #$user = Auth::user()->getDatabaseUser();
+            if(empty($client)) {
+                $client = Auth::guard()->getClient();
+            }
+            $users = $this->findUserByExtIdentity(Auth::user(), $client);
+            if($users->count() == 1) {
+                $user = $users->first();
+            } else {
+                $user = null;
+            }
         } else {
-            $user = null;
+            $user = Auth::user()->getDatabaseUser();
         }
         # $user has to be instance of database model
         if(!empty($user) && !$this->consent_mgr->hasActiveConsent($user)) {

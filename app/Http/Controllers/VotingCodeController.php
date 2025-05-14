@@ -7,7 +7,6 @@ use App\Auth\VotingUser;
 use App\Http\Resources\ExtUserResource;
 use App\Interfaces\VotingCodeManager;
 use Illuminate\Auth\Events\Registered;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -20,8 +19,6 @@ use App\Models\Database\Contact;
 use App\Models\Database\ExtSource;
 use App\Interfaces\RegistrationManager;
 use App\Traits\AuthorizesBySMS;
-use App\Traits\SendsAccountActivationEmail;
-use App\Interfaces\ActivationManager;
 
 class VotingCodeController extends Controller
 {
@@ -117,7 +114,8 @@ class VotingCodeController extends Controller
             }
         }
 
-        return view('votingregister', [ 'idp' => $idps, 'user' => $user, 'extuser' => $auth_user, 'user_r' => $user_r ]);
+        return view('votingregister', 
+            [ 'idp' => $idps, 'user' => $user, 'extuser' => $auth_user, 'user_r' => $user_r, 'client' => $client ]);
     }
 
     public function checkRegistration(Request $request)
@@ -190,8 +188,13 @@ class VotingCodeController extends Controller
         if($users->count() == 0) {
             # this user does not exist yet, create
             $user = $this->createUser($source, $user_r);
-            if(empty($user)) {
-                return redirect('')
+            if(false === $user) {
+                return redirect()
+                ->route('voting.home')
+                ->withInput($request->all())
+                ->withErrors(['failure' => __('User is already registered.')]);
+            } else  if(empty($user)) {
+                return redirect()
                     ->route('voting.home')
                     ->withInput($request->all())
                     ->withErrors(['failure' => __('Registration failed.')]);
@@ -270,10 +273,13 @@ class VotingCodeController extends Controller
     {
         # create UserExt and activate 
         $user_e = $this->reg_mgr->createUserExt($data);
+        if(false == $user_e) {
+            return false;
+        }
+        # this fires en event starting the identity build process 
         $this->reg_mgr->activateUser($user_e);
-        # start identity build process
         event(new Registered($user_e));
-        
+        return $this->reg_mgr->getRegisteredUser($user_e);
     }
     
     protected function validator(array $data)

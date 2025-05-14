@@ -175,6 +175,11 @@
 					</div>
 				</div>
 				@else
+            	<div class="panel-footer">
+					<div class="row">
+						<div class="col-xs-2"><a href="{{ route('eidp.logout', [ 'client' => $client ]) }}" class="btn btn-default" aria-label="{{ __('Use another identity') }}">{{ __('Use another identity') }}</a></div>
+					</div>
+            	</div>
 				@endif
 								                
             </div>
