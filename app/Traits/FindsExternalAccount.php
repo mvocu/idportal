@@ -20,7 +20,7 @@ trait FindsExternalAccount {
 
     public function findUserByExtIdentity(Authenticatable $user, $client, &$data = null) 
     {
-        $data = $user->getResource($client);
+        $user_r = $user->getResource($client);
         $idp_s = $this->getExtSource($client);
 
         #$data = $this->user_ext_mgr->mapUserAttributes($idp_s, $data);
@@ -30,10 +30,12 @@ trait FindsExternalAccount {
 
         #return $users;
         
-        return $this->findUserByExtResource($idp_s, $data);
+        $users = $this->findUserByExtResource($idp_s, $user_r, $data);
+
+        return $users;
     }
     
-    public function findUserByExtResource(ExtSource $source, ExtUserResource $user_r)
+    public function findUserByExtResource(ExtSource $source, ExtUserResource $user_r, &$data = null)
     {
         #$source = ExtSource::where('type', 'Internal')->get()->first();
         $data = $this->user_ext_mgr->mapUserAttributes($source, $user_r);
