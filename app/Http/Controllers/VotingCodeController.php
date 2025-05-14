@@ -164,7 +164,7 @@ class VotingCodeController extends Controller
         $method = $request->session()->get('voting.verification');
         
         if(!($user_r instanceof ExtUserResource) or empty($method)) {
-            return redirect()->route('voting.home')->withErrors(['failure' => 'Your session has expired.']);
+            return redirect()->route('voting.home')->withErrors(['failure' => __('Your session has expired.') ]);
         }
         
         $attrs = $user_r->toArray(null);
