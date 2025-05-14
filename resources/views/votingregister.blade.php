@@ -29,6 +29,21 @@
                         </div>
                         @endif
 
+						@if (empty($user_r) && !empty($idp))
+						<div class="form-group row" style="margin-bottom: 4rem">
+							<div class="col-md-4 control-label">{{ __('Ask for voting code using') }}</div>
+							<div class="col-md-6">
+							@foreach ($idp as $name) 
+								<a style="margin-right: 2rem" class="btn btn-social" href="{{ route('voting.register.eidp', ['client' => $name ]) }}">
+								   <span class="fa fa-openid"></span> 
+								   {{ __($name) }}
+								</a>
+							@endforeach
+							</div>
+						</div>
+				
+						@endif
+
                         <div class="form-group row {{ $errors->has('firstname') ? ' has-error' : '' }}">
                             <label for="firstname" class="col-md-4 col-form-label text-md-right control-label">{{ __('First name') }}</label>
 
@@ -150,7 +165,7 @@
 						<div class="form-group row">
 							<div class="col-md-10 col-md-offset-1"><em>
 								{{ __('Before using this website you are required to agree the terms of usage, which are available') }} 
-								<a href="/documents/terms.pdf">{{ __('here') }}</a>.</em>
+								<a target="_blank" href="/documents/terms.pdf">{{ __('here') }}</a>.</em>
 							</div>
                             <div class="col-md-8 col-md-offset-3 row" style="padding-top: 8px">
                                 <input id="gdpr_check" type="checkbox" class="col-xs-1" style="padding-top: 8px" name="gdpr_check" value="agree" required>
@@ -160,7 +175,8 @@
                         
                         <div class="form-group row">
 							<div class="col-md-10 col-md-offset-1"><em>
-								{{ __('I declare that I have read the participative budget voting regulation') }} <a href="https://mojeobec.kr-stredocesky.cz/portal/paroz/uvaly/zasady">{{ __('here') }}</a>
+								{{ __('I declare that I have read the participative budget voting regulation') }} 
+								<a target="_blank" href="https://mojeobec.kr-stredocesky.cz/portal/paroz/uvaly/zasady">{{ __('here') }}</a>
 								{{ __('and I will adhere to the stated conditions.') }}</em> 
 							</div>
 	                        
@@ -180,25 +196,7 @@
                     </form>
                 </div>
 
-				@if (empty($user_r))
-				<div class="panel-heading">
-					{{ __('Ask for voting code using') }}:
-				</div>
-				
-				<div class="panel-body">
-					<div class="form-group row">
-						@if (!empty($idp))
-						@foreach ($idp as $name) 
-							<div class="col-md-4">
-								<a class="btn btn-social" href="{{ route('voting.register.eidp', ['client' => $name ]) }}">
-								   <span class="fa fa-openid"></span> 
-								   {{ __($name) }}
-								</a>
-							</div>
-						@endforeach
-						@endif
-					</div>
-				</div>
+								@if (empty($user_r))
 				@else
             	<div class="panel-footer">
 					<div class="row">
