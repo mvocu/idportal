@@ -30,10 +30,6 @@ class PasswordAuthenticateSession extends AuthenticateSession
             return $response;
         }
 
-        if($request->user()->getIsRegistering()) {
-            return $next($request);    
-        }
-
         if ($this->auth->viaRemember()) {
             $passwordHash = explode('|', $request->cookies->get($this->auth->getRecallerName()))[2];
             
