@@ -6,6 +6,7 @@ use App\Auth\PhoneOwner;
 use App\Auth\VotingUser;
 use App\Http\Resources\ExtUserResource;
 use App\Interfaces\VotingCodeManager;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -188,8 +189,13 @@ class VotingCodeController extends Controller
         $users = $this->findUserByExtResource($source, $user_r);
         if($users->count() == 0) {
             # this user does not exist yet, create
-            echo "unregistered"; return;
-            
+            $user = $this->createUser($source, $user_r);
+            if(false === $user) {
+                return redirect('')
+                    ->route('voting.home')
+                    ->withInput($request->all())
+                    ->withErrors(['failure' => __('Registration failed.')]);
+            }
         } else if ($users->count() == 1){
             # we have found a user
             $user = $users->first();
@@ -260,6 +266,16 @@ class VotingCodeController extends Controller
         return redirect()->route('voting.show')->with(['status' => __('Declaration accepted.')]);
     }
 
+    protected function createUser(ExtSource $source, ExtUserResource $data)
+    {
+        # create UserExt and activate 
+        $user_e = $this->reg_mgr->createUserExt($data);
+        $this->reg_mgr->activateUser($user_e);
+        # start identity build process
+        event(new Registered($user_e));
+        
+    }
+    
     protected function validator(array $data)
     {
         return Validator::make($data, [

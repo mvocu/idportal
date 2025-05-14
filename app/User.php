@@ -26,7 +26,6 @@ CanResetPasswordContract
 
     protected $db_user;
     protected $_preferred_reset_method;
-    protected $is_registering;
     
     /**
      * {@inheritDoc}
@@ -157,20 +156,4 @@ CanResetPasswordContract
         $this->_preferred_reset_method = $method;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getIsRegistering()
-    {
-        return $this->is_registering;
-    }
-    
-    /**
-     * @param mixed $is_registering
-     */
-    public function setIsRegistering($is_registering)
-    {
-        $this->is_registering = $is_registering;
-    }
-    
 }

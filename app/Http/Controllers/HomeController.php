@@ -54,10 +54,10 @@ class HomeController extends Controller
             return redirect()->route('ext.home', ['client' => Auth::guard()->getClient()])
             ->withErrors(['failure' => __('External identity is not registered.')]);
         }
-        if(Auth::user()->getIsRegistering()) {
+        if(empty(Auth::user()->getAuthPassword())) {
             # the user is in registration process, no database or ldap record present yet
             return redirect()->route('ext.home')
-                ->with(['status' => __('You need to register your account before proceeding.')]);
+                ->with(['status' => __('You need to setup your account before proceeding,')]);
         }
         $user = Auth::user()->getDatabaseUser();
         if(!empty($user) && !$this->consent_mgr->hasActiveConsent($user)) {

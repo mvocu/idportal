@@ -6,6 +6,7 @@ use App\Http\Resources\ExtUserResource;
 use App\Interfaces\UserExtManager;
 use App\Interfaces\LdapConnector;
 use App\Models\Database\ExtSource;
+use App\Models\Database\UserExt;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class RegistrationManager implements RegistrationManagerInterface
@@ -79,6 +80,52 @@ class RegistrationManager implements RegistrationManagerInterface
         return $resource;
     }
 
+    public function registered(UserExt $user)
+    {
+        
+        if(empty($request->input('email'))) {
+            // user is registering without email, activate now and proceed to password reset
+            $this->user_ext_mgr->activateUser($user);
+            // wait for the async user creation
+            $ldap_user = null;
+            for($count = 0; $count < 30 && $ldap_user == null; $count++) {
+                sleep(1);
+                $new_user = $this->checkAccount($user->refresh());
+                if(!empty($new_user)) {
+                    $ldap_user = $new_user;
+                }
+            }
+            
+            if(empty($request->input['phone'])) {
+                if(empty($ldap_user)) {
+                    return back()
+                    ->withInput($request->all())
+                    ->withErrors(['failure' => __("User registration failed")]);
+                } else {
+                    return redirect()->route('password.reset', [
+                        'token' => $this->broker()->getRepository()->create(new RegistrationUser($ldap_user->getUniqueIdentifier())),
+                        'uid' => $ldap_user->getFirstAttribute('uid')
+                    ]);
+                }
+            } else {
+                return redirect()->route('password.request', [ 'phone' => $request->input('phone'), 'auto' => 1 ]);
+            }
+        }
+        
+        // send activation challenge
+        $this->sendActivationLink($request);
+        
+        return redirect()->route('activate.token', [ 'id' => $user->login ])
+        ->with('status', __('Activation code was sent to :address', [ 'address' => $request->input('email') ]));
+    }
+    
+    protected function checkAccount(UserExt $user_ext)
+    {
+        $user = $user_ext->user;
+        if(empty($user)) return null;
+        return $this->ldap_mgr->findUser($user);
+    }
+    
     
 }
 
