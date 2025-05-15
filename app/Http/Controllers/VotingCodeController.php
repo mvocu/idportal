@@ -17,9 +17,12 @@ use App\Interfaces\UserExtManager;
 use App\Interfaces\UserManager;
 use App\Models\Database\Contact;
 use App\Models\Database\ExtSource;
+use App\Models\Database\VotingCode;
 use App\Interfaces\RegistrationManager;
 use App\Traits\AuthorizesBySMS;
 use App\Interfaces\ConsentManager;
+use App\Notifications\MailVotingCodeNotification;
+use App\Notifications\SmsVotingCodeNotification;
 
 class VotingCodeController extends Controller
 {
@@ -132,27 +135,93 @@ class VotingCodeController extends Controller
         }
         $this->validator($data)->validate();
         
-        # TODO: check for existence of this user
+        $source = ExtSource::where('type', 'Internal')->get()->first();
+        $resource = $this->reg_mgr->getExtUserResource($data);
+
+        # check for existence of this user
+        if(Auth::user() instanceof \App\User) {
+            # user is already registered
+            $user = Auth::user();
+        } else {
+            # unauthenticated or unregistered user, we may still know phone or e-mail
+            $resource = $this->reg_mgr->getExtUserResource($data);
+            $users = $this->findUserByExtResource($source, $resource);
+            if($users->count() == 0) {
+                # this user does not exist yet, 
+                $user = null;
+            } else if ($users->count() == 1){
+                # we have found a user BUT WITHOUT AUTHENTICATION!
+                $user = $users->first();
+                $ldap_user = $this->ldap_mgr->findUser($user);
+                # convert to App\User (see middleware ExternalIdpAuthenticateSession)
+                $user = new User([], $ldap_user->getQuery());
+                $user->setRawAttributes($ldap_user->getAttributes());
+            } else {
+                # more than one user found
+                return redirect()->back()
+                    ->withErrors(['failure' => __('More than one user found for given contact.')]);
+            }
+        }
+
+        if($user instanceof \App\User) {
+            # add user consent
+            $this->consent_mgr->setConsent($user->getDatabaseUser(), true);
+            # assign voting code
+            if(!$this->voting_code_mgr->hasActiveVotingCode($user->getDatabaseUser())) {
+                $this->voting_code_mgr->assignVotingCode($user->getDatabaseUser());
+            }
+            $code = $this->voting_code_mgr->getActiveVotingCode($user->getDatabaseUser());
+            $token = $code->code;
+        } else {
+            $auth_user = Auth::user();
+            if(!empty($auth_user)) {
+                $id_type = VotingCode::ID_TYPE_EXT_ID;
+                $identifier = $auth_user->getAuthIdentifier();
+            } else {
+                $id_type = $request->input('preferred') == 'sms' ? VotingCode::ID_TYPE_PHONE : VotingCode::ID_TYPE_EMAIL;
+                $identifier = $request->input('preferred') == 'sms' ? $data['phone'] : $data['email'];
+            }
+            if(!$this->voting_code_mgr->hasActiveVotingCodeById($identifier, $id_type)) {
+                $this->voting_code_mgr->assignVotingCodeById($identifier, $id_type);
+            }
+            $code = $this->voting_code_mgr->getActiveVotingCodeById($identifier, $id_type);
+            $request->session()->put('voting.id', $identifier);
+            $request->session()->put('voting.id_type', $id_type);
+            $token = $code->code;
+        }
         
         # we have all the data validated, create validation token and send it by preferred method
         if($request->input('preferred') == 'sms') {
             # send token by SMS
             # see trait AuthorizesBySMS::sendAuthorizationToken (but that is async, not usable here)
             $phone_user = new PhoneOwner($data['phone']);
-            $phone_user->sendPasswordResetNotification($this->broker()->getRepository()->create($phone_user));
+            #$phone_user->sendPasswordResetNotification($this->broker()->getRepository()->create($phone_user));
+            $phone_user->notify(new SmsVotingCodeNotification($token));
             unset($data['email']);
         } else {
             # send token by e-mail 
             # see trait SendAccountActivationEmail::sendActivationLink (but we have to use different user with different message) 
             $user = new VotingUser($data['email']);
-            $this->activationMgr()->sendActivationLink($user);
+            #$this->activationMgr()->sendActivationLink($user);
+            $user->notify(new MailVotingCodeNotification($user, $token));
             unset($data['phone']);
         }
         
-        $resource = $this->reg_mgr->getExtUserResource($data);
-        
+
         $request->session()->put('voting.user', $resource);
         $request->session()->put('voting.verification', $request->input('preferred'));
+        
+        # due to the officials brain damage, we go directly to displaying the voting code
+        if(Auth::user() instanceof \App\User) {
+            # logged in, go normal
+            return redirect()
+                ->route('voting.show')
+                ->with(['status' => __('Your valid voting code was sent to your address.')]);
+        } else {
+            return redirect()
+            ->route('voting.showunreg')
+            ->with(['status' => __('Your valid voting code was sent to your address.')]);
+        }
         
         # go to validation code check
         return redirect()->route('voting.verificationform');
@@ -266,6 +335,15 @@ class VotingCodeController extends Controller
                 
         }
         return view('votingcode', ['user' => $user, 'login' => $login, 'idcard' => $idcard, 'code' => $code]);
+    }
+    
+    public function showCodeUnregistered(Request $request) 
+    {
+        $identifier = $request->session()->get('voting.id');
+        $id_type = $request->session()->get('voting.id_type');
+        $user_r = $request->session()->get('voting.user');
+        $code = $this->voting_code_mgr->getActiveVotingCodeById($identifier, $id_type);
+        return view('votingcodesimple', ['user' => $user_r->resource['attributes'], 'code' => $code]);
     }
     
     public function getCode(Request $request) 

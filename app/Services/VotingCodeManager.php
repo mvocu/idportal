@@ -33,7 +33,9 @@ class VotingCodeManager implements VotingCodeManagerInterface
      */
     public function assignVotingCode(User $user)
     {
-        $code = VotingCode::doesntHave('user')->get()->first();
+        $code = VotingCode::doesntHave('user', function(Builder $query) {
+                    $query->whereNull('identifier');          
+                })->get()->first();
         if($code != null) {
             $code->user()->associate($user);
             $code->save();
@@ -44,5 +46,45 @@ class VotingCodeManager implements VotingCodeManagerInterface
         return false;
     }
     
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\VotingCodeManager::assignVotingCodeById()
+     */
+    public function assignVotingCodeById($identifier, $id_type)
+    {
+        $code = VotingCode::doesntHave('user')->whereNull('identifier')->get()->first();
+
+        if($code != null) {
+            $code->identifier = $identifier;
+            $code->identifier_type = $id_type; 
+            $code->save();
+            $code->refresh();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\VotingCodeManager::getActiveVotingCodeById()
+     */
+    public function getActiveVotingCodeById($identifier, $id_type)
+    {
+        # XXX - should also search for user by contacts?
+        $code = VotingCode::where('identifier', $identifier)->where('identifier_type', $id_type)->first();
+        return $code;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \App\Interfaces\VotingCodeManager::hasActiveVotingCodeById()
+     */
+    public function hasActiveVotingCodeById($identifier, $id_type)
+    {
+        # XXX - should also search for user by contacts?
+        $codes = VotingCode::where('identifier', $identifier)->where('identifier_type', $id_type)->get();
+        return $codes && !$codes->isEmpty();
+    }
+
 }
 

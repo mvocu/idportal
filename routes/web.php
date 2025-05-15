@@ -87,6 +87,7 @@ Route::name('voting.')
         Route::post('/register/verify', 'VotingCodeController@verify')->name('confirm');
         Route::get('/register/eidp/{client}', 'VotingCodeController@registerExt')->name('register.eidp');
         Route::get('/show', 'VotingCodeController@showCode')->name('show');
+        Route::get('/show/simple', 'VotingCodeController@showCodeUnregistered')->name('showunreg');
         Route::get('/get', 'VotingCodeController@getCode')->name('get');
         Route::post('/declare', 'VotingCodeController@declare')->name('declare');
     });

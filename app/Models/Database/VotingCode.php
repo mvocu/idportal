@@ -5,7 +5,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class VotingCode extends Model
 {
-    //
+    const ID_TYPE_EXT_ID = 1;
+    const ID_TYPE_PHONE  = 2;
+    const ID_TYPE_EMAIL  = 3;
+    
+        //
     protected $table = 'voting_codes';
     
     protected $fillable = [ 'code' ];
