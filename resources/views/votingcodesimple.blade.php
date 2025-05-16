@@ -53,6 +53,8 @@
 				</div>
 				
 				<div class="panel-body mt-2">
+
+					@if (0)
 					<div class="row">
 						<div class="col-xs-10 col-xs-offset-1 text-center">
 							{{ __('You have been assigned the following voting code:') }}
@@ -72,7 +74,8 @@
 							@endif
 						</div>
 					</div>				
-
+					@endif
+					
 					<div class="row" style="margin-bottom: 2rem">
 						<div class="col-xs-10 col-xs-offset-1 text-center">
 							{{ __('You can use this code for voting in participative budget') }} <a href="https://mojeobec.kr-stredocesky.cz/portal/paroz/uvaly/">{{ __('here') }}.</a>
