@@ -33,9 +33,7 @@ class VotingCodeManager implements VotingCodeManagerInterface
      */
     public function assignVotingCode(User $user)
     {
-        $code = VotingCode::doesntHave('user', function(Builder $query) {
-                    $query->whereNull('identifier');          
-                })->get()->first();
+        $code = VotingCode::doesntHave('user')->whereNull('identifier')->get()->first();
         if($code != null) {
             $code->user()->associate($user);
             $code->save();

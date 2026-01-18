@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Session\Session;
 use App\Interfaces\IdentityProvider;
 use Illuminate\Auth\GuardHelpers;
+use Illuminate\Support\Facades\Log;
 
 class ExternalIdPGuard implements Guard
 {
@@ -30,6 +31,8 @@ class ExternalIdPGuard implements Guard
             return;
         }
         
+        Log::debug("Gate $this->name contains user", ['user' => $this->user]);
+
         if(!is_null($this->user)) {
             return $this->user;
         }
@@ -38,6 +41,7 @@ class ExternalIdPGuard implements Guard
         $id_token = $this->session->get($key . "_id");
         $ac_token = $this->session->get($key . "_ac");
         if(!is_null($id_token)) {
+	    Log::debug("Gate $this->name found existing session, trying to validate", ["id_token"=>$id_token]);
             $this->user = $this->authenticator->validate($id_token, $ac_token);
             if(is_null($this->user)) {
                 $this->logout();
@@ -75,11 +79,13 @@ class ExternalIdPGuard implements Guard
     {
         $this->updateSession($user->getRememberToken(), $user->getAuthPassword());
         $this->loggedOut = false;        
+	Log::info("Logged in external user ", [ 'token' => $user->getRememberToken() ]); 
         $this->setUser($user);
     }
 
     public function logout()
     {
+        Log::info("Logging out user", ['user' => $this->user]);
         $this->user = null;
         $this->loggedOut = true;
         $this->updateSession("", "");

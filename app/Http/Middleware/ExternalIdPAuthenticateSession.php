@@ -6,6 +6,7 @@ use Closure;
 use App\Interfaces\LdapConnector;
 use App\User;
 use App\Traits\FindsExternalAccount;
+use Illuminate\Support\Facades\Log;
 
 /*
  * For a given client (guard), check the external identity and set up authenticated user (\App\User)
@@ -30,7 +31,7 @@ class ExternalIdPAuthenticateSession
         if(!is_null($this->auth->guard()->user())) {
             return $next($request);    
         }
-        
+
         if(empty($name)) {
             # extract the client name as the last component of URL path
             $path = explode('/', $request->getPathInfo());
@@ -44,10 +45,13 @@ class ExternalIdPAuthenticateSession
                 $auth_user = $this->findExternalAccount($user, $client_name);
                 if(is_null($auth_user)) {
                     #$this->auth->guard($client_name)->logout();
+		    Log::debug("No user found when checking $client_name", ['user' => $user]);
                 } else {
                     $appuser = new User([], $auth_user->getQuery());
                     $appuser->setRawAttributes($auth_user->getAttributes());
+                    $appuser->rememberPassword(null);
                     $this->auth->guard()->setUser($appuser);
+                    Log::debug("Found and set user for $client_name", ['user' => $appuser]);
                 }
             }
         }

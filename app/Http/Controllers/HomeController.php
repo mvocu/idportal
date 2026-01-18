@@ -51,8 +51,8 @@ class HomeController extends Controller
         if(!Auth::user() instanceof \App\User) {
             #return redirect()->route('register.eidp', ['client' => Auth::guard()->getClient()])
             #    ->withErrors(['failure' => __('External identity is not registered. Please register your account here.')]);
-            return redirect()->route('ext.home', ['client' => Auth::guard()->getClient()])
-            ->withErrors(['failure' => __('External identity is not registered.')]);
+            return redirect()->route('ext.home', ['client' => Auth::guard()->getClient()]);
+            #->withErrors(['failure' => __('External identity is not registered.')]);
         }
         if(empty(Auth::user()->getAuthPassword())) {
             # the user is in registration process, no database or ldap record present yet

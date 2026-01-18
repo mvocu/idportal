@@ -75,6 +75,7 @@ class Kernel extends HttpKernel
     protected $middlewarePriority = [
         \Illuminate\Session\Middleware\StartSession::class,
         \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        \App\Http\Middleware\ExternalIdPAuthenticate::class,
         \App\Http\Middleware\ExternalIdPAuthenticateSession::class,
         \Illuminate\Auth\Middleware\Authenticate::class,
         \App\Http\Middleware\DetermineUser::class,
